@@ -5,9 +5,12 @@ import { listDepartments } from './graphql/queries';
 import { ratingsByUserAndContent } from './graphql/queries';
 import { Switch, Route, useRouteMatch, useHistory, Link } from 'react-router-dom'
 import CreateModal from './createmodal'
+import ProfessorTable from './professortable'
+import CourseTable from './coursetable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 import { updateProfessor as updateProfessorMutation } from './graphql/mutations';
+import { updateCourse as updateCourseMutation } from './graphql/mutations';
 import { createRating as createRatingMutation } from './graphql/mutations';
 import { updateRating as updateRatingMutation } from './graphql/mutations';
 import { deleteRating as deleteRatingMutation } from './graphql/mutations';
@@ -19,12 +22,11 @@ import { Auth } from 'aws-amplify';
 function SchoolTables(props) {
     //------------Constants-------------------//
             //----State Contants----//
-    const [departments, setDepartments] = useState({});
+
     const [categoryValue, setCategoryValue] = useState('professors');
-    const [isLoading, setIsLoading] = useState(true);
+
     const [searchFilter, setSearchFilter] = useState('');
     const [userid, setUserid] = useState(null);
-    const [userRatings, setUserRatings] = useState({});
 
     const CLASS_VOTE_UP = "tableSelectedUp";
     const CLASS_VOTE_DOWN = "tableSelectedDown";
@@ -42,6 +44,7 @@ function SchoolTables(props) {
     //---------------Private Variables---------//
     let history = useHistory();
     let match = useRouteMatch("/schools/:sid/:did");
+    let cat = useRouteMatch("/schools/:sid/:did/:cat");
 
     //------------Private Methods--------------//
     let getCourses;
@@ -57,135 +60,72 @@ function SchoolTables(props) {
             bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
         }).then (user => {
             setUserid(user.username);
-            getRatings(user.username);
+            console.log(props)
+            props.getRatings(user.username);
         }).catch(err => console.log(err));
     }, []);
 
 
     useEffect(() => {
-        getData();
+        
+        handleChangeToggle(cat.params.cat);
     }, []);
 
 
     //-----------------------Methods---------------------//
 
 
-    async function getData() {
-        const apiData = await API.graphql({ query: listDepartments });
-        const departmentsFromAPI = apiData.data.listDepartments.items;
 
-        await Promise.all(departmentsFromAPI.map(async department => {
-          return department;
-        }))
 
-        setDepartments(apiData.data.listDepartments.items);
-        setIsLoading(false);
-    }
 
-    //onload getRatings gets passed the username from UseState on line 41. TODO: figure out how to get the userstate right away
-    async function getRatings(user) {
-        const userRatingsData = await API.graphql({ query: ratingsByUserAndContent, variables: { "userID": user }});
-        const userRatingsFromAPI = userRatingsData.data.ratingsByUserAndContent.items;
 
-        await Promise.all(userRatingsFromAPI.map(async rating => {
-          return rating;
-        }))
 
-        setUserRatings(userRatingsData.data.ratingsByUserAndContent.items);
-    }
 
-    async function createRating(contentID, type, mutationName, score) {
-        let ratingIdFromAPI;
-        if (!userid) return;
-        try {
-            const ratingData = await API.graphql({ query: ratingsByUserAndContent, variables: { "userID": userid, "contentID": {eq: contentID } }});
-            ratingIdFromAPI = ratingData.data.ratingsByUserAndContent.items;
-        } catch (e) {
-            return e;
-        }
-        if(ratingIdFromAPI[0] === undefined){
-            try {
-                await API.graphql({ query: createRatingMutation, variables: { input: { "contentID": contentID, "userID": userid, "ratingType": type } }});
-                updateScore(contentID, score, type, mutationName);
-                getRatings(userid);
-            } catch (e) {
-                return e;
-            }
-        } else if (ratingIdFromAPI[0].ratingType === type){
-            type === VOTE_UP ? type = VOTE_DOWN : type = VOTE_UP;
-            try {
-                await API.graphql({ query: deleteRatingMutation, variables: { input: { "id": ratingIdFromAPI[0].id } }});
-                updateScore(contentID, score, type, mutationName);
-                getRatings(userid);
-            } catch (e) {
-                return e;
-            }
-        } else {
-            type === VOTE_UP ? score += 1 : score -= 1;
-            try {
-                await API.graphql({ query: updateRatingMutation, variables: { input: { "id": ratingIdFromAPI[0].id, "ratingType": type } }});
-                updateScore(contentID, score, type, mutationName);
-                getRatings(userid);
-            } catch (e) {
-                return e;
-            }
-        }
-      }
 
-      async function updateScore(id, score, increment, mutationName) {
-        try{
-            if (increment === VOTE_UP) {
-                await API.graphql({ query: mutationName, variables: { input: {"id": id, "score": score + 1} } });
-            }    
-            else if (increment === VOTE_DOWN){
-                await API.graphql({ query: mutationName, variables: { input: {"id": id, "score": score - 1} } });
-            }
-        }
-        catch (e) {
-            return e;
-        }
-        finally{
-            getData();
-        }
-    }
 
     getCourses =  () => {
         let courses = [];
-        console.log(departments)
+        console.log(props.departments)
         if (match.params.sid === URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){ //get all courses 
-            for (let i = 0; i < departments.length; i++) {
-                for(let j = 0; j < departments[i].courses.items.length; j ++){
-                    for(let k = 0; k < userRatings.length; k ++){
-                        if (userRatings[k].contentID === departments[i].courses.items[j].id){
-                            departments[i].courses.items[j].userRating = userRatings[k].ratingType;
+            for (let i = 0; i < props.departments.length; i++) {
+                for(let j = 0; j < props.departments[i].courses.items.length; j ++){
+                    for(let k = 0; k < props.userRatings.length; k ++){
+                        if (props.userRatings[k].contentID === props.departments[i].courses.items[j].id){
+                            props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
                         }   
                     }
-                    courses.push(departments[i].courses.items[j]);
+                    if(props.departments[i].courses.items[j].name.includes(searchFilter)){
+                        courses.push(props.departments[i].courses.items[j]);
+                    } 
                 }
             }
         } else if(match.params.sid !== URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){ //get courses from the department in the url
-            for (let i = 0; i < departments.length; i++) {
-                if(departments[i].school.id === match.params.sid) {
-                    for(let j = 0; j < departments[i].courses.items.length; j ++){
-                        for(let k = 0; k < userRatings.length; k ++){
-                            if (userRatings[k].contentID === departments[i].courses.items[j].id){
-                                departments[i].courses.items[j].userRating = userRatings[k].ratingType;
+            for (let i = 0; i < props.departments.length; i++) {
+                if(props.departments[i].school.id === match.params.sid) {
+                    for(let j = 0; j < props.departments[i].courses.items.length; j ++){
+                        for(let k = 0; k < props.userRatings.length; k ++){
+                            if (props.userRatings[k].contentID === props.departments[i].courses.items[j].id){
+                                props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
                             }   
                         }
-                        courses.push(departments[i].courses.items[j]);
+                        if(props.departments[i].courses.items[j].name.includes(searchFilter)){
+                            courses.push(props.departments[i].courses.items[j]);
+                        } 
                     }
                 }
             }
         } else if (match.params.sid !== URL_PARAM_ALL && match.params.did !== URL_PARAM_ALL){ //get courses from the department in the url
-            for (let i = 0; i < departments.length; i++) {
-                if(departments[i].id === match.params.did) {
-                    for(let j = 0; j < departments[i].courses.items.length; j ++){
-                        for(let k = 0; k < userRatings.length; k ++){
-                            if (userRatings[k].contentID === departments[i].courses.items[j].id){
-                                departments[i].courses.items[j].userRating = userRatings[k].ratingType;
+            for (let i = 0; i < props.departments.length; i++) {
+                if(props.departments[i].id === match.params.did) {
+                    for(let j = 0; j < props.departments[i].courses.items.length; j ++){
+                        for(let k = 0; k < props.userRatings.length; k ++){
+                            if (props.userRatings[k].contentID === props.departments[i].courses.items[j].id){
+                                props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
                             }   
                         }
-                        courses.push(departments[i].courses.items[j]);
+                        if(props.departments[i].courses.items[j].name.includes(searchFilter)){
+                            courses.push(props.departments[i].courses.items[j]);
+                        } 
                     }
                 }
             }
@@ -198,46 +138,48 @@ function SchoolTables(props) {
     getProfessors =  () => {
         let professors = []
 
+        console.log("props in professors", props)
+
         if (match.params.sid === URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){
-            for (let i = 0; i < departments.length; i++) {
-                for(let j = 0; j < departments[i].professors.items.length; j ++){
-                    for(let k = 0; k < userRatings.length; k ++){
-                        if (userRatings[k].contentID === departments[i].professors.items[j].id){
-                            departments[i].professors.items[j].userRating = userRatings[k].ratingType;
+            for (let i = 0; i < props.departments.length; i++) {
+                for(let j = 0; j < props.departments[i].professors.items.length; j ++){
+                    for(let k = 0; k < props.userRatings.length; k ++){
+                        if (props.userRatings[k].contentID === props.departments[i].professors.items[j].id){
+                            props.departments[i].professors.items[j].userRating = props.userRatings[k].ratingType;
                         }   
                     }
-                    console.log("hello", departments[i].professors.items[j].name.includes(searchFilter))
-                    if(departments[i].professors.items[j].name.includes(searchFilter)){
-                        professors.push(departments[i].professors.items[j]);
+                    console.log("hello", props.departments[i].professors.items[j].name.includes(searchFilter))
+                    if(props.departments[i].professors.items[j].name.includes(searchFilter)){
+                        professors.push(props.departments[i].professors.items[j]);
                     } 
                 }
             }
         } else if (match.params.sid !== URL_PARAM_ALL && match.params.did === URL_PARAM_ALL) {
-            for (let i = 0; i < departments.length; i++) {
-                if(departments[i].school.id === match.params.sid) {
-                    for(let j = 0; j < departments[i].professors.items.length; j ++){
-                        for(let k = 0; k < userRatings.length; k ++){
-                            if (userRatings[k].contentID === departments[i].professors.items[j].id){
-                                departments[i].professors.items[j].userRating = userRatings[k].ratingType;
+            for (let i = 0; i < props.departments.length; i++) {
+                if(props.departments[i].school.id === match.params.sid) {
+                    for(let j = 0; j < props.departments[i].professors.items.length; j ++){
+                        for(let k = 0; k < props.userRatings.length; k ++){
+                            if (props.userRatings[k].contentID === props.departments[i].professors.items[j].id){
+                                props.departments[i].professors.items[j].userRating = props.userRatings[k].ratingType;
                             }   
                         }
-                        if(departments[i].professors.items[j].name.includes(searchFilter)){
-                            professors.push(departments[i].professors.items[j]);
+                        if(props.departments[i].professors.items[j].name.includes(searchFilter)){
+                            professors.push(props.departments[i].professors.items[j]);
                         } 
                     }
                 }
             }
         } else if (match.params.sid !== URL_PARAM_ALL && match.params.did !== URL_PARAM_ALL) {
-            for (let i = 0; i < departments.length; i++) {
-                if(departments[i].id === match.params.did) {
-                    for(let j = 0; j < departments[i].professors.items.length; j ++){
-                        for(let k = 0; k < userRatings.length; k ++){
-                            if (userRatings[k].contentID === departments[i].professors.items[j].id){
-                                departments[i].professors.items[j].userRating = userRatings[k].ratingType;
+            for (let i = 0; i < props.departments.length; i++) {
+                if(props.departments[i].id === match.params.did) {
+                    for(let j = 0; j < props.departments[i].professors.items.length; j ++){
+                        for(let k = 0; k < props.userRatings.length; k ++){
+                            if (props.userRatings[k].contentID === props.departments[i].professors.items[j].id){
+                                props.departments[i].professors.items[j].userRating = props.userRatings[k].ratingType;
                             }   
                         }
-                        if(departments[i].professors.items[j].name.includes(searchFilter)){
-                            professors.push(departments[i].professors.items[j]);
+                        if(props.departments[i].professors.items[j].name.includes(searchFilter)){
+                            professors.push(props.departments[i].professors.items[j]);
                         } 
                     }
                 }
@@ -256,14 +198,14 @@ function SchoolTables(props) {
        
         if(match.params.sid === URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){
             return (
-                <bs.Row>
+                <bs.Row style={{marginBottom: "3rem"}}>
                     <h1>All Colleges</h1>
                 </bs.Row>
             ) 
         } else if (match.params.sid !== URL_PARAM_ALL && match.params.did === URL_PARAM_ALL) {
-            for (let i = 0; i < departments.length; i++){
-                if(departments[i].school.id === match.params.sid){
-                    data = departments[i].professors.items;
+            for (let i = 0; i < props.departments.length; i++){
+                if(props.departments[i].school.id === match.params.sid){
+                    data = props.departments[i].professors.items;
                 }
             }
             if (data){
@@ -276,19 +218,19 @@ function SchoolTables(props) {
                 )
             } else {
                 return (
-                    <bs.Row>
+                    <bs.Row style={{marginBottom: "3rem"}}>
                         <h3>No Data for this Department</h3>
                     </bs.Row>
                 )
             }
 
         } else if (match.params.sid !== URL_PARAM_ALL && match.params.did !== URL_PARAM_ALL){
-            for (let i = 0; i < departments.length; i++){
-                if(departments[i].id === match.params.did){
-                    data = departments[i].professors.items;
+            for (let i = 0; i < props.departments.length; i++){
+                if(props.departments[i].id === match.params.did){
+                    data = props.departments[i].professors.items;
                 }
             }
-            if (data){
+            if (data[0]){
                 return (  
                     <div style={{marginBottom: "3rem"}}>
                         <bs.Row>
@@ -302,7 +244,7 @@ function SchoolTables(props) {
                 )
             } else {
                 return (
-                    <bs.Row>
+                    <bs.Row style={{marginBottom: "3rem"}}>
                         <h3>No Data for this Department</h3>
                     </bs.Row>
                 )
@@ -311,7 +253,7 @@ function SchoolTables(props) {
         }
         else {
             return (
-                <bs.Row>
+                <bs.Row style={{marginBottom: "3rem"}}>
                     <h3>No Data for this Department</h3>
                 </bs.Row>
             )
@@ -330,7 +272,7 @@ function SchoolTables(props) {
 
     //-------------------Public Rendering-------------------//
 
-    if (isLoading){
+    if (props.isLoading){
         return(
             <bs.Spinner animation="border" role="status">
                 <span className="sr-only">Loading...</span>
@@ -370,85 +312,20 @@ function SchoolTables(props) {
                                 </bs.Form.Group>
                             </bs.Form>
                         </bs.Col>
-                        <bs.Col md="1">
+                        {/* <bs.Col md="1">
                             <CreateModal />
-                        </bs.Col>
+                        </bs.Col> */}
                     </bs.Row>
     
                 </bs.Container>
     
                 <Switch>
                     <Route path={`${match.path}/${URL_PARAM_PROFESSORS}`}>
-                        <bs.Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                <th></th>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Title</th>
-                                <th>Department</th>
-                                <th>School</th>
-                                <th>Score</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                
-                                getProfessors().map((professor, index) => (
-                                    <tr key={professor.id} height="60px" style={{ fontSize: "20px" }}>
-                                    <td style={{ padding: "10px", textAlign: "center", fontSize: "40px"}}>
-                                        <tr >
-                                            <div key={index+"a"} className={professor.userRating === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE } style={{ cursor: "pointer"}} onClick={() => createRating(professor.id, VOTE_UP, updateProfessorMutation, professor.score)}><FontAwesomeIcon icon={faSortUp}/></div>
-                                        </tr>
-                                        <tr>
-                                            <div key={index+"b"} className={professor.userRating === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE } style={{ cursor: "pointer"}} onClick={() => createRating(professor.id, VOTE_DOWN, updateProfessorMutation, professor.score)}><FontAwesomeIcon icon={faSortDown}/></div>
-                                        </tr>
-                                    </td>
-                                    <td>{index + 1}</td>
-                                    <td><Link to={`${match.url}/${URL_PARAM_PROFESSORS}/${professor.id}`}>{professor.name}</Link></td>
-                                    <td>{professor.title}</td>
-                                    <td>{professor.department.name}</td>
-                                    <td>{professor.department.school.name}</td>
-                                    <td>{professor.score}</td>
-                                    </tr>
-                                ))
-                            }
-                            </tbody>
-                        </bs.Table>
+                        <ProfessorTable  userid={userid} professors={getProfessors()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating}/>
                     </Route>
                     <Route path={`${match.path}/${URL_PARAM_COURSES}`}>
-                        <bs.Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                <th></th>
-                                <th>#</th>
-                                <th>Code</th>
-                                <th>Name</th>
-                                <th>Number of Credits</th>
-                                <th>School</th>
-                                <th>Score</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                
-                                getCourses().map((course, index) => (
-                                    <tr key={course.id}>
-                                    <td style={{ padding: "0", textAlign: "center", fontSize: "25px"}}>
-                                        <div key={index+"a"} className={course.userRating === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE } style={{ cursor: "pointer", top: "0", height: "10px"}} onClick={() => createRating(course.id, VOTE_UP)}><FontAwesomeIcon icon={faSortUp}/></div>
-                                        <div key={index+"b"} className={course.userRating === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE } style={{ cursor: "pointer", height: "10px"}} onClick={() => createRating(course.id, VOTE_DOWN)}><FontAwesomeIcon icon={faSortDown}/></div>
-                                    </td>
-                                    <td>{index + 1}</td>
-                                    <td><Link to={`${match.url}/${URL_PARAM_COURSES}/${course.id}`}>{course.name}</Link></td>
-                                    <td>{course.code}</td>
-                                    <td>{course.numCredits}</td>
-                                    <td></td>
-                                    <td></td>
-                                    </tr>
-                                ))
-                            }
-                            </tbody>
-                        </bs.Table>
+                        <CourseTable  userid={userid} professors={getCourses()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating}/>
+
                     </Route>
                 </Switch>
     

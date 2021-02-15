@@ -152,7 +152,8 @@ function CreateModal(props) {
 
     return (
       <div style={{paddingLeft: "1rem"}}>
-        <FontAwesomeIcon icon={faPlusCircle} onClick={handleShow} style={{cursor: "pointer", fontSize: "30px", marginTop: ".7rem"}} />
+        <Button onClick={handleShow}>Add a Professor</Button>
+        {/* <FontAwesomeIcon icon={faPlusCircle} onClick={handleShow} style={{cursor: "pointer", fontSize: "30px", marginTop: ".7rem"}} /> */}
   
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
