@@ -28,9 +28,6 @@ export default class App extends React.Component {
             <bs.Col className="px-8 py-2" >
               <center>
                   <Switch>
-                  {/* <Route path="/schools/:did/:type/:oid">
-                      <Detail />
-                    </Route> */}
                   <Route path="/schools">
                       <BYUSchools />
                     </Route>

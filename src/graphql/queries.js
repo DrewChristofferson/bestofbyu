@@ -153,11 +153,17 @@ export const listDepartments = /* GraphQL */ `
         courses {
           items {
             id
-            code
             name
             numCredits
+            score
+            description
+            department {
+              name
+              school {
+                name
+              }
+            }
           }
-          nextToken
         }
         createdAt
         updatedAt
