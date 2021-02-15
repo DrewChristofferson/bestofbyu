@@ -1,0 +1,28 @@
+{
+    "Course-6yyyuiox25aq3m5a3kmo47ptqi-staging": [
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {
+                        "S": "fh3789wgadsfgdeesugh34h093874heiug"
+                    },
+                    "name": {
+                        "S": "Zoology"
+                    },
+                    "description": {
+                        "S": "It smells a bit"
+                    },
+                    "__typename": {
+                        "S": "Course"
+                    },
+                    "createdAt": {
+                        "S": "2021-01-22T18:06:34.576Z"
+                    },
+                    "updatedAt": {
+                        "S": "2021-01-22T18:06:34.576Z"
+                    }
+                }
+            }
+        }
+    ]
+}

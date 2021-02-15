@@ -1,0 +1,65 @@
+type School @model 
+  @key(fields: ["id"]) 
+{
+  id: ID!
+  name: String!
+  departments: [Department] @connection(keyName: "bySchool", fields: ["id"])
+}
+
+type Department @model 
+  @key(name: "bySchool", fields: ["schoolID", "name"]) 
+{
+  id: ID!
+  name: String!
+  schoolID: ID!
+  school: School @connection(fields: ["schoolID"])
+  professors: [Professor] @connection(keyName: "byDepartment", fields: ["id"])
+  courses: [Course] @connection(keyName: "byDepartmentCourse", fields: ["id"])
+}
+
+type Professor @model 
+  @key(name: "byDepartment", fields: ["departmentID", "name"]) 
+{
+  id: ID!
+  name: String!
+  title: String!
+  departmentID: ID!
+  department: Department @connection(fields: ["departmentID"])
+  imgsrc: String
+  score: Int!
+  comments: [ProfessorComment] @connection(keyName: "byProfessor", fields: ["id"])
+}
+
+type Course @model 
+  @key(name: "byDepartmentCourse", fields: ["departmentID", "name"]) 
+{
+  id: ID!
+  name: String!
+  code: String!
+  numCredits: Int
+  departmentID: ID!
+  department: Department @connection(fields: ["departmentID"])
+  imgsrc: String
+  description: String
+  score: Int!
+  ratings: [Rating] @connection(keyName: "byCourse", fields: ["id"])
+}
+
+type Rating @model
+  @key(name: "byUser", fields: ["userID", "contentID"], queryField : "ratingsByUserAndContent")
+{
+  id: ID!
+  userID: String!
+  contentID: ID!
+  ratingType: String
+}
+
+
+type ProfessorComment @model
+  @key(name: "byProfessor", fields: ["professorID", "content"])
+{
+  id: ID!
+  professorID: ID!
+  content: String!
+}
+
