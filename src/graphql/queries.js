@@ -141,6 +141,7 @@ export const listDepartments = /* GraphQL */ `
             name
             title
             score
+            imgsrc
             department {
               name
               school {
@@ -157,6 +158,8 @@ export const listDepartments = /* GraphQL */ `
             numCredits
             score
             description
+            isGeneral
+            generalReqID
             department {
               name
               school {
