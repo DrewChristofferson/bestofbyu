@@ -42,7 +42,8 @@ type Course @model
   imgsrc: String
   description: String
   score: Int!
-  ratings: [Rating] @connection(keyName: "byCourse", fields: ["id"])
+  isGeneral: Boolean!
+  generalReqID: String
 }
 
 type Rating @model

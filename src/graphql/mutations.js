@@ -111,6 +111,8 @@ export const createDepartment = /* GraphQL */ `
           imgsrc
           description
           score
+          isGeneral
+          generalReqID
           createdAt
           updatedAt
         }
@@ -162,6 +164,8 @@ export const updateDepartment = /* GraphQL */ `
           imgsrc
           description
           score
+          isGeneral
+          generalReqID
           createdAt
           updatedAt
         }
@@ -213,6 +217,8 @@ export const deleteDepartment = /* GraphQL */ `
           imgsrc
           description
           score
+          isGeneral
+          generalReqID
           createdAt
           updatedAt
         }
@@ -394,6 +400,8 @@ export const createCourse = /* GraphQL */ `
       imgsrc
       description
       score
+      isGeneral
+      generalReqID
       createdAt
       updatedAt
     }
@@ -432,6 +440,8 @@ export const updateCourse = /* GraphQL */ `
       imgsrc
       description
       score
+      isGeneral
+      generalReqID
       createdAt
       updatedAt
     }
@@ -470,6 +480,8 @@ export const deleteCourse = /* GraphQL */ `
       imgsrc
       description
       score
+      isGeneral
+      generalReqID
       createdAt
       updatedAt
     }

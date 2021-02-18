@@ -29,7 +29,7 @@ function CourseTable(props) {
         <bs.Container style={{paddingTop: "2rem", marginLeft: "0.5rem", marginRight: "0.5rem"}} fluid>
             {
                 
-                props.professors.map((course, index) => (
+                props.courses.map((course, index) => (
                     <bs.Row style={{paddingTop: "1.5rem", paddingBottom: "1.5rem", borderTop: "2px solid black"}} key={index}>
                         <bs.Col style={{fontSize: "2rem", textAlign: "center", paddingTop: ".8rem"}} md="1">
                             {index === 0 ? 
