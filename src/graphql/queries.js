@@ -213,6 +213,16 @@ export const getProfessor = /* GraphQL */ `
         }
         nextToken
       }
+      classes {
+        items {
+          id
+          professorID
+          courseID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -240,6 +250,9 @@ export const listProfessors = /* GraphQL */ `
         imgsrc
         score
         comments {
+          nextToken
+        }
+        classes {
           nextToken
         }
         createdAt
@@ -279,6 +292,26 @@ export const getCourse = /* GraphQL */ `
       imgsrc
       description
       score
+      isGeneral
+      generalReqID
+      classes {
+        items {
+          id
+          professorID
+          courseID
+          createdAt
+          updatedAt
+          professor {
+            id
+            name
+            title
+            department {
+              name
+            }
+          }
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -307,6 +340,11 @@ export const listCourses = /* GraphQL */ `
         imgsrc
         description
         score
+        isGeneral
+        generalReqID
+        classes {
+          nextToken
+        }
         createdAt
         updatedAt
       }

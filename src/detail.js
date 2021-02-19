@@ -12,12 +12,23 @@ function Detail(props) {
    let history = useHistory();
    const [professor, setProfessor] = useState();
    const [course, setCourse] = useState();
+   const [professorsForCourse, setProfessorsForCourse] = useState();
+   const [isLoadingProfessors, setIsLoadingProfessors] = useState(true);
+
+//    const [classes, setClasses] = useState([]);
+
+    let classes = [];
 
 
    useEffect(() => {
        console.log("detail props", props)
        fetchData();
+       getProfessorsData();
      }, []);
+
+   useEffect(() => {
+       console.log("detail classes", professorsForCourse)
+     });
 
 
 
@@ -36,8 +47,20 @@ function Detail(props) {
             try{ 
                 const apiData = await API.graphql({ query: getCourse, variables: { id: match.params.oid }  });
 
-                console.log("course", apiData.data.getCourse)
+                console.log("course", apiData.data.getCourse);
                 setCourse(apiData.data.getCourse);
+                // let i = 0;
+                // while (i < (apiData.data.getCourse.classes.items).length){
+                //     console.log(apiData.data.getCourse.classes.items[i].professor);
+                // }
+                for (let i = 0; i < apiData.data.getCourse.classes.items.length; i++){
+                    console.log("howdy")
+                    console.log(apiData.data.getCourse.classes.items[i].professor);
+                    classes.push(apiData.data.getCourse.classes.items[i].professor);
+                    
+                }
+                
+                
                 // getProfessorsData();
             } catch (e) {
                 console.log('Error: ' + e)
@@ -51,8 +74,76 @@ function Detail(props) {
 
    }
 
+   async function getProfessorsData() {
+    let myClasses = [];
+    let profs = [];
+    
+    const apiData = await API.graphql({ query: getCourse, variables: { id: match.params.oid } });
+    const professorsForCourseFromAPI = apiData.data.getCourse.classes.items;
+    console.log("****************", apiData.data.getCourse.classes.items)
+
+    await Promise.all(professorsForCourseFromAPI.map(async professor => {
+    return professor;
+    })).then(values => {
+        myClasses.push(values)
+    })
+
+    // myClasses = apiData.data.getCourse.classes.items;
+    console.log("my classes are ", apiData.data.getCourse.classes.items);
+
+    for (let i = 0; i < (apiData.data.getCourse.classes.items).length; i++){
+        console.log(apiData.data.getCourse.classes.items[i].professor)
+        profs.push(apiData.data.getCourse.classes.items[i].professor);
+    }
+    
+    setProfessorsForCourse(profs);
+    setIsLoadingProfessors(false);
+    //return apiData.data.getCourse.classes.items;
+    
+}
+
+   let getProfessors =  () => {
+        // let professors = props.professors;
+        let filteredProfessors = [];
+        let paginatedProfessors = [];
+        
+        let endingIndex;
+
+        
+
+        console.log(professorsForCourse);
+
+        //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
+        (professorsForCourse).sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
+        
+        for (let i = 0; i < professorsForCourse.length; i++){
+            professorsForCourse[i].ranking = i + 1;
+            if(professorsForCourse[i].name.toLowerCase().includes(props.searchFilter.toLowerCase())){
+                for(let j = 0; j < props.userRatings.length; j++){
+                    if (props.userRatings[j].contentID === professorsForCourse[i].id){
+                        professorsForCourse[i].userRating = props.userRatings[j].ratingType;
+                    }   
+                }
+                filteredProfessors.push(professorsForCourse[i])
+            }
+            
+        }
+
+        for (let i = props.pageStartIndex; paginatedProfessors.length < 10; i++){
+                
+            if(filteredProfessors[i]){
+                paginatedProfessors.push(filteredProfessors[i])
+            } else {
+                break;
+            }
+            endingIndex = i + 1;
+        }
+        console.log(paginatedProfessors)
+        return [paginatedProfessors, filteredProfessors.length, endingIndex];
+    }
+
    let returnProfessors = () => {
-       if (props.isLoading){
+       if (isLoadingProfessors){
             return(
                 <bs.Spinner animation="border" role="status">
                     <span className="sr-only">Loading...</span>
@@ -60,7 +151,20 @@ function Detail(props) {
             )
        } else {
             return(
-                <ProfessorTable professors={props.professorsForCourse} updateScore={props.updateScore} getRatings={props.getRatings} userRatings={props.userRatings} createRating={props.createRating} isLoading={props.isLoading}/>
+                <ProfessorTable 
+                    professors={getProfessors()} 
+                    updateScore={props.updateScore} 
+                    getRatings={props.getRatings} 
+                    userRatings={props.userRatings} 
+                    createRating={props.createRating} 
+                    isLoading={props.isLoading}
+                    nextPage={props.nextPage}
+                    previousPage={props.previousPage}
+                    pageNum={props.pageNum}
+                    pageStartIndex={props.pageStartIndex}
+                    searchFilter={props.searchFilter}
+                    handleChangeSearch={props.handleChangeSearch}
+                />
             )
         }
    }
@@ -131,18 +235,18 @@ function Detail(props) {
 
                 <bs.Row style={{marginTop: "3rem"}}>
                     <bs.Col>
-                        <bs.Tabs defaultActiveKey="home" id="controlled-tab-example">
-                            <bs.Tab eventKey="home" title="About">
+                        <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
+                        <bs.Tab eventKey="professors" title="Professors">
+                                {returnProfessors()}
+                            </bs.Tab>
+                            <bs.Tab eventKey="about" title="About">
                                 <strong>Description: </strong>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac tellus elit. Ut quis ultrices turpis, ac mattis arcu. </p>
                             </bs.Tab>
-                            <bs.Tab eventKey="professors" title="Professors">
-                                {returnProfessors()}
-                            </bs.Tab>
-                            <bs.Tab eventKey="profile" title="Discussion">
+                            <bs.Tab eventKey="discussion" title="Discussion">
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac tellus elit. Ut quis ultrices turpis, ac mattis arcu. </p>
                             </bs.Tab>
-                            <bs.Tab eventKey="contact" title="Pictures" >
+                            <bs.Tab eventKey="pictures" title="Pictures" >
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac tellus elit. Ut quis ultrices turpis, ac mattis arcu. </p>
                             </bs.Tab>
                         </bs.Tabs>

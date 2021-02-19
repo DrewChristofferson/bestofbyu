@@ -28,6 +28,17 @@ type Professor @model
   imgsrc: String
   score: Int!
   comments: [ProfessorComment] @connection(keyName: "byProfessor", fields: ["id"])
+  classes: [Class] @connection(keyName: "byProfessor", fields: ["id"])
+}
+
+type Class @model(queries: null)
+  @key(name: "byProfessor", fields: ["professorID", "courseID"])
+  @key(name: "byCourse", fields: ["courseID", "professorID"]) {
+  id: ID!
+  professorID: ID!
+  courseID: ID!
+  professor: Professor! @connection(fields: ["professorID"])
+  course: Course! @connection(fields: ["courseID"])
 }
 
 type Course @model 
@@ -44,6 +55,7 @@ type Course @model
   score: Int!
   isGeneral: Boolean!
   generalReqID: String
+  classes: [Class] @connection(keyName: "byCourse", fields: ["id"])
 }
 
 type Rating @model
