@@ -25,10 +25,10 @@ function SchoolTables(props) {
 
     const [categoryValue, setCategoryValue] = useState('professors');
 
-    const [searchFilter, setSearchFilter] = useState('');
+    // const [searchFilter, setSearchFilter] = useState('');
     const [userid, setUserid] = useState(null);
-    const [pageStartIndex, setPageStartIndex] = useState(0);
-    const [pageNum, setPageNum] = useState(1);
+    // const [pageStartIndex, setPageStartIndex] = useState(0);
+    // const [pageNum, setPageNum] = useState(1);
 
     const CLASS_VOTE_UP = "tableSelectedUp";
     const CLASS_VOTE_DOWN = "tableSelectedDown";
@@ -97,7 +97,7 @@ function SchoolTables(props) {
                             props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
                         }   
                     }
-                    if(props.departments[i].courses.items[j].name.includes(searchFilter)){
+                    if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
                         courses.push(props.departments[i].courses.items[j]);
                     } 
                 }
@@ -114,7 +114,7 @@ function SchoolTables(props) {
                                 props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
                             }   
                         }
-                        if(props.departments[i].courses.items[j].name.includes(searchFilter)){
+                        if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
                             courses.push(props.departments[i].courses.items[j]);
                         } 
                     }  
@@ -131,7 +131,7 @@ function SchoolTables(props) {
                                 props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
                             }   
                         }
-                        if(props.departments[i].courses.items[j].name.includes(searchFilter)){
+                        if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
                             courses.push(props.departments[i].courses.items[j]);
                         } 
                     }  
@@ -148,7 +148,7 @@ function SchoolTables(props) {
                                 props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
                             }   
                         }
-                        if(props.departments[i].courses.items[j].name.includes(searchFilter)){
+                        if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
                             courses.push(props.departments[i].courses.items[j]);
                         } 
                     }
@@ -164,7 +164,7 @@ function SchoolTables(props) {
                                 props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
                             }   
                         }
-                        if(props.departments[i].courses.items[j].name.includes(searchFilter)){
+                        if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
                             courses.push(props.departments[i].courses.items[j]);
                         } 
                     }
@@ -191,8 +191,8 @@ function SchoolTables(props) {
                     //         props.departments[i].professors.items[j].userRating = props.userRatings[k].ratingType;
                     //     }   
                     // }
-                    console.log("hello", props.departments[i].professors.items[j].name.includes(searchFilter))
-                    // if(props.departments[i].professors.items[j].name.includes(searchFilter)){
+                    console.log("hello", props.departments[i].professors.items[j].name.includes(props.searchFilter))
+                    // if(props.departments[i].professors.items[j].name.includes(props.searchFilter)){
                     //     professors.push(props.departments[i].professors.items[j]);
                     // } 
                     professors.push(props.departments[i].professors.items[j]);
@@ -222,7 +222,7 @@ function SchoolTables(props) {
         
         for (let i = 0; i < professors.length; i++){
             professors[i].ranking = i + 1;
-            if(professors[i].name.toLowerCase().includes(searchFilter.toLowerCase())){
+            if(professors[i].name.toLowerCase().includes(props.searchFilter.toLowerCase())){
                 for(let j = 0; j < props.userRatings.length; j++){
                     if (props.userRatings[j].contentID === professors[i].id){
                         professors[i].userRating = props.userRatings[j].ratingType;
@@ -233,7 +233,7 @@ function SchoolTables(props) {
             
         }
         
-        for (let i = pageStartIndex; paginatedProfessors.length < 10; i++){
+        for (let i = props.pageStartIndex; paginatedProfessors.length < 10; i++){
             
             if(filteredProfessors[i]){
                 paginatedProfessors.push(filteredProfessors[i])
@@ -245,21 +245,21 @@ function SchoolTables(props) {
         return [paginatedProfessors, filteredProfessors.length, endingIndex];
     }
 
-    let nextPage = (index) => {
-        setPageStartIndex(index);
-        setPageNum(pageNum + 1);
-    }
+    // let nextPage = (index) => {
+    //     setPageStartIndex(index);
+    //     setPageNum(pageNum + 1);
+    // }
 
-    let previousPage = (index) => {
-        console.log("the index is", index)
-        if(index > 20){
-            setPageStartIndex(index - 20);
-            setPageNum(pageNum - 1);
-        } else if (index > 10 && index <= 20) {
-            setPageStartIndex(0);
-            setPageNum(pageNum - 1);
-        }
-    }
+    // let previousPage = (index) => {
+    //     console.log("the index is", index)
+    //     if(index > 20){
+    //         setPageStartIndex(index - 20);
+    //         setPageNum(pageNum - 1);
+    //     } else if (index > 10 && index <= 20) {
+    //         setPageStartIndex(0);
+    //         setPageNum(pageNum - 1);
+    //     }
+    // }
 
     getTitle = () => {
 
@@ -367,12 +367,12 @@ function SchoolTables(props) {
         history.push(`${match.url}/${val}`);
     }
 
-    handleChangeSearch = (val) => {
-        // console.log(val);
-        setSearchFilter(val);
-        setPageNum(1);
-        setPageStartIndex(0);
-    }
+    // handleChangeSearch = (val) => {
+    //     // console.log(val);
+    //     setSearchFilter(val);
+    //     setPageNum(1);
+    //     setPageStartIndex(0);
+    // }
 
     //-------------------Public Rendering-------------------//
 
@@ -412,7 +412,7 @@ function SchoolTables(props) {
                             <bs.Form style={{paddingLeft: "1rem"}}>
                                 <bs.Form.Group controlId="exampleForm.ControlInput1" >
                             
-                                    <bs.Form.Control type="text" placeholder="Search for a Professor" onChange={(e) => handleChangeSearch(e.currentTarget.value)}/>
+                                    <bs.Form.Control type="text" placeholder="Search for a Professor" onChange={(e) => props.handleChangeSearch(e.currentTarget.value)}/>
                                 </bs.Form.Group>
                             </bs.Form>
                         </bs.Col>
@@ -425,10 +425,10 @@ function SchoolTables(props) {
     
                 <Switch>
                     <Route path={`${match.path}/${URL_PARAM_PROFESSORS}`}>
-                        <ProfessorTable  userid={userid} professors={getProfessors()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={nextPage} previousPage={previousPage} pageNum={pageNum}/>
+                        <ProfessorTable  userid={userid} professors={getProfessors()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
                     </Route>
                     <Route path={`${match.path}/${URL_PARAM_COURSES}`}>
-                        <CourseTable  userid={userid} courses={getCourses()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating}/>
+                        <CourseTable  userid={userid} courses={getCourses()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
 
                     </Route>
                 </Switch>

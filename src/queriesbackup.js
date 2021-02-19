@@ -141,6 +141,7 @@ export const listDepartments = /* GraphQL */ `
             name
             title
             score
+            imgsrc
             department {
               name
               school {
@@ -153,11 +154,19 @@ export const listDepartments = /* GraphQL */ `
         courses {
           items {
             id
-            code
             name
             numCredits
+            score
+            description
+            isGeneral
+            generalReqID
+            department {
+              name
+              school {
+                name
+              }
+            }
           }
-          nextToken
         }
         createdAt
         updatedAt
@@ -305,6 +314,37 @@ export const listCourses = /* GraphQL */ `
     }
   }
 `;
+export const getRating = /* GraphQL */ `
+  query GetRating($id: ID!) {
+    getRating(id: $id) {
+      id
+      userID
+      contentID
+      ratingType
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listRatings = /* GraphQL */ `
+  query ListRatings(
+    $filter: ModelRatingFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listRatings(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userID
+        contentID
+        ratingType
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getProfessorComment = /* GraphQL */ `
   query GetProfessorComment($id: ID!) {
     getProfessorComment(id: $id) {
@@ -331,6 +371,35 @@ export const listProfessorComments = /* GraphQL */ `
         id
         professorID
         content
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const ratingsByUserAndContent = /* GraphQL */ `
+  query RatingsByUserAndContent(
+    $userID: String
+    $contentID: ModelIDKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelRatingFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    ratingsByUserAndContent(
+      userID: $userID
+      contentID: $contentID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userID
+        contentID
+        ratingType
         createdAt
         updatedAt
       }

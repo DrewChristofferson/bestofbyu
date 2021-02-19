@@ -270,6 +270,16 @@ export const createProfessor = /* GraphQL */ `
         }
         nextToken
       }
+      classes {
+        items {
+          id
+          professorID
+          courseID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -311,6 +321,16 @@ export const updateProfessor = /* GraphQL */ `
           id
           professorID
           content
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      classes {
+        items {
+          id
+          professorID
+          courseID
           createdAt
           updatedAt
         }
@@ -362,6 +382,199 @@ export const deleteProfessor = /* GraphQL */ `
         }
         nextToken
       }
+      classes {
+        items {
+          id
+          professorID
+          courseID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createClass = /* GraphQL */ `
+  mutation CreateClass(
+    $input: CreateClassInput!
+    $condition: ModelClassConditionInput
+  ) {
+    createClass(input: $input, condition: $condition) {
+      id
+      professorID
+      courseID
+      professor {
+        id
+        name
+        title
+        departmentID
+        department {
+          id
+          name
+          schoolID
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        score
+        comments {
+          nextToken
+        }
+        classes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      course {
+        id
+        name
+        code
+        numCredits
+        departmentID
+        department {
+          id
+          name
+          schoolID
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        description
+        score
+        isGeneral
+        generalReqID
+        classes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateClass = /* GraphQL */ `
+  mutation UpdateClass(
+    $input: UpdateClassInput!
+    $condition: ModelClassConditionInput
+  ) {
+    updateClass(input: $input, condition: $condition) {
+      id
+      professorID
+      courseID
+      professor {
+        id
+        name
+        title
+        departmentID
+        department {
+          id
+          name
+          schoolID
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        score
+        comments {
+          nextToken
+        }
+        classes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      course {
+        id
+        name
+        code
+        numCredits
+        departmentID
+        department {
+          id
+          name
+          schoolID
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        description
+        score
+        isGeneral
+        generalReqID
+        classes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteClass = /* GraphQL */ `
+  mutation DeleteClass(
+    $input: DeleteClassInput!
+    $condition: ModelClassConditionInput
+  ) {
+    deleteClass(input: $input, condition: $condition) {
+      id
+      professorID
+      courseID
+      professor {
+        id
+        name
+        title
+        departmentID
+        department {
+          id
+          name
+          schoolID
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        score
+        comments {
+          nextToken
+        }
+        classes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      course {
+        id
+        name
+        code
+        numCredits
+        departmentID
+        department {
+          id
+          name
+          schoolID
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        description
+        score
+        isGeneral
+        generalReqID
+        classes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -402,6 +615,16 @@ export const createCourse = /* GraphQL */ `
       score
       isGeneral
       generalReqID
+      classes {
+        items {
+          id
+          professorID
+          courseID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -442,6 +665,16 @@ export const updateCourse = /* GraphQL */ `
       score
       isGeneral
       generalReqID
+      classes {
+        items {
+          id
+          professorID
+          courseID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -482,6 +715,16 @@ export const deleteCourse = /* GraphQL */ `
       score
       isGeneral
       generalReqID
+      classes {
+        items {
+          id
+          professorID
+          courseID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
