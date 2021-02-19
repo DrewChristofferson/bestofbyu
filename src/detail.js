@@ -4,6 +4,7 @@ import { Link, useRouteMatch, useHistory } from 'react-router-dom'
 import { getProfessor, getCourse, listProfessors } from './graphql/queries'
 import { API } from 'aws-amplify'
 import ProfessorTable from './professortable'
+import CreateModalClass from './createmodalclass'
 
 import catan from './images/catan.jpg'
 
@@ -237,6 +238,7 @@ function Detail(props) {
                     <bs.Col>
                         <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
                         <bs.Tab eventKey="professors" title="Professors">
+                                <CreateModalClass />
                                 {returnProfessors()}
                             </bs.Tab>
                             <bs.Tab eventKey="about" title="About">
