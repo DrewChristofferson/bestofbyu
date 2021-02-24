@@ -1,21 +1,18 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import * as bs from 'react-bootstrap'
-import { Link, useRouteMatch, useHistory } from 'react-router-dom'
+import { Link, useRouteMatch } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSortUp, faSortDown, faChevronCircleRight, faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
-import { createRating as createRatingMutation } from './graphql/mutations';
-import { updateRating as updateRatingMutation } from './graphql/mutations';
-import { deleteRating as deleteRatingMutation } from './graphql/mutations';
+import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 import { updateProfessor as updateProfessorMutation } from './graphql/mutations';
-import CreateModal from './createmodal'
-import { ratingsByUserAndContent } from './graphql/queries';
-import { API, container, Storage } from 'aws-amplify'
+import TableFooter from './tablefooter'
+import PreviousPage from './previousPage'
+import NextPage from './nextPage'
+
 
 
 
 function ProfessorTable(props) {
     const match = useRouteMatch("/schools/:sid/:did")
-    let history = useHistory();
     let professors = props.professors[0]
     let numPages = Math.ceil(props.professors[1] / 10) ;
     let myIndex = props.professors[2];
@@ -23,18 +20,12 @@ function ProfessorTable(props) {
     const CLASS_VOTE_UP = "tableSelectedUp";
     const CLASS_VOTE_DOWN = "tableSelectedDown";
     const CLASS_NO_VOTE = "tableNotSelected";
-    const URL_PARAM_ALL = "all";
-    const URL_PARAM_COURSES = "courses";
-    const URL_PARAM_PROFESSORS = "professors";
+    const URL_PARAM_PROFESSORS = "professors"
     const VOTE_UP  = "up";
     const VOTE_DOWN = "down";
 
-    useEffect(() => {
-        console.log("myprops", props)
-    })
 
     let getImg = (professor) => {
-        console.log("*******", professor)
         if (professor.imgsrc){
             return(
                 <img className="profile" alt={professor.name} style={{height:"100px", width: "80px"}} src={professor.imgsrc} />
@@ -48,62 +39,20 @@ function ProfessorTable(props) {
         }
     }
 
-    let tableFooter = () => {
-        if (numPages <= 1){
-            return(
-                <>
-                    <bs.Col md="3"></bs.Col>
-                        <bs.Col style={{fontSize: "2rem"}} md="7">
-                            <bs.Row>
-                                <h3>Don't see what you're looking for?</h3>
-                            </bs.Row>
-                            <bs.Row style={{paddingLeft: "8rem"}}>
-                                <CreateModal />
-                            </bs.Row>
-                        </bs.Col>
-                    <bs.Col md="2"></bs.Col>
-                </>
-            )
-        } else {
-            console.log("the number of pages is", numPages, props.professors[1])
-            return(
-                <>
-                    <bs.Col md="4"></bs.Col>
-                    <bs.Col style={{fontSize: "2rem"}} md="5">
-                        <bs.Row>
-                            <bs.Col md="2">
-                                <FontAwesomeIcon icon={faChevronCircleLeft} onClick={() => props.previousPage(myIndex)}/>
-                            </bs.Col>
-                            <bs.Col md="5">
-                                <h3>Page {props.pageNum} of {numPages}</h3>
-                            </bs.Col>
-                            <bs.Col md="2">
-                                <FontAwesomeIcon icon={faChevronCircleRight} onClick={() => props.nextPage(myIndex)}/>
-                            </bs.Col>
-                            
-                        </bs.Row>
-                    </bs.Col>
-                    <bs.Col md="2"></bs.Col>
-                </>
-            )
-        }
-    }
-
 
     return(
         <bs.Container style={{paddingTop: "2rem", marginLeft: "0.5rem", marginRight: "0.5rem"}} fluid>
             <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
                 <bs.Col md="9"></bs.Col>
                 <bs.Col md="1">
-                    <FontAwesomeIcon icon={faChevronCircleLeft} onClick={() => props.previousPage(myIndex)}/>
+                    <PreviousPage pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex}/>
                 </bs.Col>
                 <bs.Col md="1">
                     <h3>{props.pageNum} of {numPages}</h3>
                 </bs.Col>
                 <bs.Col md="1">
-                    <FontAwesomeIcon icon={faChevronCircleRight} onClick={() => props.nextPage(myIndex)}/>
+                    <NextPage pageNum={props.pageNum} numPages={numPages} nextPage={props.nextPage} myIndex={myIndex}/>
                 </bs.Col>
-                
             </bs.Row>
             {
                 
@@ -165,7 +114,7 @@ function ProfessorTable(props) {
                 ))
             }
             <bs.Row style={{paddingTop: "4rem"}}>
-                {tableFooter()}
+                <TableFooter numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
             </bs.Row>
         </bs.Container>
     )

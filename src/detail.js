@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import * as bs from 'react-bootstrap'
 import { Link, useRouteMatch, useHistory } from 'react-router-dom'
-import { getProfessor, getCourse, listProfessors, listProfessorComments } from './graphql/queries'
+import { getProfessor, getCourse } from './graphql/queries'
 import { API } from 'aws-amplify'
 import ProfessorTable from './professortable'
 import CreateModalClass from './createmodalclass'
@@ -13,7 +13,6 @@ import img5 from './images/detailplaceholders/five.jpg'
 import img6 from './images/detailplaceholders/six.jpg'
 import img7 from './images/detailplaceholders/seven.jpg'
 
-import catan from './images/catan.jpg'
 
 function Detail(props) {
    const match = useRouteMatch("/schools/:sid/:did/:type/:oid")
@@ -26,149 +25,52 @@ function Detail(props) {
    const [isLoadingCourse, setIsLoadingCourse] = useState(true);
    const [isLoadingComments, setIsLoadingComments] = useState(true);
 
-//    const [classes, setClasses] = useState([]);
 
-    let classes = [];
+    
 
 
    useEffect(() => {
-       console.log("detail props", props)
        fetchData();
      }, []);
-
-   useEffect(() => {
-       console.log("detail classes", professorsForCourse)
-     });
-
 
 
    async function fetchData() {
        if(match.params.type === "professors") {
             try{ 
                 const apiData = await API.graphql({ query: getProfessor, variables: { id: match.params.oid }  });
-                console.log("professor", apiData.data.getProfessor)
                 setProfessor(apiData.data.getProfessor)
                 setComments(apiData.data.getProfessor.comments.items)
                 setIsLoadingComments(false);
-                console.log(apiData)
             } catch (e) {
                 console.log('Error: ' + e)
-                console.log(e)
             }
        } else if (match.params.type === "courses"){
             try{ 
                 const apiData = await API.graphql({ query: getCourse, variables: { id: match.params.oid }  });
 
-                console.log("course", apiData.data.getCourse);
                 setCourse(apiData.data.getCourse);
-                // let i = 0;
-                // while (i < (apiData.data.getCourse.classes.items).length){
-                //     console.log(apiData.data.getCourse.classes.items[i].professor);
-                // }
+                let classes = []; //classes are an instance of a professor that teaches a course
                 for (let i = 0; i < apiData.data.getCourse.classes.items.length; i++){
-                    console.log("howdy")
-                    console.log(apiData.data.getCourse.classes.items[i].professor);
-                    classes.push(apiData.data.getCourse.classes.items[i].professor);
-                    
+                    classes.push(apiData.data.getCourse.classes.items[i].professor); 
                 }
-                
+                setProfessorsForCourse(classes);
+                setIsLoadingProfessors(false);
                 setIsLoadingCourse(false);
-                
-                
-                // getProfessorsData();
             } catch (e) {
                 console.log('Error: ' + e)
-                console.log(e)
             }
        } else {
            return (
                <h1>No data</h1>
            )
        }
-
    }
 
-//    async function getComments() {
-//        if (professor) {
-//         try{ 
-//             const apiData = await API.graphql({ query: listProfessorComments, filter: { professorID: { eq: match.params.oid }  }});
-//             console.log("comments_____________________", apiData.data.listProfessorComments.items)
-//             setComments(apiData.data.listProfessorComments.items)
-            
-//         } catch (e) {
-//             console.log('Error: ' + e)
-//             console.log(e)
-//         } finally {
-//             setIsLoadingComments(false)
-//         }
-//        }
-//    }
-
-   let returnComments = () => {
-       console.log("are the comments loading?", isLoadingComments)
-       console.log(comments)
-
-        if(!isLoadingComments) {
-            if(comments[0]){
-                console.log("were in!!!")
-                comments.forEach(comment => {
-                    console.log(comment.content)
-                })
-                
-                return( 
-                    comments.map((comment) => ( 
-                        <p style={{fontSize: "1.4rem"}}>{comment.content}</p>
-                    )
-                    )
-                )    
-            } else {
-                return(
-                    <p>No comments for {professor.name}.</p>
-                )
-            }
-        }
-       
-    
-   }
-
-   async function getProfessorsData() {
-    let myClasses = [];
-    let profs = [];
-    
-    const apiData = await API.graphql({ query: getCourse, variables: { id: match.params.oid } });
-    const professorsForCourseFromAPI = apiData.data.getCourse.classes.items;
-    console.log("****************", apiData.data.getCourse.classes.items)
-
-    await Promise.all(professorsForCourseFromAPI.map(async professor => {
-    return professor;
-    })).then(values => {
-        myClasses.push(values)
-    })
-
-    // myClasses = apiData.data.getCourse.classes.items;
-    console.log("my classes are ", apiData.data.getCourse.classes.items);
-
-    for (let i = 0; i < (apiData.data.getCourse.classes.items).length; i++){
-        console.log(apiData.data.getCourse.classes.items[i].professor)
-        profs.push(apiData.data.getCourse.classes.items[i].professor);
-    }
-    
-    setProfessorsForCourse(profs);
-    setIsLoadingProfessors(false);
-    //return apiData.data.getCourse.classes.items;
-    
-}
-
-   let getProfessors =  () => {
-        // let professors = props.professors;
+    let getProfessors =  () => {
         let filteredProfessors = [];
         let paginatedProfessors = [];
-        
         let endingIndex;
 
-        
-
-        console.log(professorsForCourse);
 
         //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
         (professorsForCourse).sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
@@ -195,9 +97,30 @@ function Detail(props) {
             }
             endingIndex = i + 1;
         }
-        console.log(paginatedProfessors)
         return [paginatedProfessors, filteredProfessors.length, endingIndex];
     }
+
+   let returnComments = () => {
+
+        if(!isLoadingComments) {
+            if(comments[0]){
+                return( 
+                    comments.map((comment) => ( 
+                        <p style={{fontSize: "1.4rem"}}>{comment.content}</p>
+                    )
+                    )
+                )    
+            } else {
+                return(
+                    <p>No comments for {professor.name}.</p>
+                )
+            }
+        }
+   }
+
+
+
+   
 
    let returnProfessors = () => {
        if (isLoadingCourse){
@@ -206,8 +129,7 @@ function Detail(props) {
                     <span className="sr-only">Loading...</span>
                 </bs.Spinner>
             )
-       } else {
-            getProfessorsData();
+       } else {   
             if (!isLoadingProfessors){
                 return(
                     <ProfessorTable 
@@ -227,21 +149,17 @@ function Detail(props) {
                 )
             } else {
                 return;
-            }
-            
+            }    
         }
    }
 
-
-
    if(!professor && !course){
-       console.log("hello",professor)
        return(
         <bs.Spinner animation="border" role="status">
             <span className="sr-only">Loading...</span>
         </bs.Spinner>
     )
-   } else if (!professor){
+   } else if (course){
        return(
             <bs.Container fluid style={{marginRight: "3rem", marginLeft: "3rem"}}>
                 <bs.Row style={{paddingTop: "1rem"}}>
@@ -364,7 +282,6 @@ function Detail(props) {
        );
    }
    else{
-       console.log("bye", professor)
     return(
         <bs.Container fluid style={{marginRight: "3rem", marginLeft: "3rem"}}>
             <bs.Row style={{paddingTop: "1rem"}}>
