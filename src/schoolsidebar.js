@@ -1,15 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import * as bs from 'react-bootstrap'
-import { Link, Redirect, Switch, Router, Route, useRouteMatch } from 'react-router-dom'
-
-
+import { Link, useRouteMatch } from 'react-router-dom'
 
 function SchoolSideBar (props) {
     let match = useRouteMatch();
-
-    useEffect(() => {
-        console.log(generalEd);
-    })
 
     const generalEd = 
         {
@@ -110,7 +104,6 @@ function SchoolSideBar (props) {
                     </bs.Card.Header>
                     <bs.Accordion.Collapse eventKey="14">
                         <bs.Card.Body>
-                            {console.log(generalEd.requirements)}
                             {
                                 generalEd.requirements.map(requirement => (
                                     
@@ -126,7 +119,6 @@ function SchoolSideBar (props) {
                     <bs.Card key={college.id}>
                         <bs.Card.Header>
                         <bs.Accordion.Toggle as={bs.Button} variant="link" eventKey={college.id}>
-                            {/* <Link to={`${match.url}/${school.id}/professors`}>{school.name}</Link> */}
                             <Link to={`${match.url}/${college.id}/all/professors`}>{college.name}</Link>
                         </bs.Accordion.Toggle>
                         </bs.Card.Header>

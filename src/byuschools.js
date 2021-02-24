@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import * as bs from 'react-bootstrap'
 import { API, container, Storage } from 'aws-amplify'
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
-import { listSchools, listDepartments, listProfessors, getCourse } from './graphql/queries';
-import { Link, Redirect, Switch, Router, Route, useRouteMatch } from 'react-router-dom'
+import { listSchools, listDepartments } from './graphql/queries';
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
 import { ratingsByUserAndContent } from './graphql/queries';
 import { createRating as createRatingMutation } from './graphql/mutations';
 import { updateRating as updateRatingMutation } from './graphql/mutations';
@@ -17,7 +17,6 @@ import { Auth } from 'aws-amplify';
 function BYUSchools() {
     const [schools, setSchools] = useState({});
     const [departments, setDepartments] = useState({});
-    const [professorsForCourse, setProfessorsForCourse] = useState({});
     const [userRatings, setUserRatings] = useState({});
     const [userid, setUserid] = useState(null);
     const [isLoadingDepartments, setIsLoadingDepartments] = useState(true);
@@ -33,7 +32,7 @@ function BYUSchools() {
     useEffect(() => {
         fetchData();
         getData();
-        getProfessorsData();
+      
       }, []);
 
     useEffect(() => {
@@ -66,39 +65,7 @@ function BYUSchools() {
         setIsLoadingDepartments(false);
     }
 
-    // async function getProfessorsData() {
-    //     const apiData = await API.graphql({ query: listProfessors, variables: { filter: { departmentID: { eq: "msb8" }}} });
-    //     const professorsForCourseFromAPI = apiData.data.listProfessors.items;
-
-    //     await Promise.all(professorsForCourseFromAPI.map(async professor => {
-    //     return professor;
-    //     }))
-
-    //     setProfessorsForCourse(apiData.data.listProfessors.items);
-    //     setIsLoadingProfessors(false);
-    // }
-
-    async function getProfessorsData() {
-        // let myClasses = [];
-        // const apiData = await API.graphql({ query: getCourse, variables: { id: "48aa632c-c31f-46ca-8391-9f25132b2ba4" } });
-        // const professorsForCourseFromAPI = apiData.data.getCourse.classes.items;
-        // console.log("****************", apiData.data.getCourse.classes.items)
-
-        // await Promise.all(professorsForCourseFromAPI.map(async professor => {
-        // return professor;
-        // })).then(values => {
-        //     myClasses.push(values)
-        // })
-
-        // console.log("my classes are ", myClasses)
-        // setProfessorsForCourse(myClasses);
-        // setIsLoadingProfessors(false);
-        //return apiData.data.getCourse.classes.items;
-        
-    }
-
     async function updateScore(id, score, increment, mutationName) {
-        console.log("updating score.......................")
       try{
           if (increment === VOTE_UP) {
               await API.graphql({ query: mutationName, variables: { input: {"id": id, "score": score + 1} } });
@@ -131,7 +98,6 @@ function BYUSchools() {
                 return e;
             } finally {
                 getData();
-                getProfessorsData();
             }
         } else if (ratingIdFromAPI[0].ratingType === type){
             type === VOTE_UP ? type = VOTE_DOWN : type = VOTE_UP;
@@ -143,7 +109,6 @@ function BYUSchools() {
                 return e;
             }finally {
                getData();
-               getProfessorsData();
             }
         } else {
             type === VOTE_UP ? score += 1 : score -= 1;
@@ -155,14 +120,12 @@ function BYUSchools() {
                 return e;
             }finally {
                 getData();
-                getProfessorsData();
             }
         }
     }
 
     //onload getRatings gets passed the username from UseState on line 41. TODO: figure out how to get the userstate right away
     async function getRatings(user) {
-        console.log("the user is", user)
         const userRatingsData = await API.graphql({ query: ratingsByUserAndContent, variables: { "userID": user }});
         const userRatingsFromAPI = userRatingsData.data.ratingsByUserAndContent.items;
 
@@ -179,7 +142,6 @@ function BYUSchools() {
     }
 
     let previousPage = (index) => {
-        console.log("the index is", index)
         if(index > 20){
             setPageStartIndex(index - 20);
             setPageNum(pageNum - 1);
@@ -190,7 +152,6 @@ function BYUSchools() {
     }
 
     let handleChangeSearch = (val) => {
-        // console.log(val);
         setSearchFilter(val);
         setPageNum(1);
         setPageStartIndex(0);
@@ -219,14 +180,13 @@ function BYUSchools() {
                         handleChangeSearch={handleChangeSearch}
                     />
                 </Route>
-                <Route path="/schools">
 
+                <Route path="/schools">
                     <bs.Row className=" pb-5 pl-3 flex-grow-0 flex-shrink-0 border-bottom shadow-sm" >
                         <SchoolSideBar colleges={colleges} />
                         <bs.Col md="9">
 
                                 <Switch>
-
                                     <Route path={`${match.path}/:schId/:deptId`}>
                                         <SchoolTables 
                                             updateScore={updateScore} 
@@ -249,13 +209,11 @@ function BYUSchools() {
                                 </Switch>
 
                         </bs.Col>
-                        
                     </bs.Row>
                 </Route>
 
             </Switch>
         
-
         </bs.Container>
     )
 }

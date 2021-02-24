@@ -5,8 +5,7 @@ import Form from "react-bootstrap/Form"
 import { API } from 'aws-amplify'
 import { listSchools } from './graphql/queries';
 import { createProfessor as createProfessorMutation } from './graphql/mutations';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+
 
 const initialFormState = { name: '', title: 'Professor', score: '0', departmentID: '' }
 
@@ -16,7 +15,6 @@ function CreateModal(props) {
     const [schools, setSchools] = useState();
     const [selectedDepartment, setSelectedDepartment] = useState();
     const [selectedSchool, setSelectedSchool] = useState();
-    const [pickDepartments, setPickDepartments] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
     
@@ -26,17 +24,6 @@ function CreateModal(props) {
     useEffect(() => {
       getData();
     }, []);
-
-
-
-    useEffect(() => {
-      console.log(formData);
-    });
-
-
-
-    
-
 
 
     async function getData() {
@@ -52,8 +39,6 @@ function CreateModal(props) {
       }catch (e) {
         console.log(e);
       }finally {
-        console.log(schoolsFromAPI[0])
-        //setFormData({ ...formData, 'school': schoolsFromAPI[0].id});
         if(schoolsFromAPI[0].departments.items[0]){
           setFormData({ ...formData, 'departmentID': schoolsFromAPI[0].departments.items[0].id});
         }
@@ -66,14 +51,11 @@ function CreateModal(props) {
 
     async function createProfessor() {
         if (!formData.name || !formData.title) return;
-        console.log(formData)
         await API.graphql({ query: createProfessorMutation, variables: { input: formData } });
         if (formData.image) {
           const image = await Storage.get(formData.image);
           formData.image = image;
         }
-        //use props as state
-        //props.setProfessors([ ...props.professors, formData ]);
         setFormData(initialFormState);
       }
 
@@ -82,8 +64,6 @@ function CreateModal(props) {
           return(
             <>
               <Form.Control as="select" >
-                {/* <option value={'DEFAULT'} disabled>Choose a college</option> */}
-
                 {
                   schools.map((school, indx) => (
                     <option key={indx} value={indx}>{school.name}</option>
@@ -100,8 +80,6 @@ function CreateModal(props) {
 
       let getDepartments = () => {
         let depts;
-        console.log(selectedSchool, schools);
-        //setPickDepartments(schools[schoolID].departments.items);
 
         if(selectedSchool){
           depts = schools[selectedSchool].departments.items;
@@ -134,7 +112,6 @@ function CreateModal(props) {
       }
 
       let handleSchoolChange = (e) => {
-        console.log(e);
         setSelectedSchool(e.target.value);
         if(schools[e.target.value].departments.items[0]){
           setFormData({ ...formData, 'departmentID': schools[e.target.value].departments.items[0].id});
@@ -144,7 +121,6 @@ function CreateModal(props) {
       }
 
       let handleDepartmentChange = (e) => {
-        console.log(e);
         setSelectedDepartment(e.target.value);
         setFormData({ ...formData, 'departmentID': schools[selectedSchool].departments.items[e.target.value].id});
       }
@@ -153,7 +129,6 @@ function CreateModal(props) {
     return (
       <div style={{paddingLeft: "1rem"}}>
         <Button onClick={handleShow}>Add a Professor</Button>
-        {/* <FontAwesomeIcon icon={faPlusCircle} onClick={handleShow} style={{cursor: "pointer", fontSize: "30px", marginTop: ".7rem"}} /> */}
   
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>

@@ -5,10 +5,8 @@ import { useRouteMatch } from 'react-router-dom'
 import Form from "react-bootstrap/Form"
 import { API } from 'aws-amplify'
 import { listProfessors, listSchools } from './graphql/queries';
-import { createProfessor as createProfessorMutation } from './graphql/mutations';
 import { createClass as createClassMutation } from './graphql/mutations';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+
 
 
     
@@ -28,7 +26,6 @@ function CreateModalClass(props) {
     const [searchFilter, setSearchFilter] = useState('');
     const [selectedDepartment, setSelectedDepartment] = useState();
     const [selectedSchool, setSelectedSchool] = useState();
-    const [pickDepartments, setPickDepartments] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
     
@@ -38,22 +35,9 @@ function CreateModalClass(props) {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        console.log(match.params.oid)
         getData();
         getProfessors();
     }, []);
-
-
-
-    useEffect(() => {
-      console.log(searchFormData);
-    });
-
-
-
-    
-
-
 
     async function getData() {
       let apiData;
@@ -68,8 +52,6 @@ function CreateModalClass(props) {
       }catch (e) {
         console.log(e);
       }finally {
-        console.log(schoolsFromAPI[0])
-        //setFormData({ ...formData, 'school': schoolsFromAPI[0].id});
         if(schoolsFromAPI[0].departments.items[0]){
           setFormData({ ...formData, 'departmentID': schoolsFromAPI[0].departments.items[0].id});
         }
@@ -91,8 +73,6 @@ function CreateModalClass(props) {
         }catch (e) {
           console.log(e);
         }finally {
-          console.log(professors[0])
-          //setFormData({ ...formData, 'school': schoolsFromAPI[0].id});
           if(professors[0].id){
             setSearchFormData({ ...searchFormData, 'professorID': professors[0].id});
           }

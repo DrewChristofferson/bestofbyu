@@ -1,19 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import * as bs from 'react-bootstrap'
-import { API, container, Storage } from 'aws-amplify'
-import { listDepartments } from './graphql/queries';
-import { ratingsByUserAndContent } from './graphql/queries';
 import { Switch, Route, useRouteMatch, useHistory, Link } from 'react-router-dom'
-import CreateModal from './createmodal'
 import ProfessorTable from './professortable'
 import CourseTable from './coursetable'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
-import { updateProfessor as updateProfessorMutation } from './graphql/mutations';
-import { updateCourse as updateCourseMutation } from './graphql/mutations';
-import { createRating as createRatingMutation } from './graphql/mutations';
-import { updateRating as updateRatingMutation } from './graphql/mutations';
-import { deleteRating as deleteRatingMutation } from './graphql/mutations';
 import { Auth } from 'aws-amplify';
 
 
@@ -24,20 +13,13 @@ function SchoolTables(props) {
             //----State Contants----//
 
     const [categoryValue, setCategoryValue] = useState('professors');
-
-    // const [searchFilter, setSearchFilter] = useState('');
     const [userid, setUserid] = useState(null);
-    // const [pageStartIndex, setPageStartIndex] = useState(0);
-    // const [pageNum, setPageNum] = useState(1);
 
-    const CLASS_VOTE_UP = "tableSelectedUp";
-    const CLASS_VOTE_DOWN = "tableSelectedDown";
-    const CLASS_NO_VOTE = "tableNotSelected";
+
+
     const URL_PARAM_ALL = "all";
     const URL_PARAM_COURSES = "courses";
     const URL_PARAM_PROFESSORS = "professors";
-    const VOTE_UP  = "up";
-    const VOTE_DOWN = "down";
     const CATEGORIES = [
         { name: 'Courses', value: 'courses' },
         { name: 'Professors', value: 'professors' }
@@ -54,7 +36,6 @@ function SchoolTables(props) {
     let getProfessors;
     let getTitle;
     let handleChangeToggle;
-    let handleChangeSearch;
 
 
     //----------------Hooks---------------------//
@@ -63,7 +44,6 @@ function SchoolTables(props) {
             bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
         }).then (user => {
             setUserid(user.username);
-            console.log(props)
             props.getRatings(user.username);
         }).catch(err => console.log(err));
     }, []);
@@ -77,106 +57,79 @@ function SchoolTables(props) {
 
     //-----------------------Methods---------------------//
 
-
-
-
-
-
-
-
-
-
     getCourses =  () => {
         let courses = [];
-        console.log("this is the sid********************", (match.params.sid === "ge"))
+        let filteredCourses = [];
+        let paginatedCourses = [];
+        let endingIndex;
+
         if (match.params.sid === URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){ //get all courses 
-            console.log("-----------------------all-------------------------------")
             for (let i = 0; i < props.departments.length; i++) {
                 for(let j = 0; j < props.departments[i].courses.items.length; j ++){
-                    for(let k = 0; k < props.userRatings.length; k ++){
-                        if (props.userRatings[k].contentID === props.departments[i].courses.items[j].id){
-                            props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
-                        }   
-                    }
-                    if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
-                        courses.push(props.departments[i].courses.items[j]);
-                    } 
+                    courses.push(props.departments[i].courses.items[j]);
                 }
             }
         } else if(match.params.sid === "ge" && match.params.did === URL_PARAM_ALL){ //get courses from the department in the url
-            console.log("--------------------ge-----------------")
             for (let i = 0; i < props.departments.length; i++) {
                 for(let j = 0; j < props.departments[i].courses.items.length; j ++){
-                    console.log("*****************************", props.departments[i].courses.items[j].isGeneral)
                     if (props.departments[i].courses.items[j].isGeneral === true){
-                        console.log()
-                        for(let k = 0; k < props.userRatings.length; k ++){
-                            if (props.userRatings[k].contentID === props.departments[i].courses.items[j].id){
-                                props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
-                            }   
-                        }
-                        if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
-                            courses.push(props.departments[i].courses.items[j]);
-                        } 
+                        courses.push(props.departments[i].courses.items[j]);
                     }  
                 }
                 
             }
         } else if(match.params.sid === "ge" && match.params.did !== URL_PARAM_ALL){ //get courses from the department in the url
-            console.log("--------------------ge req-----------------")
             for (let i = 0; i < props.departments.length; i++) {
                 for(let j = 0; j < props.departments[i].courses.items.length; j ++){
                     if (props.departments[i].courses.items[j].isGeneral === true && props.departments[i].courses.items[j].generalReqID === match.params.did){
-                        for(let k = 0; k < props.userRatings.length; k ++){
-                            if (props.userRatings[k].contentID === props.departments[i].courses.items[j].id){
-                                props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
-                            }   
-                        }
-                        if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
-                            courses.push(props.departments[i].courses.items[j]);
-                        } 
+                        courses.push(props.departments[i].courses.items[j]);
                     }  
                 }
                 
             }
         } else if(match.params.sid !== URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){ //get courses from the department in the url
-            console.log("--------------------custom-----------------")
             for (let i = 0; i < props.departments.length; i++) {
                 if(props.departments[i].school.id === match.params.sid) {
                     for(let j = 0; j < props.departments[i].courses.items.length; j ++){
-                        for(let k = 0; k < props.userRatings.length; k ++){
-                            if (props.userRatings[k].contentID === props.departments[i].courses.items[j].id){
-                                props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
-                            }   
-                        }
-                        if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
-                            courses.push(props.departments[i].courses.items[j]);
-                        } 
+                        courses.push(props.departments[i].courses.items[j]);
                     }
                 }
             }
         }  else if (match.params.sid !== URL_PARAM_ALL && match.params.did !== URL_PARAM_ALL){ //get courses from the department in the url
-            console.log("--------------------both custom-----------------")
             for (let i = 0; i < props.departments.length; i++) {
                 if(props.departments[i].id === match.params.did) {
                     for(let j = 0; j < props.departments[i].courses.items.length; j ++){
-                        for(let k = 0; k < props.userRatings.length; k ++){
-                            if (props.userRatings[k].contentID === props.departments[i].courses.items[j].id){
-                                props.departments[i].courses.items[j].userRating = props.userRatings[k].ratingType;
-                            }   
-                        }
-                        if(props.departments[i].courses.items[j].name.includes(props.searchFilter)){
-                            courses.push(props.departments[i].courses.items[j]);
-                        } 
+                        courses.push(props.departments[i].courses.items[j]);
                     }
                 }
             }
         } else {
-            console.log("--------------------default-----------------")
-            return;
+            return null;
         }
         courses.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
-        return(courses)
+
+        for (let i = 0; i < courses.length; i++){
+            courses[i].ranking = i + 1;
+            if(courses[i].name.toLowerCase().includes(props.searchFilter.toLowerCase())){
+                for(let j = 0; j < props.userRatings.length; j++){
+                    if (props.userRatings[j].contentID === courses[i].id){
+                        courses[i].userRating = props.userRatings[j].ratingType;
+                    }   
+                }
+                filteredCourses.push(courses[i])
+            }
+            
+        }
+        for (let i = props.pageStartIndex; paginatedCourses.length < 10; i++){
+            
+            if(filteredCourses[i]){
+                paginatedCourses.push(filteredCourses[i])
+            } else {
+                break;
+            }
+            endingIndex = i + 1;
+        }
+        return [paginatedCourses, filteredCourses.length, endingIndex];
     }
  
     getProfessors =  () => {
@@ -188,15 +141,6 @@ function SchoolTables(props) {
         if (match.params.sid === URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){
             for (let i = 0; i < props.departments.length; i++) {
                 for(let j = 0; j < props.departments[i].professors.items.length; j ++){
-                    // for(let k = 0; k < props.userRatings.length; k ++){
-                    //     if (props.userRatings[k].contentID === props.departments[i].professors.items[j].id){
-                    //         props.departments[i].professors.items[j].userRating = props.userRatings[k].ratingType;
-                    //     }   
-                    // }
-                    console.log("hello", props.departments[i].professors.items[j].name.includes(props.searchFilter))
-                    // if(props.departments[i].professors.items[j].name.includes(props.searchFilter)){
-                    //     professors.push(props.departments[i].professors.items[j]);
-                    // } 
                     professors.push(props.departments[i].professors.items[j]);
                 }
             }
@@ -247,24 +191,7 @@ function SchoolTables(props) {
         return [paginatedProfessors, filteredProfessors.length, endingIndex];
     }
 
-    // let nextPage = (index) => {
-    //     setPageStartIndex(index);
-    //     setPageNum(pageNum + 1);
-    // }
-
-    // let previousPage = (index) => {
-    //     console.log("the index is", index)
-    //     if(index > 20){
-    //         setPageStartIndex(index - 20);
-    //         setPageNum(pageNum - 1);
-    //     } else if (index > 10 && index <= 20) {
-    //         setPageStartIndex(0);
-    //         setPageNum(pageNum - 1);
-    //     }
-    // }
-
     getTitle = () => {
-
        let name;
        
         if(match.params.sid === URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){
@@ -369,12 +296,6 @@ function SchoolTables(props) {
         history.push(`${match.url}/${val}`);
     }
 
-    // handleChangeSearch = (val) => {
-    //     // console.log(val);
-    //     setSearchFilter(val);
-    //     setPageNum(1);
-    //     setPageStartIndex(0);
-    // }
 
     //-------------------Public Rendering-------------------//
 
@@ -413,16 +334,11 @@ function SchoolTables(props) {
                         <bs.Col md="5" style={{paddingTop: ".3rem"}}>
                             <bs.Form style={{paddingLeft: "1rem"}}>
                                 <bs.Form.Group controlId="exampleForm.ControlInput1" >
-                            
                                     <bs.Form.Control type="text" placeholder="Search" onChange={(e) => props.handleChangeSearch(e.currentTarget.value)}/>
                                 </bs.Form.Group>
                             </bs.Form>
                         </bs.Col>
-                        {/* <bs.Col md="1">
-                            <CreateModal />
-                        </bs.Col> */}
                     </bs.Row>
-    
                 </bs.Container>
     
                 <Switch>
@@ -431,7 +347,6 @@ function SchoolTables(props) {
                     </Route>
                     <Route path={`${match.path}/${URL_PARAM_COURSES}`}>
                         <CourseTable  userid={userid} courses={getCourses()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
-
                     </Route>
                 </Switch>
     
