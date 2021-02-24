@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import * as bs from 'react-bootstrap'
 import { Link, useRouteMatch, useHistory } from 'react-router-dom'
-import { getProfessor, getCourse, listProfessors } from './graphql/queries'
+import { getProfessor, getCourse, listProfessors, listProfessorComments } from './graphql/queries'
 import { API } from 'aws-amplify'
 import ProfessorTable from './professortable'
 import CreateModalClass from './createmodalclass'
+import img1 from './images/detailplaceholders/one.jpg'
+import img2 from './images/detailplaceholders/two.jpg'
+import img3 from './images/detailplaceholders/three.jpg'
+import img4 from './images/detailplaceholders/four.jpg'
+import img5 from './images/detailplaceholders/five.jpg'
+import img6 from './images/detailplaceholders/six.jpg'
+import img7 from './images/detailplaceholders/seven.jpg'
 
 import catan from './images/catan.jpg'
 
@@ -14,7 +21,10 @@ function Detail(props) {
    const [professor, setProfessor] = useState();
    const [course, setCourse] = useState();
    const [professorsForCourse, setProfessorsForCourse] = useState();
+   const [comments, setComments] = useState();
    const [isLoadingProfessors, setIsLoadingProfessors] = useState(true);
+   const [isLoadingCourse, setIsLoadingCourse] = useState(true);
+   const [isLoadingComments, setIsLoadingComments] = useState(true);
 
 //    const [classes, setClasses] = useState([]);
 
@@ -24,7 +34,6 @@ function Detail(props) {
    useEffect(() => {
        console.log("detail props", props)
        fetchData();
-       getProfessorsData();
      }, []);
 
    useEffect(() => {
@@ -37,8 +46,10 @@ function Detail(props) {
        if(match.params.type === "professors") {
             try{ 
                 const apiData = await API.graphql({ query: getProfessor, variables: { id: match.params.oid }  });
-                console.log("course", apiData.data.getProfessor)
+                console.log("professor", apiData.data.getProfessor)
                 setProfessor(apiData.data.getProfessor)
+                setComments(apiData.data.getProfessor.comments.items)
+                setIsLoadingComments(false);
                 console.log(apiData)
             } catch (e) {
                 console.log('Error: ' + e)
@@ -61,6 +72,8 @@ function Detail(props) {
                     
                 }
                 
+                setIsLoadingCourse(false);
+                
                 
                 // getProfessorsData();
             } catch (e) {
@@ -73,6 +86,49 @@ function Detail(props) {
            )
        }
 
+   }
+
+//    async function getComments() {
+//        if (professor) {
+//         try{ 
+//             const apiData = await API.graphql({ query: listProfessorComments, filter: { professorID: { eq: match.params.oid }  }});
+//             console.log("comments_____________________", apiData.data.listProfessorComments.items)
+//             setComments(apiData.data.listProfessorComments.items)
+            
+//         } catch (e) {
+//             console.log('Error: ' + e)
+//             console.log(e)
+//         } finally {
+//             setIsLoadingComments(false)
+//         }
+//        }
+//    }
+
+   let returnComments = () => {
+       console.log("are the comments loading?", isLoadingComments)
+       console.log(comments)
+
+        if(!isLoadingComments) {
+            if(comments[0]){
+                console.log("were in!!!")
+                comments.forEach(comment => {
+                    console.log(comment.content)
+                })
+                
+                return( 
+                    comments.map((comment) => ( 
+                        <p style={{fontSize: "1.4rem"}}>{comment.content}</p>
+                    )
+                    )
+                )    
+            } else {
+                return(
+                    <p>No comments for {professor.name}.</p>
+                )
+            }
+        }
+       
+    
    }
 
    async function getProfessorsData() {
@@ -144,29 +200,35 @@ function Detail(props) {
     }
 
    let returnProfessors = () => {
-       if (isLoadingProfessors){
+       if (isLoadingCourse){
             return(
                 <bs.Spinner animation="border" role="status">
                     <span className="sr-only">Loading...</span>
                 </bs.Spinner>
             )
        } else {
-            return(
-                <ProfessorTable 
-                    professors={getProfessors()} 
-                    updateScore={props.updateScore} 
-                    getRatings={props.getRatings} 
-                    userRatings={props.userRatings} 
-                    createRating={props.createRating} 
-                    isLoading={props.isLoading}
-                    nextPage={props.nextPage}
-                    previousPage={props.previousPage}
-                    pageNum={props.pageNum}
-                    pageStartIndex={props.pageStartIndex}
-                    searchFilter={props.searchFilter}
-                    handleChangeSearch={props.handleChangeSearch}
-                />
-            )
+            getProfessorsData();
+            if (!isLoadingProfessors){
+                return(
+                    <ProfessorTable 
+                        professors={getProfessors()} 
+                        updateScore={props.updateScore} 
+                        getRatings={props.getRatings} 
+                        userRatings={props.userRatings} 
+                        createRating={props.createRating} 
+                        isLoading={props.isLoading}
+                        nextPage={props.nextPage}
+                        previousPage={props.previousPage}
+                        pageNum={props.pageNum}
+                        pageStartIndex={props.pageStartIndex}
+                        searchFilter={props.searchFilter}
+                        handleChangeSearch={props.handleChangeSearch}
+                    />
+                )
+            } else {
+                return;
+            }
+            
         }
    }
 
@@ -191,7 +253,7 @@ function Detail(props) {
                     </bs.Col>
                     <bs.Col md="6" style={{paddingLeft: "5rem"}}>
                         <bs.Row>
-                            <bs.Col>
+                            <bs.Col style={{padding: "0"}}>
                                 <h2>{course.name}</h2>
                             </bs.Col>
                             <bs.Col>
@@ -237,19 +299,63 @@ function Detail(props) {
                 <bs.Row style={{marginTop: "3rem"}}>
                     <bs.Col>
                         <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
-                        <bs.Tab eventKey="professors" title="Professors">
+                        <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em"}}>
                                 <CreateModalClass />
                                 {returnProfessors()}
                             </bs.Tab>
                             <bs.Tab eventKey="about" title="About">
-                                <strong>Description: </strong>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac tellus elit. Ut quis ultrices turpis, ac mattis arcu. </p>
+                                <h3 style={{paddingTop:"2rem"}}>Description</h3>
+                                <p>Write an unbiased description of {course.name}. </p>
+                                <bs.Button variant="info">Edit Description</bs.Button>
                             </bs.Tab>
                             <bs.Tab eventKey="discussion" title="Discussion">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac tellus elit. Ut quis ultrices turpis, ac mattis arcu. </p>
+                                <h3 style={{paddingTop:"2rem"}}>Comments</h3>
+                                <p>No comments yet for {course.name}</p>
+                                <bs.Form style={{paddingLeft: "1rem"}}>
+                                    <bs.Form.Group controlId="exampleForm.ControlInput" >
+                                        <bs.Form.Control type="text" placeholder="Post a new comment..." onChange={(e) => console.log("new comment",e.target.value)}/>
+                                    </bs.Form.Group>
+                                    <bs.Button variant="primary">Post Comment</bs.Button>
+                                </bs.Form>
+
                             </bs.Tab>
                             <bs.Tab eventKey="pictures" title="Pictures" >
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac tellus elit. Ut quis ultrices turpis, ac mattis arcu. </p>
+                                <h3 style={{paddingTop:"2rem"}}>Picutres</h3>
+                                <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{paddingTop: "5em"}}>
+                                    <bs.Row>
+                                        <bs.Col lg="4">
+                                            <img src={img1} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                        </bs.Col>
+                                        <bs.Col lg="4">
+                                            <img src={img2} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                        </bs.Col>
+                                        <bs.Col lg="4">
+                                            <img src={img3} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                        </bs.Col>
+                                    </bs.Row>
+                                    <bs.Row style={{paddingTop: "2em"}}>
+                                        <bs.Col>
+                                            <img src={img4} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                        </bs.Col>
+                                        <bs.Col>
+                                            <img src={img5} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                        </bs.Col>
+                                        <bs.Col>
+                                            <img src={img6} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                        </bs.Col>
+                                    </bs.Row>
+                                    <bs.Row style={{paddingTop: "2em"}}>
+                                        <bs.Col>
+                                            <img src={img7} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                        </bs.Col>
+                                        <bs.Col>
+                                            
+                                        </bs.Col>
+                                        <bs.Col>
+                                            
+                                        </bs.Col>
+                                    </bs.Row>
+                                </bs.Container>
                             </bs.Tab>
                         </bs.Tabs>
                     </bs.Col>
@@ -269,8 +375,8 @@ function Detail(props) {
                     <img className="profile" alt={professor.name} src="https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255626-stock-illustration-avatar-male-profile-gray-person.jpg" />
                 </bs.Col>
                 <bs.Col md="6" style={{paddingLeft: "5rem"}}>
-                    <bs.Row>
-                        <bs.Col>
+                    <bs.Row >
+                        <bs.Col style={{padding: "0"}}>
                             <h2>{professor.name}</h2>
                         </bs.Col>
                         <bs.Col>
@@ -317,16 +423,57 @@ function Detail(props) {
                 <bs.Col>
                     <bs.Tabs defaultActiveKey="home" id="controlled-tab-example">
                         <bs.Tab eventKey="home" title="About">
-                            <strong>Description: </strong>
-                            
-                    
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac tellus elit. Ut quis ultrices turpis, ac mattis arcu. </p>
+                            <h3 style={{paddingTop:"2rem"}}>Description</h3>
+                            <p>Write an unbiased description of {professor.name}. </p>
+                            <bs.Button variant="info">Edit Description</bs.Button>
                         </bs.Tab>
                         <bs.Tab eventKey="profile" title="Discussion">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac tellus elit. Ut quis ultrices turpis, ac mattis arcu. </p>
+                            <h3 style={{paddingTop:"2rem"}}>Comments</h3>
+                            {returnComments()}
+                            <bs.Form style={{paddingLeft: "1rem"}}>
+                                <bs.Form.Group controlId="exampleForm.ControlInput" >
+                                    <bs.Form.Control type="text" placeholder="Post a new comment..." onChange={(e) => console.log("new comment",e.target.value)}/>
+                                </bs.Form.Group>
+                                <bs.Button variant="primary">Post Comment</bs.Button>
+                            </bs.Form>
                         </bs.Tab>
                         <bs.Tab eventKey="contact" title="Pictures" >
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ac tellus elit. Ut quis ultrices turpis, ac mattis arcu. </p>
+                            <h3 style={{paddingTop:"2rem"}}>Picutres</h3>
+                            <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{paddingTop: "5em"}}>
+                                <bs.Row>
+                                    <bs.Col lg="4">
+                                        <img src={img1} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                    </bs.Col>
+                                    <bs.Col lg="4">
+                                        <img src={img2} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                    </bs.Col>
+                                    <bs.Col lg="4">
+                                        <img src={img3} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                    </bs.Col>
+                                </bs.Row>
+                                <bs.Row style={{paddingTop: "2em"}}>
+                                    <bs.Col>
+                                        <img src={img4} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                    </bs.Col>
+                                    <bs.Col>
+                                        <img src={img5} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                    </bs.Col>
+                                    <bs.Col>
+                                        <img src={img6} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                    </bs.Col>
+                                </bs.Row>
+                                <bs.Row style={{paddingTop: "2em"}}>
+                                    <bs.Col>
+                                        <img src={img7} height="400em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
+                                    </bs.Col>
+                                    <bs.Col>
+                                        
+                                    </bs.Col>
+                                    <bs.Col>
+                                        
+                                    </bs.Col>
+                                </bs.Row>
+                            </bs.Container>
                         </bs.Tab>
                     </bs.Tabs>
                 </bs.Col>

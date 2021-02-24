@@ -39,8 +39,9 @@ function SchoolTables(props) {
     const VOTE_UP  = "up";
     const VOTE_DOWN = "down";
     const CATEGORIES = [
-        { name: 'Professors', value: 'professors' },
-        { name: 'Courses', value: 'courses' }
+        { name: 'Courses', value: 'courses' },
+        { name: 'Professors', value: 'professors' }
+        
       ];
     
     //---------------Private Variables---------//
@@ -174,6 +175,7 @@ function SchoolTables(props) {
             console.log("--------------------default-----------------")
             return;
         }
+        courses.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
         return(courses)
     }
  
@@ -412,7 +414,7 @@ function SchoolTables(props) {
                             <bs.Form style={{paddingLeft: "1rem"}}>
                                 <bs.Form.Group controlId="exampleForm.ControlInput1" >
                             
-                                    <bs.Form.Control type="text" placeholder="Search for a Professor" onChange={(e) => props.handleChangeSearch(e.currentTarget.value)}/>
+                                    <bs.Form.Control type="text" placeholder="Search" onChange={(e) => props.handleChangeSearch(e.currentTarget.value)}/>
                                 </bs.Form.Group>
                             </bs.Form>
                         </bs.Col>

@@ -131,6 +131,11 @@ function CreateModalClass(props) {
                     filteredProfessors.push(professor);
                 }
             })
+
+            //TODO: search doesn't reset the default professorID
+            // if(filteredProfessors[0].id){
+            //     setSearchFormData({ ...searchFormData, 'professorID': filteredProfessors[0].id});
+            //   }
             
           return(
             <>
