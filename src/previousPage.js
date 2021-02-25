@@ -4,7 +4,7 @@ import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
 
 function PreviousPage (props) {
     if(props.pageNum >= 2){
-        return <FontAwesomeIcon icon={faChevronCircleLeft} onClick={() => props.previousPage(props.myIndex)}/>
+        return <FontAwesomeIcon style={{cursor: "pointer"}} icon={faChevronCircleLeft} onClick={() => props.previousPage(props.myIndex)}/>
     } else {
         return null;
     }

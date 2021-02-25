@@ -12,15 +12,14 @@ import byu from './images/byu1.jpg'
 
 let divStyle={
     backgroundImage: "url(https://upload.wikimedia.org/wikipedia/commons/c/cf/BYU_Campus_North.jpg)",
-    paddingTop:  "6rem",
     paddingBottom: "8rem"
 }
 
 function Home() {
     return(
-        <div>
-            <bs.Jumbotron fluid style={divStyle}>
-                <bs.Container style={{my: "5rem"}}>
+        <div className="py-0">
+            <bs.Jumbotron fluid style={divStyle} >
+                <bs.Container style={{my: "5rem"}} className="py-0">
                     <h1 className="title">Best of BYU</h1>
                     <bs.Form>
                         <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">

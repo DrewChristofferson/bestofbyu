@@ -19,17 +19,20 @@ export default class App extends React.Component {
       <Router>
         <bs.Container fluid className="p-0 min-vh-100 d-flex flex-column">
 
-          <bs.Row className="flex-grow-0 flex-shrink-0 border-bottom shadow-sm">
+          <bs.Row className="flex-grow-0 flex-shrink-0 shadow-sm">
               <bs.Col className="px-8 py-2" style={{ backgroundColor: "#2077B0" }}>
                   <Header />
               </bs.Col>
           </bs.Row>
           <bs.Row className="flex-grow-0 flex-shrink-0 border-bottom shadow-sm">
-            <bs.Col className="px-8 py-2" >
+            <bs.Col className="px-8" >
               <center>
                   <Switch>
                   <Route path="/schools">
+                    <div style={{marginTop: "3em"}}>
                       <BYUSchools />
+                    </div>
+                      
                     </Route>
                     <Route path="/home">
                       <Home />
