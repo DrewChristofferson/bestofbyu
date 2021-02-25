@@ -7,6 +7,9 @@ import { updateProfessor as updateProfessorMutation } from './graphql/mutations'
 import TableFooter from './tablefooter'
 import PreviousPage from './previousPage'
 import NextPage from './nextPage'
+import SearchBar from './searchbar'
+import CategoryToggle from './categorytoggle'
+import PageNav from './pageNav'
 
 
 
@@ -41,18 +44,13 @@ function ProfessorTable(props) {
 
 
     return(
-        <bs.Container style={{paddingTop: "2rem", marginLeft: "0.5rem", marginRight: "0.5rem"}} fluid>
+        <bs.Container style={{paddingTop: "2rem"}} fluid>
             <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
-                <bs.Col md="9"></bs.Col>
-                <bs.Col md="1">
-                    <PreviousPage pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex}/>
-                </bs.Col>
-                <bs.Col md="1">
-                    <h3>{props.pageNum} of {numPages}</h3>
-                </bs.Col>
-                <bs.Col md="1">
-                    <NextPage pageNum={props.pageNum} numPages={numPages} nextPage={props.nextPage} myIndex={myIndex}/>
-                </bs.Col>
+                <bs.Col md="4"><CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue} /></bs.Col>
+                <bs.Col md="2"></bs.Col>
+                <bs.Col md="4" className="py-2"><SearchBar handleChangeSearch={props.handleChangeSearch} /></bs.Col>
+                <bs.Col md="2" className="py-3"><PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /></bs.Col>
+                
             </bs.Row>
             {
                 

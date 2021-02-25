@@ -311,42 +311,14 @@ function SchoolTables(props) {
             <>
                 <bs.Container fluid >
                     {getTitle()} 
-
-                    <bs.Row >
-                        <bs.Col md="6" >
-                            <bs.ButtonGroup toggle>
-                                {CATEGORIES.map((category, index) => (
-                                <bs.ToggleButton
-                                    key={index}
-                                    type="radio"
-                                    variant="secondary"
-                                    name="category"
-                                    value={category.value}
-                                    checked={categoryValue === category.value}
-                                    onChange={(e) => handleChangeToggle(e.currentTarget.value)}
-                                >
-                                    {category.name}
-                                </bs.ToggleButton>
-                                ))}
-                            </bs.ButtonGroup>
-                        </bs.Col>
-    
-                        <bs.Col md="5" style={{paddingTop: ".3rem"}}>
-                            <bs.Form style={{paddingLeft: "1rem"}}>
-                                <bs.Form.Group controlId="exampleForm.ControlInput1" >
-                                    <bs.Form.Control type="text" placeholder="Search" onChange={(e) => props.handleChangeSearch(e.currentTarget.value)}/>
-                                </bs.Form.Group>
-                            </bs.Form>
-                        </bs.Col>
-                    </bs.Row>
                 </bs.Container>
     
                 <Switch>
                     <Route path={`${match.path}/${URL_PARAM_PROFESSORS}`}>
-                        <ProfessorTable  userid={userid} professors={getProfessors()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
+                        <ProfessorTable  userid={userid} professors={getProfessors()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue}/>
                     </Route>
                     <Route path={`${match.path}/${URL_PARAM_COURSES}`}>
-                        <CourseTable  userid={userid} courses={getCourses()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
+                        <CourseTable  userid={userid} courses={getCourses()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue}/>
                     </Route>
                 </Switch>
     
