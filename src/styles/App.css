@@ -45,3 +45,13 @@
 #jumbo {
   color: red
 }
+
+.sidebarSelected {
+  font-weight: 800;
+  color: black;
+}
+
+.sidebarNotSelected {
+  font-weight: 400;
+  color: black;
+}

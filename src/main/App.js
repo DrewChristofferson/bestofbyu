@@ -1,13 +1,14 @@
 import React from 'react';
 import * as bs from 'react-bootstrap'
-import './App.css';
+import '../styles/App.css';
 // import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
-import Content from './content'
+import Content from '../content'
 import Header from './header'
 import Home from './home'
-import Detail from './detail'
-import BYUSchools from './byuschools'
+import Detail from '../university/detail'
+import BYUSchools from '../university/byuschools'
+import Footer from './footer'
 
 
 
@@ -47,6 +48,9 @@ export default class App extends React.Component {
                   </Switch>
               </center>
             </bs.Col>
+          </bs.Row>
+          <bs.Row>
+            <Footer />
           </bs.Row>
   
   

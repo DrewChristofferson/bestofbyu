@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as bs from 'react-bootstrap'
-import { Link, useRouteMatch } from 'react-router-dom'
+import { useHistory, useRouteMatch } from 'react-router-dom'
+import SidebarLink from '../utilities/sidebarlink'
 
 function SchoolSideBar (props) {
     let match = useRouteMatch();
+    let matchvars = useRouteMatch("/schools/:sid/:did/:type");
+    let history = useHistory();
+
+    const [selected, setSelected] = useState(`${match.url}/all/all/`)
+    const [selectedSubLink, setSelectedSubLink] = useState()
+    const SIDEBAR_SELECTED = "sidebarSelected";
+    const SIDEBAR_NOTSELECTED = "sidebarNotSelected";
+
+    console.log("the params are:", matchvars.params.type)
+    console.log(`${match.url}/ge/all/${matchvars.params.type}`)
 
     const generalEd = 
         {
@@ -81,6 +92,16 @@ function SchoolSideBar (props) {
                 
             ]
         }
+
+    let handleClick = (newSelectedUrl, newSelectedSubUrl) => {
+        props.initPageNum();
+        if (newSelectedUrl){
+            setSelected(newSelectedUrl);
+            setSelectedSubLink('');
+        } else if(newSelectedSubUrl) {
+            setSelectedSubLink(newSelectedSubUrl);
+        } else return null;
+    }
     
 
     return(
@@ -91,15 +112,15 @@ function SchoolSideBar (props) {
             <bs.Accordion style={{paddingTop: "2rem"}}>
                 <bs.Card>
                     <bs.Card.Header>
-                        <bs.Accordion.Toggle as={bs.Button} variant="link" eventKey="0">
-                        <Link to={`${match.url}/all/all/professors`}><strong>All BYU Colleges</strong></Link>
+                        <bs.Accordion.Toggle as={bs.Button} variant="link" eventKey="0" >
+                            <SidebarLink linkUrl={`${match.url}/all/all/${matchvars.params.type}`} compareClassUrl={`${match.url}/all/all/`} selectedLink={selected} handleClick={handleClick} textContent="All BYU Colleges"/>
                         </bs.Accordion.Toggle>
                     </bs.Card.Header>
                 </bs.Card>
                 <bs.Card>
                     <bs.Card.Header>
                         <bs.Accordion.Toggle as={bs.Button} variant="link" eventKey="14">
-                        <Link to={`${match.url}/ge/all/courses`}>General Education</Link>
+                            <SidebarLink linkUrl={`${match.url}/ge/all/${matchvars.params.type}`} compareClassUrl={`${match.url}/ge/all/`} selectedLink={selected} handleClick={handleClick} textContent="General Education"/>
                         </bs.Accordion.Toggle>
                     </bs.Card.Header>
                     <bs.Accordion.Collapse eventKey="14">
@@ -107,7 +128,8 @@ function SchoolSideBar (props) {
                             {
                                 generalEd.requirements.map(requirement => (
                                     
-                                    <div key={requirement.id}><Link to={`${match.url}/ge/${requirement.id}/course`}>{requirement.reqName}</Link></div>
+                                    // <div key={requirement.id}><Link to={`${match.url}/ge/${requirement.id}/${matchvars.params.type}`} onClick={() => {props.initPageNum()}}>{requirement.reqName}</Link></div>
+                                    <div key={requirement.id}><SidebarLink linkUrl={`${match.url}/ge/${requirement.id}/${matchvars.params.type}`} compareClassUrl={`${match.url}/ge/${requirement.id}/`} selectedSubLink={selectedSubLink} handleClick={handleClick} textContent={requirement.reqName}/></div>
                                 ))
                             }
                         </bs.Card.Body>
@@ -119,7 +141,8 @@ function SchoolSideBar (props) {
                     <bs.Card key={college.id}>
                         <bs.Card.Header>
                         <bs.Accordion.Toggle as={bs.Button} variant="link" eventKey={college.id}>
-                            <Link to={`${match.url}/${college.id}/all/professors`}>{college.name}</Link>
+                            {/* <Link to={`${match.url}/${college.id}/all/${matchvars.params.type}`} onClick={() => {props.initPageNum()}}>{college.name}</Link> */}
+                            <SidebarLink linkUrl={`${match.url}/${college.id}/all/${matchvars.params.type}`} compareClassUrl={`${match.url}/${college.id}/all`} selectedLink={selected} handleClick={handleClick} textContent={college.name}/>
                         </bs.Accordion.Toggle>
                         </bs.Card.Header>
                         <bs.Accordion.Collapse eventKey={college.id}>
@@ -127,7 +150,8 @@ function SchoolSideBar (props) {
                             {
                                 college.departments.items.map(department => (
                                     
-                                    <div key={department.id}><Link to={`${match.url}/${college.id}/${department.id}/professors`}>{department.name}</Link></div>
+                                    // <div key={department.id}><Link to={`${match.url}/${college.id}/${department.id}/${matchvars.params.type}`} onClick={() => {props.initPageNum()}}>{department.name}</Link></div>
+                                    <div key={department.id}><SidebarLink linkUrl={`${match.url}/${college.id}/${department.id}/${matchvars.params.type}`} compareClassUrl={`${match.url}/${college.id}/${department.id}`} selectedSubLink={selectedSubLink} handleClick={handleClick} textContent={department.name}/></div>
                                 ))
                             }
                         </bs.Card.Body>

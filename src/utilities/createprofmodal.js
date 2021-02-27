@@ -3,13 +3,13 @@ import Modal from "react-bootstrap/Modal"
 import React, { useState, useEffect } from "react"
 import Form from "react-bootstrap/Form"
 import { API } from 'aws-amplify'
-import { listSchools } from './graphql/queries';
-import { createProfessor as createProfessorMutation } from './graphql/mutations';
+import { listSchools } from '../graphql/queries';
+import { createProfessor as createProfessorMutation } from '../graphql/mutations';
 
 
 const initialFormState = { name: '', title: 'Professor', score: '0', departmentID: '' }
 
-function CreateModal(props) {
+function CreateProfModal(props) {
     const [show, setShow] = useState(false);
     const [formData, setFormData] = useState(initialFormState);
     const [schools, setSchools] = useState();
@@ -177,4 +177,4 @@ function CreateModal(props) {
     );   
   }
   
-  export default CreateModal;
+  export default CreateProfModal;

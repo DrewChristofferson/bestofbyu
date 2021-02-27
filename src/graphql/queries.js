@@ -157,6 +157,7 @@ export const listDepartments = /* GraphQL */ `
             name
             numCredits
             score
+            code
             description
             isGeneral
             generalReqID
@@ -305,6 +306,7 @@ export const getCourse = /* GraphQL */ `
             id
             name
             title
+            score
             department {
               name
             }

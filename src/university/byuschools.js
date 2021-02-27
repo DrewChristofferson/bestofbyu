@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import * as bs from 'react-bootstrap'
 import { API, container, Storage } from 'aws-amplify'
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
-import { listSchools, listDepartments } from './graphql/queries';
+import { listSchools, listDepartments, getCourse } from '../graphql/queries';
 import { Switch, Route, useRouteMatch } from 'react-router-dom'
-import { ratingsByUserAndContent } from './graphql/queries';
-import { createRating as createRatingMutation } from './graphql/mutations';
-import { updateRating as updateRatingMutation } from './graphql/mutations';
-import { deleteRating as deleteRatingMutation } from './graphql/mutations';
+import { ratingsByUserAndContent } from '../graphql/queries';
+import { createRating as createRatingMutation } from '../graphql/mutations';
+import { updateRating as updateRatingMutation } from '../graphql/mutations';
+import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
 import SchoolTables from './schooltables'
 import Detail from './detail'
 import SchoolSideBar from './schoolsidebar'
 import { Auth } from 'aws-amplify';
+import AppContext from '../context/context'
 
 
 function BYUSchools() {
     const [schools, setSchools] = useState({});
     const [departments, setDepartments] = useState({});
+    const [professorsForCourse, setProfessorsForCourse] = useState({});
     const [userRatings, setUserRatings] = useState({});
     const [userid, setUserid] = useState(null);
     const [isLoadingDepartments, setIsLoadingDepartments] = useState(true);
     const [isLoadingProfessors, setIsLoadingProfessors] = useState(true);
+    const [isLoadingProfessorsForCourse, setIsLoadingProfessorsForCourse] = useState(true);
     const [pageStartIndex, setPageStartIndex] = useState(0);
     const [pageNum, setPageNum] = useState(1);
     const [searchFilter, setSearchFilter] = useState('');
@@ -28,6 +31,8 @@ function BYUSchools() {
     const VOTE_DOWN = "down";
     let match = useRouteMatch();
     let colleges = []
+    const context = useContext(AppContext)
+
 
     useEffect(() => {
         fetchData();
@@ -136,6 +141,11 @@ function BYUSchools() {
         setUserRatings(userRatingsData.data.ratingsByUserAndContent.items);
     }
 
+    let initPageNum = () => {
+        setPageNum(1);
+        setPageStartIndex(0);
+    }
+
     let nextPage = (index) => {
         setPageStartIndex(index);
         setPageNum(pageNum + 1);
@@ -167,6 +177,9 @@ function BYUSchools() {
             <Switch>
                 <Route path={`${match.path}/:schId/:deptId/:type/:oid`}>
                     <Detail 
+                        professorsForCourse={professorsForCourse}
+                        // getProfsForCourse={getProfessorsForCourse}
+                        detailsLoading={isLoadingProfessorsForCourse}
                         updateScore={updateScore} 
                         getRatings={getRatings} 
                         userRatings={userRatings} 
@@ -183,7 +196,7 @@ function BYUSchools() {
 
                 <Route path="/schools">
                     <bs.Row className=" pb-5 pl-3 flex-grow-0 flex-shrink-0 border-bottom shadow-sm" >
-                        <SchoolSideBar colleges={colleges} />
+                        <SchoolSideBar colleges={colleges} initPageNum={initPageNum}/>
                         <bs.Col md="9">
 
                                 <Switch>
@@ -201,6 +214,7 @@ function BYUSchools() {
                                             pageStartIndex={pageStartIndex}
                                             searchFilter={searchFilter}
                                             handleChangeSearch={handleChangeSearch}
+                                            initPageNum={initPageNum}
                                         />
                                     </Route>
                                     <Route path={match.path}>

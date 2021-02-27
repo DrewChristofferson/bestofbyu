@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.scss';
-import './index.css';
-import App from './App';
+import './styles/index.scss';
+import './styles/index.css';
+import AppProvider from './context/context-provider';
 import reportWebVitals from './reportWebVitals';
 import Amplify from 'aws-amplify';
 import config from './aws-exports';
@@ -10,7 +10,7 @@ Amplify.configure(config);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <AppProvider />
   </React.StrictMode>,
   document.getElementById('root')
 );
