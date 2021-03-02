@@ -1,29 +1,34 @@
 import React from 'react'
 import * as bs from 'react-bootstrap'
-import CreateModal from './createmodal'
+import CreateModal from './createprofmodal'
 import PreviousPage from './previousPage'
 import NextPage from './nextPage'
+import { useRouteMatch } from 'react-router-dom'
+import CreateProfModal from './createprofmodal'
+import CreateCourseModal from './createcoursemodal'
 
 function TableFooter (props) {
-    
-    let returnCreateButton = () => {
-        if (props.numPages === 1){
+    console.log("building the footer")
+
+    let match = useRouteMatch("/schools/:sid/:did/:type");
+
+    let returnButton = () => {
+        console.log(match.params.type)
+        if(match.params.type === "professors"){
             return(
-                <>
-                    <bs.Col md="3"></bs.Col>
-                        <bs.Col style={{fontSize: "2rem"}} md="7">
-                            <bs.Row>
-                                <h3>Don't see what you're looking for?</h3>
-                            </bs.Row>
-                            <bs.Row style={{paddingLeft: "8rem"}}>
-                                <CreateModal />
-                            </bs.Row>
-                        </bs.Col>
-                    <bs.Col md="2"></bs.Col>
-                </>
+                <CreateProfModal />
+            )
+        } else {
+            return(
+                <CreateCourseModal />
             )
         }
-        else if (props.pageNum >= props.numPages){
+    }
+    
+    let returnCreateButton = () => {
+        console.log(props.numPages)
+        console.log(props.pageNum)
+        if (props.numPages === 1 || props.numPages === 0 || props.pageNum === props.numPages){
             return(
                 <>
                     <bs.Col md="3"></bs.Col>
@@ -32,7 +37,7 @@ function TableFooter (props) {
                                 <h3>Don't see what you're looking for?</h3>
                             </bs.Row>
                             <bs.Row style={{paddingLeft: "8rem"}}>
-                                <CreateModal />
+                                {returnButton()}
                             </bs.Row>
                         </bs.Col>
                     <bs.Col md="2"></bs.Col>

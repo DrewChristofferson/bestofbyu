@@ -1,13 +1,13 @@
 import React from 'react'
 import * as bs from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import classroom from './images/classroom.jpg'
-import boardgame from './images/boardgame.jpg'
-import date from './images/date.jpg'
-import movie from './images/movie.jpg'
-import professor from './images/professor.jpg'
-import recipes from './images/recipes.jpg'
-import byu from './images/byu1.jpg'
+import classroom from '../images/classroom.jpg'
+import boardgame from '../images/boardgame.jpg'
+import date from '../images/date.jpg'
+import movie from '../images/movie.jpg'
+import professor from '../images/professor.jpg'
+import recipes from '../images/recipes.jpg'
+import byu from '../images/byu1.jpg'
 
 
 let divStyle={
