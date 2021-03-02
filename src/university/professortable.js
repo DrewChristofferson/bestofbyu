@@ -34,7 +34,7 @@ function ProfessorTable(props) {
     let getImg = (professor) => {
         if (professor.imgsrc){
             return(
-                <img className="profile" alt={professor.name} style={{height:"100px", width: "90px"}} src={professor.imgsrc} getDetailProfessors={props.getDetailProfessors}/>
+                <img className="profile" alt={professor.name} style={{height:"100px", width: "90px"}} src={professor.imgsrc} />
 
             )
         } else {

@@ -45,7 +45,9 @@ function Detail(props) {
 
 
 
+
    async function fetchData() {
+       setIsLoadingProfessors(true)
        if(match.params.type === "professors") {
             try{ 
                 const apiData = await API.graphql({ query: getProfessor, variables: { id: match.params.oid }  });
@@ -58,20 +60,16 @@ function Detail(props) {
        } else if (match.params.type === "courses"){
             try{ 
                 const apiData = await API.graphql({ query: getCourse, variables: { id: match.params.oid }  });
-
+                console.log(apiData);
                 setCourse(apiData.data.getCourse);
                 let profsFromAPI = apiData.data.getCourse.classes.items;
                 await Promise.all(profsFromAPI.map(async professor => {
                     return professor;
                   })).then((values) => {
-                    
+                    console.log(values);
                     setProfessorsForCourse(values);
                     setIsLoadingProfessors(false);
                   })
-                // let classes = []; //classes are an instance of a professor that teaches a course
-                // for (let i = 0; i < apiData.data.getCourse.classes.items.length; i++){
-                //     classes.push(apiData.data.getCourse.classes.items[i].professor); 
-                // }
                 
                 console.log("helooooo", isLoadingProfessors)
                 // setProfessorsForCourse(classes);
@@ -97,14 +95,21 @@ function Detail(props) {
         let filteredProfessors = [];
         let paginatedProfessors = [];
         let endingIndex;
+        let classes ;
 
-        // for (let i = 0; i < pro.length; i++){
-        //     console.log(professorsForCourse[i].professor)
-        //     professors.push(professorsForCourse[i].professor); 
-        // }
-        // console.log(professors);
+        for (let i = 0; i < props.departments.length; i++) {
+            for(let j = 0; j < props.departments[i].courses.items.length; j ++){
+                if(props.departments[i].courses.items[j].classes.courseID === match.params.oid){
+                    for (let k = 0; k < props.departments[i].courses.items[j].classes.length; k ++){ 
+                        classes.push(props.departments[i].courses.items[j].classes[k].professor)
+                        console.log(props.departments[i].courses.items[j].classes[k])
+                    }
+                }
+            }
+        }
+        console.log(professors);
      
-        console.log("_____________________", professorsForCourse);
+        console.log("_____________________", classes);
         //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
         (professorsForCourse).sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
                 
@@ -176,7 +181,7 @@ function Detail(props) {
    
 
    let returnProfessors = () => {
-       if (isLoadingCourse){
+       if (isLoadingCourse || isLoadingProfessors){
             return(
                 <bs.Spinner animation="border" role="status">
                     <span className="sr-only">Loading...</span>
@@ -194,7 +199,6 @@ function Detail(props) {
                             getRatings={props.getRatings}
                             courseid={course.id}
                             getImg={getImg}
-                            getRatings={props.getRatings} 
                             createRating={props.createRating} 
                             pageNum={props.pageNum}
                             detail={true}
@@ -202,6 +206,13 @@ function Detail(props) {
                     </bs.Container>
                 )
             }
+            //  else{
+            //     return(
+            //         <bs.Spinner animation="border" role="status">
+            //             <span className="sr-only">Loading...</span>
+            //         </bs.Spinner>
+            //     )
+            // }
            
                 
 
@@ -275,7 +286,7 @@ function Detail(props) {
                     <bs.Col md="10">
                         <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
                         <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em"}}>
-                                <CreateModalClass />
+                                <CreateModalClass />                                
                                 {returnProfessors()}
                             </bs.Tab>
                             <bs.Tab eventKey="about" title="About">

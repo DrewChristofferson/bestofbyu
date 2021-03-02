@@ -183,6 +183,7 @@ function BYUSchools() {
                         updateScore={updateScore} 
                         getRatings={getRatings} 
                         userRatings={userRatings} 
+                        departments={departments}
                         createRating={createRating} 
                         isLoading={isLoadingProfessors}
                         nextPage={nextPage}

@@ -38,9 +38,6 @@ export default class App extends React.Component {
                     <Route path="/home">
                       <Home />
                     </Route>
-                    <Route path="/content">
-                      <Content />
-                    </Route>
 
                     <Route path="/">
                       <Home />
