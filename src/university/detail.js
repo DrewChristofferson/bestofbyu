@@ -50,7 +50,6 @@ function Detail(props) {
     currDate.setMonth(currDate.getMonth()-monthNum);
     const previousMonth = currDate.toLocaleString('default', { month: 'long' });
 
-    console.log(previousMonth); // "September"
     return previousMonth;
  }
 
@@ -189,7 +188,6 @@ function Detail(props) {
                 { name: "Down", value: getRatingCount(0, "getDownVotes") }
               ];
               
-              console.log(dataPie, "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
             return dataPie;
         }
         else {
@@ -221,13 +219,6 @@ function Detail(props) {
        
      }, []);
 
-     useEffect(() => {
-         console.log(ratings, feb_upRatingCount, feb_downRatingCount);
-         
-     })
-
-
-     
 
    async function fetchData() {
        setIsLoadingProfessors(true)
@@ -244,7 +235,6 @@ function Detail(props) {
        } else if (match.params.type === "courses"){
             try{ 
                 const apiData = await API.graphql({ query: getCourse, variables: { id: match.params.oid } });
-                console.log(apiData);
                 setCourse(apiData.data.getCourse);
                 setName(apiData.data.getCourse.code)
                 setIsLoadingCourse(false);
@@ -254,7 +244,6 @@ function Detail(props) {
                     await Promise.all(profsFromAPI.map(async professor => {
                         return professor;
                       })).then((values) => {
-                        console.log(values);
                         setProfessorsForCourse(values);
                         setIsLoadingProfessors(false);
                       }) 
@@ -319,11 +308,8 @@ function Detail(props) {
     }
 
     let strRankingAll =  rankingAll.toString()
-    console.log(strRankingAll)
     let strRankingDept =  rankingDept.toString()
-    console.log(strRankingDept)
     let strRankingSchool =  rankingSchool.toString()
-    console.log(strRankingSchool)
     
         
     return [createOrdinalNumber(strRankingDept), createOrdinalNumber(strRankingSchool), createOrdinalNumber(strRankingAll)];
@@ -392,19 +378,15 @@ function Detail(props) {
                 if(props.departments[i].courses.items[j].classes.courseID === match.params.oid){
                     for (let k = 0; k < props.departments[i].courses.items[j].classes.length; k ++){ 
                         classes.push(props.departments[i].courses.items[j].classes[k].professor)
-                        console.log(props.departments[i].courses.items[j].classes[k])
                     }
                 }
             }
         }
-        console.log(professors);
      
-        console.log("_____________________", classes);
         //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
         (professorsForCourse).sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
                 
         for (let i = 0; i < professorsForCourse.length; i++){
-            console.log(professorsForCourse[i])
             professorsForCourse[i].professor.ranking = i + 1;
             if(professorsForCourse[i].professor.name.toLowerCase().includes(props.searchFilter.toLowerCase())){
                 for(let j = 0; j < props.userRatings.length; j++){
@@ -416,8 +398,6 @@ function Detail(props) {
             }
         }
 
-        console.log(filteredProfessors)
-
         for (let i = props.pageStartIndex; paginatedProfessors.length < 10; i++){
                 
             if(filteredProfessors[i]){
@@ -427,9 +407,6 @@ function Detail(props) {
             }
             endingIndex = i + 1;
         }
-
-        console.log("-------------------", paginatedProfessors);
-        // setIsLoading(false);
 
         return(paginatedProfessors);
 
@@ -479,8 +456,6 @@ function Detail(props) {
             )
        } else {   
             if(!isLoadingProfessors){
-                console.log("hellloooooooooooooooooooooo")
-                console.log(professorsForCourse)
                 return(
                     <bs.Container style={{paddingTop: "2rem"}} fluid>
                         <Table 

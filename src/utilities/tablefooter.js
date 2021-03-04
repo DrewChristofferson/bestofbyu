@@ -8,12 +8,9 @@ import CreateProfModal from './createprofmodal'
 import CreateCourseModal from './createcoursemodal'
 
 function TableFooter (props) {
-    console.log("building the footer")
-
     let match = useRouteMatch("/schools/:sid/:did/:type");
 
     let returnButton = () => {
-        console.log(match.params.type)
         if(match.params.type === "professors"){
             return(
                 <CreateProfModal />
@@ -26,8 +23,6 @@ function TableFooter (props) {
     }
     
     let returnCreateButton = () => {
-        console.log(props.numPages)
-        console.log(props.pageNum)
         if (props.numPages === 1 || props.numPages === 0 || props.pageNum === props.numPages){
             return(
                 <>

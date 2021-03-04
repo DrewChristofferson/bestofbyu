@@ -13,8 +13,6 @@ function SchoolSideBar (props) {
     const SIDEBAR_SELECTED = "sidebarSelected";
     const SIDEBAR_NOTSELECTED = "sidebarNotSelected";
 
-    console.log("the params are:", matchvars.params.type)
-    console.log(`${match.url}/ge/all/${matchvars.params.type}`)
 
     const generalEd = 
         {

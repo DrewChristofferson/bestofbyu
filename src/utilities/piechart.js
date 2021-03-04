@@ -27,7 +27,6 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 };
 
 export default function DataPieChart(props) {
-  console.log(props, data);
   if(props.data){
     let upVotePercentage = (props.data[0].value / (props.data[0].value + props.data[1].value)) * 100;
     return (
