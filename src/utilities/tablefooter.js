@@ -55,13 +55,13 @@ function TableFooter (props) {
             </bs.Row>
             <bs.Row>
                 <bs.Col md="4"></bs.Col>
-                <bs.Col style={{fontSize: "2rem"}} md="5">
+                <bs.Col style={{fontSize: "1.2rem"}} md="5">
                     <bs.Row>
                         <bs.Col md="2">
                             <PreviousPage pageNum={props.pageNum} previousPage={props.previousPage} myIndex={props.myIndex}/>
                         </bs.Col>
-                        <bs.Col md="5">
-                            <h3>Page {props.pageNum} of {props.numPages}</h3>
+                        <bs.Col md="5" >
+                            <h5>Page {props.pageNum} of {props.numPages}</h5>
                         </bs.Col>
                         <bs.Col md="2">
                             <NextPage pageNum={props.pageNum} numPages={props.numPages} nextPage={props.nextPage} myIndex={props.myIndex}/>

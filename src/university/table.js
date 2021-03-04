@@ -143,12 +143,12 @@ function Table (props) {
                                 : professor.ranking}
                         </bs.Col>
                         <bs.Col style={{fontSize: "2.5rem", paddingTop: ".8rem"}} md="1">
-                            <bs.Row className={professor.userRating === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE } style={{ cursor: "pointer", paddingLeft: "3rem"}} onClick={() => handleRatingClick(professor.id, VOTE_UP, updateProfessorMutation, professor.score)}>
+                            {/* <bs.Row className={professor.userRating === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE } style={{ cursor: "pointer", paddingLeft: "3rem"}} onClick={() => handleRatingClick(professor.id, VOTE_UP, updateProfessorMutation, professor.score)}>
                                 <FontAwesomeIcon icon={faSortUp}/>
                             </bs.Row>
                             <bs.Row className={professor.userRating === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE } style={{ cursor: "pointer", paddingLeft: "3rem"}} onClick={() => handleRatingClick(professor.id, VOTE_DOWN, updateProfessorMutation, professor.score)}>
                                 <FontAwesomeIcon icon={faSortDown}/>                                                
-                            </bs.Row>
+                            </bs.Row> */}
                         </bs.Col>
                         <bs.Col style={{}} md="2">
                             {props.getImg(professor)}

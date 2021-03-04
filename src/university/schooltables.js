@@ -294,6 +294,7 @@ function SchoolTables(props) {
     handleChangeToggle = (val) => {
         setCategoryValue(val);
         props.initPageNum();
+        props.clearSearchFilter();
         history.push(`${match.url}/${val}`);
     }
 
