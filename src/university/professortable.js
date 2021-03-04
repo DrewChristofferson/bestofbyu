@@ -46,36 +46,37 @@ function ProfessorTable(props) {
     }
 
     let getHeader = () => {
-        if (props.professors[1] === 0){
-            if (props.detail){
-                return null;  
-            } else {
-                return(
-                    <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
-                        <bs.Col md="4"><CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/></bs.Col>
-                    </bs.Row>
-                )
-            } 
-        } else if (numPages >= 1){
-            if (props.detail){
-                return(
-                    <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
-                        <bs.Col md="10" ></bs.Col>
-                        <bs.Col md="2" className="py-3"><PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /></bs.Col>
-                    </bs.Row>
-                )   
-            } else {
-                return(
-                    <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
-                        <bs.Col md="4"><CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/></bs.Col>
-                        <bs.Col md="2"></bs.Col>
-                        <bs.Col md="4" className="py-2"><SearchBar handleChangeSearch={props.handleChangeSearch} /></bs.Col>
-                        <bs.Col md="2" className="py-3"><PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /></bs.Col>
-                        
-                    </bs.Row>
-                )
-            }
+        if (props.detail && props.professors[1] >= 1){
+            return(
+                <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
+                    <bs.Col md="10" ></bs.Col>
+                    <bs.Col md="2" className="py-3"><PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /></bs.Col>
+                </bs.Row>
+            )   
+        } 
+        else if (!props.detail && props.professors[1] >= 1){
+            return(
+                <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
+                    <bs.Col md="4"><CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/></bs.Col>
+                    <bs.Col md="2"></bs.Col>
+                    <bs.Col md="4" className="py-2"><SearchBar handleChangeSearch={props.handleChangeSearch} /></bs.Col>
+                    <bs.Col md="2" className="py-3"><PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /></bs.Col>
+                    
+                </bs.Row>
+            )
+        } 
+        else if (!props.detail && props.professors[1] === 0){
+            return(
+                <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
+                    <bs.Col md="4"><CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/></bs.Col>
+                    <bs.Col md="2"></bs.Col>
+                    <bs.Col md="4" className="py-2"><SearchBar handleChangeSearch={props.handleChangeSearch} /></bs.Col>                    
+                </bs.Row>
+            )
+        } else {
+            return null;
         }
+        
         
     }
 

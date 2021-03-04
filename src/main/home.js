@@ -36,8 +36,8 @@ function Home() {
             <bs.Container>
                 <bs.Row>
                     <bs.Col>
-                        <bs.Card style={{ width: '18rem' }}>
-                        <Link to="/schools/all/all/courses" className="nav-link">
+                        <bs.Card style={{ width: '18rem', color: "black" }}>
+                        <Link to="/schools/all/all/courses" className="nav-link" style={{color: "black"}}>
                         
                         <bs.Card.Img variant="top" src={classroom} />
                         <bs.Card.Body>
@@ -51,7 +51,7 @@ function Home() {
                     </bs.Col>
                     <bs.Col>
                         <bs.Card style={{ width: '18rem' }}>
-                        <Link to="/schools/all/all/professors" className="nav-link">
+                        <Link to="/schools/all/all/professors" className="nav-link" style={{color: "black"}}>
                         <bs.Card.Img variant="top" src={professor} />
                         <bs.Card.Body>
                             <bs.Card.Title>Professors</bs.Card.Title>
@@ -64,7 +64,7 @@ function Home() {
                     </bs.Col>
                     <bs.Col>
                         <bs.Card style={{ width: '18rem' }}>
-                        <Link to="/table1" className="nav-link">
+                        <Link to="/table1" className="nav-link" style={{color: "black"}}>
                         <bs.Card.Img variant="top" src={date} />
                         <bs.Card.Body>
                             <bs.Card.Title>Date Ideas</bs.Card.Title>
@@ -80,7 +80,7 @@ function Home() {
                 <bs.Row style={{ marginTop: '100px' }}>
                     <bs.Col>
                         <bs.Card style={{ width: '18rem' }}>
-                        <Link to="/table1" className="nav-link">
+                        <Link to="/table1" className="nav-link" style={{color: "black"}}>
                         <bs.Card.Img variant="top" src={movie} />
                         <bs.Card.Body>
                             <bs.Card.Title>Movies/TV</bs.Card.Title>
@@ -93,7 +93,7 @@ function Home() {
                     </bs.Col>
                     <bs.Col>
                         <bs.Card style={{ width: '18rem' }}>
-                        <Link to="/table1" className="nav-link">
+                        <Link to="/table1" className="nav-link" style={{color: "black"}}>
                         <bs.Card.Img variant="top" src={recipes} />
                         <bs.Card.Body>
                             <bs.Card.Title>Recipes</bs.Card.Title>
@@ -106,7 +106,7 @@ function Home() {
                     </bs.Col>
                     <bs.Col>
                         <bs.Card style={{ width: '18rem' }}>
-                        <Link to="/table1" className="nav-link">
+                        <Link to="/table1" className="nav-link" style={{color: "black"}}>
                         <bs.Card.Img variant="top" src={boardgame} />
                         <bs.Card.Body>
                             <bs.Card.Title>Games</bs.Card.Title>

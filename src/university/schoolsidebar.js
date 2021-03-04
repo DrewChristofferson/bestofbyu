@@ -109,7 +109,7 @@ function SchoolSideBar (props) {
             <bs.Row className="pl-3 pb-3" style={{textAlign: "center" }}>
                 <h1>BYU Academics</h1>
             </bs.Row>                         
-            <bs.Accordion style={{paddingTop: "2rem"}}>
+            <bs.Accordion style={{paddingTop: "2rem", textAlign: "center"}}>
                 <bs.Card>
                     <bs.Card.Header>
                         <bs.Accordion.Toggle as={bs.Button} variant="link" eventKey="0" >

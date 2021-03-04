@@ -143,8 +143,10 @@ export const listDepartments = /* GraphQL */ `
             score
             imgsrc
             department {
+              id
               name
               school {
+                id
                 name
               }
             }
@@ -174,15 +176,22 @@ export const listDepartments = /* GraphQL */ `
                   title
                   score
                   department {
+                    id
                     name
+                    school {
+                      id
+                      name
+                    }
                   }
                 }
               }
               nextToken
             }
             department {
+              id
               name
               school {
+                id
                 name
               }
             }
@@ -288,6 +297,7 @@ export const getCourse = /* GraphQL */ `
     name
     numCredits
     score
+    code
     isGeneral
     imgsrc
     id

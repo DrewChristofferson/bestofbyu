@@ -35,6 +35,8 @@ function BYUSchools() {
 
 
     useEffect(() => {
+        //navigates user to the top of the page on page load
+        window.scrollTo(0, 0);
         fetchData();
         getData();
       
@@ -161,6 +163,10 @@ function BYUSchools() {
         }
     }
 
+    let clearSearchFilter = () => {
+        setSearchFilter('');
+    }
+
     let handleChangeSearch = (val) => {
         setSearchFilter(val);
         setPageNum(1);
@@ -216,6 +222,7 @@ function BYUSchools() {
                                             searchFilter={searchFilter}
                                             handleChangeSearch={handleChangeSearch}
                                             initPageNum={initPageNum}
+                                            clearSearchFilter={clearSearchFilter}
                                         />
                                     </Route>
                                     <Route path={match.path}>
