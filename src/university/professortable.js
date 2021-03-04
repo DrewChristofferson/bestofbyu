@@ -17,7 +17,6 @@ import Table from './table'
 
 function ProfessorTable(props) {
     const match = useRouteMatch("/schools/:sid/:did")
-    console.log("the profs are", props.pressors)
     let professors = props.professors[0]
     //if there are no professors, default the number of pages to 1
     let numPages = Math.ceil(props.professors[1] / 10);
@@ -81,7 +80,6 @@ function ProfessorTable(props) {
     }
 
     let getFooter = () => {
-        console.log("is there a detail?", props.detail)
         if (!props.detail){
             return(
                 <bs.Row style={{paddingTop: "4rem"}}>

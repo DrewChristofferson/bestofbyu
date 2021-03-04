@@ -44,7 +44,6 @@ function Table (props) {
 
     let handleRatingClick = (id, increment, mutation, score) => {
         
-        console.log("-------------------------------------starting rating")
         props.createRating(id, increment, mutation, score);
         if(props.refreshProfessors) {
             try {
@@ -133,7 +132,6 @@ function Table (props) {
             
         } 
         else if (props.detail) {
-            console.log(profs)
             return(
                 profs.map((professor, index) => (
                     <bs.Row style={{paddingTop: "1.5rem", paddingBottom: "1.5rem", borderTop: "2px solid black"}} key={index}>
