@@ -55,3 +55,254 @@
   font-weight: 400;
   color: black;
 }
+
+@media(min-width:760px){
+  .pageNavigation {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    align-content: center;
+    margin-top: 3em
+  }
+}
+
+@media(max-width:759px){
+  .pageNavigation {
+    font-size: ".5em";
+  }
+}
+
+.pageNav {
+  display: inline-block;
+  font-size: 1.2em;
+}
+
+@media(min-width:760px){
+  .searchBar {
+    margin: 0;
+  }
+}
+
+@media(max-width:759px){
+  .searchBar {
+    margin: 0;
+    margin-left: 15px;
+  }
+}
+
+.imgContent {
+  display: flex;
+  justify-content: space-around;
+  flex-flow: wrap;
+  align-items: center;
+  align-content: center;
+}
+
+.imgChild {
+  margin: 20px;
+  object-fit: cover;
+  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
+}
+
+@media(min-width:760px){
+  .detailContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-flow: wrap;
+    align-items: center;
+    align-content: center;
+    margin-right: 6em;
+    margin-left: 6em;
+    margin-top: 2em;
+    text-align: left;
+  }
+}
+
+@media(max-width:759px){
+  .detailContent {
+
+    margin-right: 1em;
+    margin-left: 2em;
+    text-align: left;
+  }
+}
+
+@media(min-width:760px){
+  .chartContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-flow: wrap;
+    align-items: center;
+    align-content: center;
+    margin-right: 6em;
+    margin-left: 6em;
+    text-align: left;
+  }
+}
+
+@media(max-width:759px){
+  .chartContent {
+
+    margin-right: 1em;
+    margin-left: 2em;
+    text-align: left;
+  }
+}
+
+.detailChild {
+  flex-basis: 30%;
+  margin: 20px;
+  margin-left: 0;
+}
+
+.detailChildTitle {
+  margin: 20px;
+  margin-left: 0;
+  flex-basis: 60%;
+}
+
+.tableHeaderChildBig {
+  flex-basis: 40%;
+  margin: 20px;
+  margin-left: 0;
+}
+
+.tableHeaderChildMed {
+  flex-basis: 30%;
+  margin: 20px;
+  margin-left: 0;
+}
+
+.tableHeaderChildSmall {
+  flex-basis: 10%;
+  margin: 20px;
+  margin-left: 0;
+}
+
+
+
+.title {
+  display: flex;
+  flex-direction: column;
+}
+
+@media(min-width:760px){
+  .backButton {
+    display: flex;
+    margin-left: 6em;
+    margin-right: auto;
+  }
+}
+
+@media(max-width:759px){
+  .backButton {
+    display: flex;
+    margin-left: 2em;
+    margin-right: auto;
+  }
+}
+
+
+@media(min-width:760px){
+  .tableItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    align-content: center;
+    margin-right: 6em;
+    margin-left: 6em;
+    margin-top: 3em;
+    text-align: left;
+    margin-bottom: 2em;
+    padding-bottom: 2em;
+    padding-top: 2em;
+    border-bottom: 1px #ccc solid;
+    border-top: 4px #ccc solid;
+  }
+}
+
+@media(max-width:759px){
+  .tableItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    align-content: center;
+    margin-right: 6em;
+    margin-left: 6em;
+    margin-top: 3em;
+    text-align: left;
+    margin-bottom: 2em;
+    padding-bottom: 2em;
+    padding-top: 2em;
+    border-bottom: 1px #ccc solid;
+    border-top: 4px #ccc solid;
+  }
+}
+
+
+/* select ever item in the table (excluding the first one) */
+.table > .tableItem ~ .tableItem {
+  border-top: none;
+  padding-top: 0;
+}
+
+@media(min-width:760px){
+  .tableItemChildSmall {
+    flex-basis: 10%;
+  }
+}
+
+@media(min-width:760px){
+  .tableItemChildBig {
+    flex-basis: 35%;
+  }
+}
+
+@media(max-width:759px){
+  .tableItemChildSmall {
+    margin: 2em;
+  }
+}
+
+@media(max-width:759px){
+  .tableItemChildBig {
+    margin: 2em;
+  }
+}
+
+.ratingButtons {
+  margin-left: 2em;
+  font-size: 2em;
+}
+
+@media(min-width:760px){
+  .tableRating {
+    font-size: 1.5em;
+    text-align: center;
+  }
+}
+
+@media(max-width:759px){
+  .tableRating {
+    font-size: 3em;
+    text-align: center;
+  }
+}
+
+.tableItemTitle {
+  font-size: 1.6em;
+  font-weight: 700;
+}
+
+.tableItemSubtitle {
+  font-size: 1.4em;
+  font-weight: 600;
+}
+
+.tableItemThirdTitle {
+  font-size: 1.4em;
+}

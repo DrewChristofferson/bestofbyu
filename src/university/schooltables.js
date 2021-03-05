@@ -196,17 +196,11 @@ function SchoolTables(props) {
        
         if(match.params.sid === URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){
             return (
-                <bs.Row style={{marginBottom: "3rem"}}>
                     <h1>All Colleges</h1>
-                </bs.Row>
             ) 
         } else if (match.params.sid === "ge") {
                 return(
-                    <div style={{marginBottom: "3rem"}}>
-                        <bs.Row>
                             <h1>General Education</h1>  
-                        </bs.Row>   
-                    </div>
                 )
             // for (let i = 0; i < props.departments.length; i++){
             //     if(props.departments[i].school.id === match.params.sid){
@@ -239,17 +233,11 @@ function SchoolTables(props) {
             }
             if (name){
                 return(
-                    <div style={{marginBottom: "3rem"}}>
-                        <bs.Row>
-                            <h1>{name}</h1>  
-                        </bs.Row>   
-                    </div>
+                    <h1>{name}</h1>  
                 )
             } else {
                 return (
-                    <bs.Row style={{marginBottom: "3rem"}}>
-                        <h3>No Data for this Department</h3>
-                    </bs.Row>
+                    <h3>No Data for this Department</h3>
                 )
             }
 
@@ -261,30 +249,21 @@ function SchoolTables(props) {
             }
             if (name[0]){
                 return (  
-                    <div style={{marginBottom: "3rem"}}>
-                        <bs.Row>
+                    <div>
                         <h1>{name[0].department.name}</h1>  
-                        </bs.Row>  
-                        <bs.Row >
-                            <h3>{name[0].department.school.name}</h3>
-                        </bs.Row>     
+                        <h3>{name[0].department.school.name}</h3>
                     </div>
-    
                 )
             } else {
                 return (
-                    <bs.Row style={{marginBottom: "3rem"}}>
                         <h3>No Data for this Department</h3>
-                    </bs.Row>
                 )
             }
 
         }
         else {
             return (
-                <bs.Row style={{marginBottom: "3rem"}}>
                     <h3>No Data for this Department</h3>
-                </bs.Row>
             )
         } 
     }
@@ -311,9 +290,7 @@ function SchoolTables(props) {
     else {
         return(
             <>
-                <bs.Container fluid >
                     {getTitle()} 
-                </bs.Container>
     
                 <Switch>
                     <Route path={`${match.path}/${URL_PARAM_PROFESSORS}`}>
