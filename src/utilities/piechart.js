@@ -31,8 +31,8 @@ export default function DataPieChart(props) {
     let upVotePercentage = (props.data[0].value / (props.data[0].value + props.data[1].value)) * 100;
     return (
       <>
-      <bs.Row style={{textAlign: "center"}}>
-        <h3>{upVotePercentage.toFixed(0)}% Positive Rankings</h3>
+      <bs.Row>
+        <h4>{upVotePercentage.toFixed(0)}% Positive Rankings</h4>
       </bs.Row>
       <bs.Row>
         <PieChart width={400} height={400}>

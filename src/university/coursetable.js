@@ -28,21 +28,48 @@ function CourseTable(props) {
     const VOTE_UP  = "up";
     const VOTE_DOWN = "down";
 
+    let getHeader = () => {
+        if (props.courses[1] >= 1){
+            return(
+                <div className="pageNavigation">
+                    <div className="tableHeaderChildMed">
+                        <CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/>
+                    </div>
+                    <div className="tableHeaderChildBig">
+                        <SearchBar handleChangeSearch={props.handleChangeSearch} />
+                    </div>
+                    <div className="tableHeaderChildMed">
+                        <PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} />
+                    </div>
+                </div>
+            )
+        } 
+        else if (props.courses[1] === 0){
+            return(
+                <div>
+                    <CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/>
+                    <SearchBar handleChangeSearch={props.handleChangeSearch} />  
+                </div>
+                        
+
+            )
+        } else {
+            return null;
+        }
+        
+        
+    }
+
+
 
     return(
-        <bs.Container style={{paddingTop: "2rem", marginLeft: "0.5rem", marginRight: "0.5rem"}} fluid>
-            <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
-                <bs.Col md="4"><CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue} initPageNum={props.initPageNum} /></bs.Col>
-                <bs.Col md="2"></bs.Col>
-                <bs.Col md="4" className="py-2"><SearchBar handleChangeSearch={props.handleChangeSearch} /></bs.Col>
-                <bs.Col md="2" className="py-3"><PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /></bs.Col>
-            </bs.Row>
-                <Table courses={courses} createRating={props.createRating} getRatings={props.getRatings}/>
-            <bs.Row >
-                <TableFooter numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
-            </bs.Row>
-        </bs.Container>
+        <div>
+            {getHeader()}
+            <Table courses={courses} createRating={props.createRating} getRatings={props.getRatings}/>
+            <TableFooter numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
+        </div>   
     )
-    }
+}
+
 
 export default CourseTable;

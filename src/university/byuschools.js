@@ -179,7 +179,7 @@ function BYUSchools() {
     }
 
     return(
-        <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{textAlign: "left"}}>
+
             <Switch>
                 <Route path={`${match.path}/:schId/:deptId/:type/:oid`}>
                     <Detail 
@@ -202,41 +202,42 @@ function BYUSchools() {
                 </Route>
 
                 <Route path="/schools">
-                    <bs.Row className=" pb-5 pl-3 flex-grow-0 flex-shrink-0 border-bottom shadow-sm" >
-                        <SchoolSideBar colleges={colleges} initPageNum={initPageNum}/>
-                        <bs.Col md="9">
+                    <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{textAlign: "left"}}>
+                        <bs.Row className=" pb-5 pl-3 flex-grow-0 flex-shrink-0 border-bottom shadow-sm" >
+                            <SchoolSideBar colleges={colleges} initPageNum={initPageNum}/>
+                        </bs.Row>
+                    </bs.Container>
 
-                                <Switch>
-                                    <Route path={`${match.path}/:schId/:deptId`}>
-                                        <SchoolTables 
-                                            updateScore={updateScore} 
-                                            getRatings={getRatings} 
-                                            userRatings={userRatings} 
-                                            createRating={createRating} 
-                                            departments={departments} 
-                                            isLoading={isLoadingDepartments}
-                                            nextPage={nextPage}
-                                            previousPage={previousPage}
-                                            pageNum={pageNum}
-                                            pageStartIndex={pageStartIndex}
-                                            searchFilter={searchFilter}
-                                            handleChangeSearch={handleChangeSearch}
-                                            initPageNum={initPageNum}
-                                            clearSearchFilter={clearSearchFilter}
-                                        />
-                                    </Route>
-                                    <Route path={match.path}>
-                                        <h2>Select a Department</h2>
-                                    </Route>
-                                </Switch>
+                    <Switch>
+                        <Route path={`${match.path}/:schId/:deptId`}>
+                            <SchoolTables 
+                                updateScore={updateScore} 
+                                getRatings={getRatings} 
+                                userRatings={userRatings} 
+                                createRating={createRating} 
+                                departments={departments} 
+                                isLoading={isLoadingDepartments}
+                                nextPage={nextPage}
+                                previousPage={previousPage}
+                                pageNum={pageNum}
+                                pageStartIndex={pageStartIndex}
+                                searchFilter={searchFilter}
+                                handleChangeSearch={handleChangeSearch}
+                                initPageNum={initPageNum}
+                                clearSearchFilter={clearSearchFilter}
+                            />
+                        </Route>
+                        <Route path={match.path}>
+                            <h2>Select a Department</h2>
+                        </Route>
+                    </Switch>
 
-                        </bs.Col>
-                    </bs.Row>
+                            
                 </Route>
 
             </Switch>
         
-        </bs.Container>
+        
     )
 }
 

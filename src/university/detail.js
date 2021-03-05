@@ -19,34 +19,35 @@ import img7 from '../images/detailplaceholders/seven.jpg'
 
 
 function Detail(props) {
-   const match = useRouteMatch("/schools/:sid/:did/:type/:oid")
-   let history = useHistory();
-   const [professor, setProfessor] = useState();
-   const [course, setCourse] = useState();
-   const [professorsForCourse, setProfessorsForCourse] = useState([]);
-
-   const [professorsOut, setProfessorsOut] = useState([]);
-   const [ratings, setRatings] = useState();
-   const [isLoadingRatings, setIsLoadingRatings] = useState(true);
-   const [comments, setComments] = useState();
-   const [isLoadingProfessors, setIsLoadingProfessors] = useState(true);
-   const [isLoadingCourse, setIsLoadingCourse] = useState(true);
-   const [isLoadingComments, setIsLoadingComments] = useState(true);
-   const [isLoading, setIsLoading] = useState(true);
-   const [items, setItems] = useState("1");
-   const [name, setName] = useState("");
-   const context = useContext(AppContext)
-
-   const [feb_upRatingCount, setfeb_UpRatingCount] = useState(0);
-   const [feb_downRatingCount, setfeb_DownRatingCount] = useState(0);
-   const [jan_upRatingCount, setjan_UpRatingCount] = useState(0);
-   const [jan_downRatingCount, setjan_DownRatingCount] = useState(0);
+    const match = useRouteMatch("/schools/:sid/:did/:type/:oid")
+    let history = useHistory();
+    const [professor, setProfessor] = useState();
+    const [course, setCourse] = useState();
+    const [professorsForCourse, setProfessorsForCourse] = useState([]);
+    const [ratings, setRatings] = useState();
+    const [isLoadingRatings, setIsLoadingRatings] = useState(true);
+    const [comments, setComments] = useState();
+    const [isLoadingProfessors, setIsLoadingProfessors] = useState(true);
+    const [isLoadingCourse, setIsLoadingCourse] = useState(true);
+    const [isLoadingComments, setIsLoadingComments] = useState(true);
+    const [name, setName] = useState("");
+    const context = useContext(AppContext)
 
 
-   
+
+
+    useEffect(() => {
+        //navigates user to the top of the page on page load
+        window.scrollTo(0, 0);
+        fetchData();
+        fetchRatings();
+        props.getRatings(context.userid)
+        getProfessors();
+    }, []);
+
+
    let getMonthName = (monthNum) => {
     let currDate = new Date();
-
     currDate.setMonth(currDate.getMonth()-monthNum);
     const previousMonth = currDate.toLocaleString('default', { month: 'long' });
 
@@ -200,24 +201,6 @@ function Detail(props) {
         }
         
     }
-
-
-  
-
-  
-
-
-
-   useEffect(() => {
-       //navigates user to the top of the page on page load
-       window.scrollTo(0, 0);
-       fetchData();
-       fetchRatings();
-       props.getRatings(context.userid)
-       getProfessors();
-
-       
-     }, []);
 
 
    async function fetchData() {
@@ -493,156 +476,86 @@ function Detail(props) {
     )
    } else if (course){
        return(
-            <bs.Container fluid style={{marginRight: "3rem", marginLeft: "3rem"}}>
-                <bs.Row style={{paddingTop: "1rem"}}>
+           <div>
+               <div className={"backButton"}>
                     <bs.Button onClick={() => history.goBack()}>Go Back</bs.Button>
-                </bs.Row>
-                <bs.Row style={{paddingTop: "3rem"}}>
-                    <bs.Col sm="1">
-                    </bs.Col>
-                    <bs.Col md="7">
-                        <bs.Row>
-                            <bs.Col style={{padding: "0"}}>
-                                <h2>{course.name}</h2>
-                                <h3>{course.code}</h3>
-                            </bs.Col>
-                            <bs.Col>
-                                
-                            </bs.Col>
-                        </bs.Row>
-                        <bs.Row>
-                            <h5>{ course.description }</h5>
-                        </bs.Row>
-                        <bs.Row>
-                            <bs.Badge className="badges" variant="danger">Hard Tests</bs.Badge>{' '}
-                            <bs.Badge className="badges" variant="danger">Fast Lectures</bs.Badge>{' '}
-                            <bs.Badge className="badges" variant="success">Funny</bs.Badge>{' '}
+               </div>
 
+             
 
-                        </bs.Row>
-                    
-                    
+                <div className={"detailContent"}>
+                    <div className={"detailChildTitle"}>
+                        <h2>{course.name}</h2>
+                        <h3>{course.code}</h3>
+                        <h5>{ course.description }</h5>
+                    </div>
+                    {/* <div className={"detailChild"}>
+                        <bs.Badge className="badges" variant="danger">Hard Tests</bs.Badge>{' '}
+                        <bs.Badge className="badges" variant="danger">Fast Lectures</bs.Badge>{' '}
+                        <bs.Badge className="badges" variant="success">Funny</bs.Badge>{' '}
+                    </div> */}
+                    <div className={"detailChild"}>
                         
-                    </bs.Col>
-                    <bs.Col md="4">
-                        <bs.Row>
-                            
-                        <h4>Score: {course.score}</h4>
+                        <h5>{getRanking()[0]} in <Link to={`/schools/${course.department.school.id}/${course.department.id}/${match.params.type}`}>{ course.department.name}</Link>{"\n"}</h5> 
+        
+                        <h5>{getRanking()[1]} in <Link to={`/schools/${course.department.school.id}/all/${match.params.type}`}>{ course.department.school.name}</Link></h5>
 
-                        </bs.Row>
-                        <bs.Row style={{marginTop: "10px"}}>
-                            
-                            <h5>{getRanking()[0]} in <Link to={`/schools/${course.department.school.id}/${course.department.id}/${match.params.type}`}>{ course.department.name}</Link>{"\n"}</h5> 
-                        </bs.Row>
-                        <bs.Row>
-                            <h5>{getRanking()[1]} in <Link to={`/schools/${course.department.school.id}/all/${match.params.type}`}>{ course.department.school.name}</Link></h5>
-
-                        </bs.Row>
-                        <bs.Row>
-                            <h5>{getRanking()[2]} in <Link to={`/schools/all/all/${match.params.type}`}>All {match.params.type}</Link></h5>
-
-                        </bs.Row>
-                    </bs.Col>
+                        <h5>{getRanking()[2]} in <Link to={`/schools/all/all/${match.params.type}`}>All {match.params.type}</Link></h5>
+                    </div>
+                </div>
+                <div className={"chartContent"}>
+                    <div className={"detailChild"}>
+                        <h3>Overall Score: {course.score}</h3>
+                        <DataPieChart data={initPieData()}/>
+                    </div>
+                    <div className={"detailChild"}>
+                        <h3>Score for {course.code}</h3><h6>(past 6 months)</h6>
+                        <DataLineChart data={initChartData()}/>
+                    </div>
                     
-                </bs.Row>
+                </div>
+                   
 
-                <bs.Row>
-                    <bs.Container fluid style={{marginRight: "10rem", marginLeft: "10rem"}}>
-                        <bs.Row style={{paddingTop: "5em"}}>
-                            <bs.Col md="4">
+                     <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
+                     <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em"}}>
+                             <CreateModalClass />  
+                             <DataLineChart data={dataProfessors}/>                      
+                             {returnProfessors()}
+                         </bs.Tab>
+                         <bs.Tab eventKey="about" title="About">
+                             <h3 style={{paddingTop:"2rem"}}>Description</h3>
+                             <p>Write an unbiased description of {course.name}. </p>
+                             <bs.Button variant="info">Edit Description</bs.Button>
+                         </bs.Tab>
+                         <bs.Tab eventKey="discussion" title="Discussion">
+                             <h3 style={{paddingTop:"2rem"}}>Comments</h3>
+                             <p>No comments yet for {course.name}</p>
+                             <bs.Form style={{paddingLeft: "1rem"}}>
+                                 <bs.Form.Group controlId="exampleForm.ControlInput" >
+                                     <bs.Form.Control type="text" placeholder="Post a new comment..." onChange={(e) => console.log("new comment",e.target.value)}/>
+                                 </bs.Form.Group>
+                                 <bs.Button variant="primary">Post Comment</bs.Button>
+                             </bs.Form>
 
-                                    <DataPieChart data={initPieData()}/>
+                         </bs.Tab>
+                         <bs.Tab eventKey="pictures" title="Pictures" >
+                             <h3 style={{paddingTop:"2rem"}}>Pictures</h3>
+                             <div className={"imgContent"}>
+                                 <img src={img1} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                 <img src={img2} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                 <img src={img3} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                 <img src={img4} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                 <img src={img5} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                 <img src={img6} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                 <img src={img7} height="200em" width="200em" alt="not found" className={"imgChild"}/>
 
-                                    
-                            </bs.Col>
-                            <bs.Col md="6" style={{marginRight: "auto", marginLeft: "0", textAlign: "center"}}>
-                                <h3>Score for {course.code}</h3><h6>(past 6 months)</h6>
-                                <DataLineChart data={initChartData()}/>
-                            </bs.Col>
-                        
-                        </bs.Row>
-                    </bs.Container>
-                </bs.Row>
-                
-
-                
-                
-
-                <bs.Row style={{marginTop: "5em", marginBottom: "3em"}}>
-                    <bs.Col md="1"></bs.Col>
-                    <bs.Col md="10">
-                        <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
-                        <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em"}}>
-                                <CreateModalClass />  
-                                <bs.Container style={{ margin: "20px 0 20px 0"}}>
-                                    <bs.Col md="6">
-                                        <DataLineChart data={dataProfessors}/>
-                                    </bs.Col>
-                                    <bs.Col md="2">
-                                        {/* <DataPieChart /> */}
-                                    </bs.Col>
-                                </bs.Container>                              
-                                {returnProfessors()}
-                            </bs.Tab>
-                            <bs.Tab eventKey="about" title="About">
-                                <h3 style={{paddingTop:"2rem"}}>Description</h3>
-                                <p>Write an unbiased description of {course.name}. </p>
-                                <bs.Button variant="info">Edit Description</bs.Button>
-                            </bs.Tab>
-                            <bs.Tab eventKey="discussion" title="Discussion">
-                                <h3 style={{paddingTop:"2rem"}}>Comments</h3>
-                                <p>No comments yet for {course.name}</p>
-                                <bs.Form style={{paddingLeft: "1rem"}}>
-                                    <bs.Form.Group controlId="exampleForm.ControlInput" >
-                                        <bs.Form.Control type="text" placeholder="Post a new comment..." onChange={(e) => console.log("new comment",e.target.value)}/>
-                                    </bs.Form.Group>
-                                    <bs.Button variant="primary">Post Comment</bs.Button>
-                                </bs.Form>
-
-                            </bs.Tab>
-                            <bs.Tab eventKey="pictures" title="Pictures" >
-                                <h3 style={{paddingTop:"2rem"}}>Picutres</h3>
-                                <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{paddingTop: "5em"}}>
-                                    <bs.Row>
-                                        <bs.Col lg="4">
-                                            <img src={img1} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                        </bs.Col>
-                                        <bs.Col lg="4" >
-                                            <img src={img2} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                        </bs.Col>
-                                        <bs.Col lg="4">
-                                            <img src={img3} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                        </bs.Col>
-                                    </bs.Row>
-                                    <bs.Row style={{paddingTop: "2em"}}>
-                                        <bs.Col>
-                                            <img src={img4} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                        </bs.Col>
-                                        <bs.Col>
-                                            <img src={img5} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                        </bs.Col>
-                                        <bs.Col>
-                                            <img src={img6} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                        </bs.Col>
-                                    </bs.Row>
-                                    <bs.Row style={{paddingTop: "2em"}}>
-                                        <bs.Col>
-                                            <img src={img7} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                        </bs.Col>
-                                        <bs.Col>
-                                            
-                                        </bs.Col>
-                                        <bs.Col>
-                                            
-                                        </bs.Col>
-                                    </bs.Row>
-                                </bs.Container>
-                            </bs.Tab>
-                        </bs.Tabs>
-                    </bs.Col>
-                    <bs.Col md="1"></bs.Col>
-                </bs.Row>
-            </bs.Container>
+                             </div>
+                         </bs.Tab>
+                     </bs.Tabs>
+           </div>
+            
+               
+                    
             
        );
    }
@@ -738,41 +651,16 @@ function Detail(props) {
                         </bs.Tab>
                         <bs.Tab eventKey="contact" title="Pictures" >
                             <h3 style={{paddingTop:"2em"}}>Picutres</h3>
-                            <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{paddingTop: "3em"}}>
-                                <bs.Row>
-                                    <bs.Col lg="4">
-                                        <img src={img1} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                    </bs.Col>
-                                    <bs.Col lg="4">
-                                        <img src={img2} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                    </bs.Col>
-                                    <bs.Col lg="4">
-                                        <img src={img3} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                    </bs.Col>
-                                </bs.Row>
-                                <bs.Row style={{paddingTop: "2em"}}>
-                                    <bs.Col>
-                                        <img src={img4} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                    </bs.Col>
-                                    <bs.Col>
-                                        <img src={img5} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                    </bs.Col>
-                                    <bs.Col>
-                                        <img src={img6} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                    </bs.Col>
-                                </bs.Row>
-                                <bs.Row style={{paddingTop: "2em"}}>
-                                    <bs.Col>
-                                        <img src={img7} height="200em" alt="not found" style={{boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19)"}}/>
-                                    </bs.Col>
-                                    <bs.Col>
-                                        
-                                    </bs.Col>
-                                    <bs.Col>
-                                        
-                                    </bs.Col>
-                                </bs.Row>
-                            </bs.Container>
+                            <div className={"imgContent"}>
+                                    <img src={img1} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                    <img src={img2} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                    <img src={img3} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                    <img src={img4} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                    <img src={img5} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                    <img src={img6} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                    <img src={img7} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+
+                            </div>
                         </bs.Tab>
                     </bs.Tabs>
                 </bs.Col>

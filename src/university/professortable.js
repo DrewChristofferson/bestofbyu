@@ -47,30 +47,34 @@ function ProfessorTable(props) {
     let getHeader = () => {
         if (props.detail && props.professors[1] >= 1){
             return(
-                <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
-                    <bs.Col md="10" ></bs.Col>
-                    <bs.Col md="2" className="py-3"><PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /></bs.Col>
-                </bs.Row>
+                <div>
+                    <PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} />
+                </div>
             )   
         } 
         else if (!props.detail && props.professors[1] >= 1){
             return(
-                <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
-                    <bs.Col md="4"><CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/></bs.Col>
-                    <bs.Col md="2"></bs.Col>
-                    <bs.Col md="4" className="py-2"><SearchBar handleChangeSearch={props.handleChangeSearch} /></bs.Col>
-                    <bs.Col md="2" className="py-3"><PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /></bs.Col>
-                    
-                </bs.Row>
+                <div className="pageNavigation">
+                    <div className="tableHeaderChildMed">
+                        <CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/>
+                    </div>
+                    <div className="tableHeaderChildBig">
+                        <SearchBar handleChangeSearch={props.handleChangeSearch} />
+                    </div>
+                    <div className="tableHeaderChildMed">
+                        <PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} />
+                    </div>
+                </div>
             )
         } 
         else if (!props.detail && props.professors[1] === 0){
             return(
-                <bs.Row style={{fontSize: "2rem", paddingBottom: "2rem"}} >
-                    <bs.Col md="4"><CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/></bs.Col>
-                    <bs.Col md="2"></bs.Col>
-                    <bs.Col md="4" className="py-2"><SearchBar handleChangeSearch={props.handleChangeSearch} /></bs.Col>                    
-                </bs.Row>
+                <div>
+                    <CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/>
+                    <SearchBar handleChangeSearch={props.handleChangeSearch} />  
+                </div>
+                        
+
             )
         } else {
             return null;
@@ -82,9 +86,7 @@ function ProfessorTable(props) {
     let getFooter = () => {
         if (!props.detail){
             return(
-                <bs.Row style={{paddingTop: "4rem"}}>
                     <TableFooter numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
-                </bs.Row>
             )
         } else {
             return null;
@@ -93,11 +95,11 @@ function ProfessorTable(props) {
 
 
     return(
-        <bs.Container style={{paddingTop: "2rem"}} fluid>
+        <div>
             {getHeader()}
             <Table professors={professors} getImg={getImg} createRating={props.createRating} getRatings={props.getRatings}/>
             {getFooter()}
-        </bs.Container>
+        </div>   
     )
 }
 

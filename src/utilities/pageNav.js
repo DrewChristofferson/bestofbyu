@@ -5,11 +5,19 @@ import NextPage from './nextPage'
 
 function PageNav (props) {
     return(
-        <bs.Row style={{fontSize: ".5em"}}>
-            <PreviousPage pageNum={props.pageNum} previousPage={props.previousPage} myIndex={props.myIndex}/>
-            <p style={{padding: "0 10px 0 10px"}}>{props.pageNum} of {props.numPages}</p>
-            <NextPage pageNum={props.pageNum} numPages={props.numPages} nextPage={props.nextPage} myIndex={props.myIndex}/>
-        </bs.Row>
+        <div>
+            <div className="pageNav">
+                <PreviousPage pageNum={props.pageNum} previousPage={props.previousPage} myIndex={props.myIndex}/>
+            </div>
+            <div className="pageNav">
+                <p style={{padding: "0 10px 0 10px"}}>{props.pageNum} of {props.numPages}</p>
+            </div>
+            <div className="pageNav">
+                <NextPage pageNum={props.pageNum} numPages={props.numPages} nextPage={props.nextPage} myIndex={props.myIndex}/>
+            </div>
+        </div>
+        
+        
 
     )
 }
