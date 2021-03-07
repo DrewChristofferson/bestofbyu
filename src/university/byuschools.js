@@ -11,6 +11,7 @@ import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
 import SchoolTables from './schooltables'
 import Detail from './detail'
 import SchoolSideBar from './schoolsidebar'
+import NewSideBar from'../main/testing'
 import { Auth } from 'aws-amplify';
 import AppContext from '../context/context'
 
@@ -202,11 +203,18 @@ function BYUSchools() {
                 </Route>
 
                 <Route path="/schools">
-                    <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{textAlign: "left"}}>
+                    <NewSideBar colleges={colleges} initPageNum={initPageNum}/>
+                    {/* <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{textAlign: "left"}}>
                         <bs.Row className=" pb-5 pl-3 flex-grow-0 flex-shrink-0 border-bottom shadow-sm" >
-                            <SchoolSideBar colleges={colleges} initPageNum={initPageNum}/>
+                            <bs.Col md="6">
+                                <SchoolSideBar colleges={colleges} initPageNum={initPageNum}/>
+                            </bs.Col>
+                            <bs.Col md="6">
+                                <NewSideBar colleges={colleges} initPageNum={initPageNum}/>
+                            </bs.Col>
+                            
                         </bs.Row>
-                    </bs.Container>
+                    </bs.Container> */}
 
                     <Switch>
                         <Route path={`${match.path}/:schId/:deptId`}>
