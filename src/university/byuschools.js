@@ -11,7 +11,8 @@ import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
 import SchoolTables from './schooltables'
 import Detail from './detail'
 import SchoolSideBar from './schoolsidebar'
-import NewSideBar from'../main/testing'
+import NewSideBar from'../main/newsidebar'
+import NewSideBarDesktop from'../main/newsidebardesktop'
 import { Auth } from 'aws-amplify';
 import AppContext from '../context/context'
 
@@ -183,27 +184,34 @@ function BYUSchools() {
 
             <Switch>
                 <Route path={`${match.path}/:schId/:deptId/:type/:oid`}>
-                    <Detail 
-                        professorsForCourse={professorsForCourse}
-                        // getProfsForCourse={getProfessorsForCourse}
-                        detailsLoading={isLoadingProfessorsForCourse}
-                        updateScore={updateScore} 
-                        getRatings={getRatings} 
-                        userRatings={userRatings} 
-                        departments={departments}
-                        createRating={createRating} 
-                        isLoading={isLoadingProfessors}
-                        nextPage={nextPage}
-                        previousPage={previousPage}
-                        pageNum={pageNum}
-                        pageStartIndex={pageStartIndex}
-                        searchFilter={searchFilter}
-                        handleChangeSearch={handleChangeSearch}
-                    />
+                    <div style={{marginTop: "3rem"}}>
+                        <Detail 
+                            professorsForCourse={professorsForCourse}
+                            // getProfsForCourse={getProfessorsForCourse}
+                            detailsLoading={isLoadingProfessorsForCourse}
+                            updateScore={updateScore} 
+                            getRatings={getRatings} 
+                            userRatings={userRatings} 
+                            departments={departments}
+                            createRating={createRating} 
+                            isLoading={isLoadingProfessors}
+                            nextPage={nextPage}
+                            previousPage={previousPage}
+                            pageNum={pageNum}
+                            pageStartIndex={pageStartIndex}
+                            searchFilter={searchFilter}
+                            handleChangeSearch={handleChangeSearch}
+                        />
+                    </div>
+                    
                 </Route>
 
                 <Route path="/schools">
-                    <NewSideBar colleges={colleges} initPageNum={initPageNum}/>
+                    <div class="headerContainer">
+                        <h1 id="categoryTitle">BYU Academics</h1>
+                        <NewSideBarDesktop colleges={colleges} initPageNum={initPageNum}/>
+                    </div>
+                    
                     {/* <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{textAlign: "left"}}>
                         <bs.Row className=" pb-5 pl-3 flex-grow-0 flex-shrink-0 border-bottom shadow-sm" >
                             <bs.Col md="6">

@@ -290,7 +290,9 @@ function SchoolTables(props) {
     else {
         return(
             <>
+                {/* <div style={{textAlign: "left", margin: "6em"}}> */}
                     {getTitle()} 
+                {/* </div> */}
     
                 <Switch>
                     <Route path={`${match.path}/${URL_PARAM_PROFESSORS}`}>

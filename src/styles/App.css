@@ -145,8 +145,8 @@
 @media(max-width:759px){
   .chartContent {
 
-    margin-right: 1em;
-    margin-left: 2em;
+    margin-right: 2em;
+    margin-left: 1em;
     text-align: left;
   }
 }
@@ -231,8 +231,8 @@
     justify-content: left;
     align-items: center;
     align-content: center;
-    margin-right: 6em;
-    margin-left: 6em;
+    margin-right: 1em;
+    margin-left: 1em;
     margin-top: 3em;
     text-align: left;
     margin-bottom: 2em;
@@ -305,4 +305,13 @@
 
 .tableItemThirdTitle {
   font-size: 1.4em;
+}
+
+.headerContainer {
+  background-color: #528db2;
+  margin: 0 0 3em 0;
+}
+
+#categoryTitle {
+  padding: 0 0 1em 0;
 }

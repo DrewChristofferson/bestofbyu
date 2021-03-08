@@ -136,15 +136,15 @@ function CreateCourseModal(props) {
             <Form>
                 <Form.Group controlId="exampleForm.ControlInput1" onChange={e => setFormData({ ...formData, 'name': e.target.value})}>
                     <Form.Label>Course Name</Form.Label>
-                    <Form.Control type="text" placeholder="James Smith" />
+                    <Form.Control type="text" placeholder="Principles of Accounting" />
                 </Form.Group>
                 <Form.Group controlId="exampleForm.ControlInput1" onChange={e => setFormData({ ...formData, 'code': e.target.value})}>
                     <Form.Label>Course Code</Form.Label>
-                    <Form.Control type="text" placeholder="James Smith" />
+                    <Form.Control type="text" placeholder="ACC 200" />
                 </Form.Group>
                 <Form.Group controlId="exampleForm.ControlInput1" onChange={e => setFormData({ ...formData, 'numCredits': e.target.value})}>
                     <Form.Label>Number of Credits</Form.Label>
-                    <Form.Control type="text" placeholder="James Smith" />
+                    <Form.Control type="number" placeholder="3" />
                 </Form.Group>
                 <Form.Group controlId="exampleForm.ControlSelect1" onChange={handleSchoolChange}>
                     <Form.Label>College</Form.Label>

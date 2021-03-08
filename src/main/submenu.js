@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link, useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import * as FaIcons from 'react-icons/fa'
@@ -9,18 +9,19 @@ import * as RiIcons from 'react-icons/ri';
 const SidebarLink = styled(Link)`
     display: flex;
     color: white;
-    height: 20px;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    list-style: none;
-    height: 60px;
+    padding: 0 20px;
+    margin: 0 10px;
+    position: relative;
+    height: 40px;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 14px;
+    background: black;
 
     &:hover {
-        background: #252831;
-        border-left: 4px solid #632ce4;
+        background: black;
+        border-bottom: 8px solid white;
         cursor: pointer;
         color: white;
         text-decoration: none;
@@ -28,26 +29,36 @@ const SidebarLink = styled(Link)`
 `;
 
 const SidebarLabel = styled.span`
-    margin-left: 16px;
+    margin-left: 6px;
 `;
+
+const DropdownContent = styled.div`
+    display: block;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 300px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+`
 
 const DropdownLink = styled(Link)`
     background: #414757;
     height: 60px;
-    padding-left: 3em;
-    display: flex;
-    align-items: center;
+    padding: 5px 1em 0 2em;
     text-decoration: none;
+    text-align: left;
+    display: block;
     color: #f5f5f5;
-    font-size: 18px;
+    font-size: 14px;
 
     &:hover {
-        background: #632ce4;
+        background: #2077B0;
         cursor: pointer;
         color: #f5f5f5;
         text-decoration: none;
     }
 `
+
 
 function Submenu(props) {
     const [subnav, setSubnav] = useState(false);
@@ -55,12 +66,14 @@ function Submenu(props) {
         opened: <RiIcons.RiArrowUpSFill />,
         closed: <RiIcons.RiArrowDownSFill />
     }
+    // const wrapperRef = useRef(null);
+    // useOutsideAlerter(wrapperRef, subnav);
 
     let match = useRouteMatch();
     let matchvars = useRouteMatch("/schools/:sid/:did/:type");
 
     let showSubnav = () => setSubnav(!subnav)
-    console.log(props.item)
+    
 
     return (
         <div>
@@ -85,15 +98,21 @@ function Submenu(props) {
                         : null}
                 </div>
             </SidebarLink>
-            {subnav && props.item.departments.items.map((department, index) => {
-                return(
-<               DropdownLink key={index} to={`${match.url}/${props.item.id}/${department.id}/${matchvars.params.type}`}>
-                    <FaIcons.FaBook />
-                    <SidebarLabel>{department.name}</SidebarLabel>
-                </DropdownLink>
-                )
-            })
-            }
+            <div style={{position: "relative", display: "inline-block"}}>
+                <DropdownContent >
+                    {subnav && props.item.departments.items.map((department, index) => {
+                        return(
+                            <DropdownLink key={index} to={`${match.url}/${props.item.id}/${department.id}/${matchvars.params.type}`} onClick={showSubnav}>
+                                <FaIcons.FaBook />
+                                <SidebarLabel>{department.name}</SidebarLabel>
+                            </DropdownLink>
+                        )
+                    })
+                    }
+                </DropdownContent>
+                
+            </div>
+            
         </div>
     )
 }
