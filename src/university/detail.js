@@ -519,7 +519,7 @@ function Detail(props) {
                      <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
                      <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em"}}>
                              <CreateModalClass />  
-                             <DataLineChart data={dataProfessors}/>                      
+                             {/* <DataLineChart data={dataProfessors}/>                       */}
                              {returnProfessors()}
                          </bs.Tab>
                          <bs.Tab eventKey="about" title="About">

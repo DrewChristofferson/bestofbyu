@@ -52,7 +52,7 @@ function ProfessorTable(props) {
                 </div>
             )   
         } 
-        else if (!props.detail && props.professors[1] >= 1){
+        else if (!props.detail && props.professors[1] >= 0){
             return(
                 <div className="pageNavigation">
                     <div className="tableHeaderChildMed">

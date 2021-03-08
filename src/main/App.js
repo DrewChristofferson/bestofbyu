@@ -7,7 +7,7 @@ import Content from '../content'
 import Header from './header'
 import Home from './home'
 import Detail from '../university/detail'
-import Testing from './testing'
+import Testing from './testing.js'
 import BYUSchools from '../university/byuschools'
 import Footer from './footer'
 
@@ -30,10 +30,7 @@ export default class App extends React.Component {
         <center>
             <Switch>
             <Route path="/schools">
-              <div style={{marginTop: "3em"}}>
-                <BYUSchools />
-              </div>
-                
+                <BYUSchools />               
               </Route>
               <Route path="/home">
                 <Home />

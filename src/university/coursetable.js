@@ -29,7 +29,7 @@ function CourseTable(props) {
     const VOTE_DOWN = "down";
 
     let getHeader = () => {
-        if (props.courses[1] >= 1){
+        if (props.courses[1] >= 0){
             return(
                 <div className="pageNavigation">
                     <div className="tableHeaderChildMed">
