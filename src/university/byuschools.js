@@ -207,7 +207,7 @@ function BYUSchools() {
                 </Route>
 
                 <Route path="/schools">
-                    <div class="headerContainer">
+                    <div className="headerContainer">
                         <h1 id="categoryTitle">BYU Academics</h1>
                         <NewSideBarDesktop colleges={colleges} initPageNum={initPageNum}/>
                     </div>
