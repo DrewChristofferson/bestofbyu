@@ -754,3 +754,108 @@ export const onDeleteProfessorComment = /* GraphQL */ `
     }
   }
 `;
+export const onCreateCategory = /* GraphQL */ `
+  subscription OnCreateCategory {
+    onCreateCategory {
+      id
+      name
+      description
+      numRatings
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateCategory = /* GraphQL */ `
+  subscription OnUpdateCategory {
+    onUpdateCategory {
+      id
+      name
+      description
+      numRatings
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteCategory = /* GraphQL */ `
+  subscription OnDeleteCategory {
+    onDeleteCategory {
+      id
+      name
+      description
+      numRatings
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateCategoryItem = /* GraphQL */ `
+  subscription OnCreateCategoryItem {
+    onCreateCategoryItem {
+      id
+      categoryID
+      category {
+        id
+        name
+        description
+        numRatings
+        createdAt
+        updatedAt
+      }
+      name
+      imgsrc
+      description
+      content
+      score
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateCategoryItem = /* GraphQL */ `
+  subscription OnUpdateCategoryItem {
+    onUpdateCategoryItem {
+      id
+      categoryID
+      category {
+        id
+        name
+        description
+        numRatings
+        createdAt
+        updatedAt
+      }
+      name
+      imgsrc
+      description
+      content
+      score
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteCategoryItem = /* GraphQL */ `
+  subscription OnDeleteCategoryItem {
+    onDeleteCategoryItem {
+      id
+      categoryID
+      category {
+        id
+        name
+        description
+        numRatings
+        createdAt
+        updatedAt
+      }
+      name
+      imgsrc
+      description
+      content
+      score
+      createdAt
+      updatedAt
+    }
+  }
+`;

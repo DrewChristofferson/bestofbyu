@@ -10,6 +10,7 @@ import Detail from '../university/detail'
 import Testing from './testing.js'
 import BYUSchools from '../university/byuschools'
 import Footer from './footer'
+import PageTemplate from '../pages/pagetemplate'
 
 
 
@@ -32,6 +33,9 @@ export default class App extends React.Component {
             <Route path="/schools">
                 <BYUSchools />               
               </Route>
+              <Route path="/category">
+                <PageTemplate />               
+              </Route>
               <Route path="/home">
                 <Home />
               </Route>
@@ -44,7 +48,7 @@ export default class App extends React.Component {
               </Route>
             </Switch>
         </center>
-      <Footer />
+      {/* <Footer /> */}
           {/* <AmplifySignOut /> */}
     </Router>
     );
