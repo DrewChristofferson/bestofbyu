@@ -77,10 +77,10 @@ function Submenu(props) {
 
     return (
         <div>
-            {/* <SidebarLink  onClick={props.subNav && showSubnav}>
+            {/* <SidebarLink to={`${match.url}/all/all/${matchvars.params.type}`} >
                 <div>
                     <FaIcons.FaBook />
-                    <SidebarLabel>All BYU Colleges</SidebarLabel>
+                    <SidebarLabel>Show All</SidebarLabel>
                     
                 </div>
             </SidebarLink> */}
@@ -100,6 +100,10 @@ function Submenu(props) {
             </SidebarLink>
             <div style={{position: "relative", display: "inline-block"}}>
                 <DropdownContent >
+                        {/* <DropdownLink key="all" to={`${match.url}/${props.item.id}/all/${matchvars.params.type}`} onClick={showSubnav}>
+                            <FaIcons.FaBook />
+                            <SidebarLabel>All Departments</SidebarLabel>
+                        </DropdownLink> */}
                     {subnav && props.item.departments.items.map((department, index) => {
                         return(
                             <DropdownLink key={index} to={`${match.url}/${props.item.id}/${department.id}/${matchvars.params.type}`} onClick={showSubnav}>
