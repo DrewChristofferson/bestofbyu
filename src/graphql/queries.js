@@ -444,6 +444,90 @@ export const listProfessorComments = /* GraphQL */ `
     }
   }
 `;
+export const getCategory = /* GraphQL */ `
+  query GetCategory($id: ID!) {
+    getCategory(id: $id) {
+      id
+      name
+      description
+      numRatings
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listCategorys = /* GraphQL */ `
+  query ListCategorys(
+    $filter: ModelCategoryFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCategorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        description
+        numRatings
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getCategoryItem = /* GraphQL */ `
+  query GetCategoryItem($id: ID!) {
+    getCategoryItem(id: $id) {
+      id
+      categoryID
+      category {
+        id
+        name
+        description
+        numRatings
+        createdAt
+        updatedAt
+      }
+      name
+      imgsrc
+      description
+      content
+      score
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listCategoryItems = /* GraphQL */ `
+  query ListCategoryItems(
+    $filter: ModelCategoryItemFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCategoryItems(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        categoryID
+        category {
+          id
+          name
+          description
+          numRatings
+          createdAt
+          updatedAt
+        }
+        name
+        imgsrc
+        description
+        content
+        score
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const ratingsByUserAndContent = /* GraphQL */ `
   query RatingsByUserAndContent(
     $userID: String
@@ -466,6 +550,46 @@ export const ratingsByUserAndContent = /* GraphQL */ `
         userID
         contentID
         ratingType
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const categoryByScore = /* GraphQL */ `
+  query CategoryByScore(
+    $categoryID: ID
+    $score: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelCategoryItemFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    categoryByScore(
+      categoryID: $categoryID
+      score: $score
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        categoryID
+        category {
+          id
+          name
+          description
+          numRatings
+          createdAt
+          updatedAt
+        }
+        name
+        imgsrc
+        description
+        content
+        score
         createdAt
         updatedAt
       }

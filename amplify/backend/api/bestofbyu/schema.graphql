@@ -76,3 +76,24 @@ type ProfessorComment @model
   content: String!
 }
 
+type Category @model
+{
+  id: ID!
+  name: String!
+  description: String!
+  numRatings: Int
+}
+
+type CategoryItem @model 
+  @key(name: "byCategory", fields: ["categoryID", "name"]) 
+  @key(name: "byCategoryScore", fields: ["categoryID", "score"], queryField : "categoryByScore") 
+{
+  id: ID!
+  categoryID: ID!
+  category: Category @connection(fields: ["categoryID"])
+  name: String!
+  imgsrc: String
+  description: String
+  content: String
+  score: Int!
+}

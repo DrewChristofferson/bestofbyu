@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import * as bs from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useRouteMatch, useLocation } from 'react-router-dom'
 import classroom from '../images/classroom.jpg'
 import boardgame from '../images/boardgame.jpg'
 import date from '../images/date.jpg'
@@ -12,6 +12,9 @@ import dog from '../images/dogs.jpg'
 import gift from '../images/gift.jpg'
 import idea from '../images/idea.png'
 import byu from '../images/byu1.jpg'
+import { listCategorys } from '../graphql/queries'
+import { API } from 'aws-amplify'
+
 
 
 let divStyle={
@@ -50,52 +53,11 @@ const categoryData = [
                 link: "/schools/all/all/courses",
                 imgsrc: date
             },
-            {
-                id: "vwefdsdfgh",
-                name: "Games",
-                description: "Find a new game for the next time your friends come over.",
-                ratings: 213,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/courses",
-                imgsrc: boardgame
-            }
-        ]
-    },
-    {
-        name: "Recently Added",
-        items: [
-            {
-                id: "vdrgdfbgdefr",
-                name: "Hikes",
-                description: "All the coolest hikes in Utah/Salt Lake Counties.",
-                ratings: 115,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/courses",
-                imgsrc: hikes
-            },
-            {
-                id: "abvtrghdfbg",
-                name: "Gift Ideas",
-                description: "Find the perfect gift for those you care about.",
-                ratings: 13,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/courses",
-                imgsrc: gift
-            }
         ]
     },
     {
         name: "All Categories",
         items: [
-            {
-                id: "sdvfrdehydfh",
-                name: "Dog Breeds",
-                description: "The best dog breeds to pick for your next pet.",
-                ratings: 115,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/courses",
-                imgsrc: dog
-            },
             {
                 id: "bvertsdfg",
                 name: "Business Ideas",
@@ -104,15 +66,6 @@ const categoryData = [
                 createdBy: "Best of BYU",
                 link: "/schools/all/all/courses",
                 imgsrc: idea
-            },
-            {
-                id: "bvsgshhmbbfhdfg",
-                name: "Recipes",
-                description: "Go from ramen to meals that would make your mom proud.",
-                ratings: 85,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/courses",
-                imgsrc: recipes
             },
             {
                 id: "bvsgshmhgmfgg",
@@ -130,62 +83,173 @@ const categoryData = [
 ]
 
 function Home() {
-    return(
-        <div className="py-0">
-            <bs.Jumbotron fluid style={divStyle} >
-                <bs.Container style={{my: "5rem"}} className="py-0">
-                    <h1 className="title">Best of BYU</h1>
-                    <bs.Form>
-                        <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
-                            <bs.Col md="6">
-                            <bs.Form.Control placeholder="Search classes, games, recipes, and more..." />
-                            </bs.Col>
-                        </bs.Row>
-                    </bs.Form>
-                    <h4 className="subtitle">
-                    Post. Vote. Browse.
-                    </h4>
-                </bs.Container>
-            </bs.Jumbotron>
-            <div>
-                {
-                    categoryData.map(category => {
-                        return(
-                            <div key={category.name} className="categorySection">
-                                <h1>{category.name}</h1>
-                                <div className="categoryPreview">
+    const [categorys, setCategorys] = useState({});
+    const [isLoadingCategorys, setIsLoadingCategorys] = useState(true);
 
-                                    {
-                                        category.items.map(item => {
-                                            return(
-                                                <bs.Card key={item.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
-                                                <Link to={item.link} className="nav-link" style={{color: "black"}}>
+
+    useState(() => {
+        getData();
+    }, [])
+
+
+    async function getData() {
+        const apiData = await API.graphql({ query: listCategorys });
+        const categorysFromAPI = apiData.data.listCategorys.items;
+
+        await Promise.all(categorysFromAPI.map(async category => {
+          return category;
+        }))
+
+        setCategorys(apiData.data.listCategorys.items);
+        console.log(apiData.data.listCategorys.items);
+        setIsLoadingCategorys(false);
+    }
+
+    if(categorys[0]){
+        return(
+            <div className="py-0">
+                <bs.Jumbotron fluid style={divStyle} >
+                    <bs.Container style={{my: "5rem"}} className="py-0">
+                        <h1 className="title">Best of BYU</h1>
+                        <bs.Form>
+                            <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
+                                <bs.Col md="6">
+                                <bs.Form.Control placeholder="Search classes, games, recipes, and more..." />
+                                </bs.Col>
+                            </bs.Row>
+                        </bs.Form>
+                        <h4 className="subtitle">
+                        Post. Vote. Browse.
+                        </h4>
+                    </bs.Container>
+                </bs.Jumbotron>
+                <div>
+                    <bs.Button >Create New Category</bs.Button>
+                </div>
+                <div className="categorySection">
+                    <h1>Recently Added</h1>
+                    <div className="categoryPreview">
+                        {
+                            categorys.map(category => {
+                                return(
+                                    <bs.Card key={category.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
+                                    <Link to={`/category/${category.id}`} className="nav-link" style={{color: "black"}}>
+                                    
+                                    <bs.Card.Img variant="top" src={boardgame} />
+                                    <bs.Card.Body>
+                                        <bs.Card.Title>{category.name}</bs.Card.Title>
+                                        <bs.Card.Text>
+                                        {category.description}
+                                        </bs.Card.Text>
+                                    </bs.Card.Body>
+                                    </Link>
+                                    </bs.Card>
+                                )
+                            })
+                        }
+                    </div>
+                    
+                </div>
+                
+                <div>
+                    {
+                        categoryData.map(category => {
+                            return(
+                                <div key={category.name} className="categorySection">
+                                    <h1>{category.name}</h1>
+                                    <div className="categoryPreview">
+    
+                                        {
+                                            category.items.map(item => {
+                                                return(
+                                                    <bs.Card key={item.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
+                                                    <Link to={item.link} className="nav-link" style={{color: "black"}}>
+                                                    
+                                                    <bs.Card.Img variant="top" src={item.imgsrc} />
+                                                    <bs.Card.Body>
+                                                        <bs.Card.Title>{item.name}</bs.Card.Title>
+                                                        <bs.Card.Text>
+                                                        {item.description}
+                                                        </bs.Card.Text>
+                                                    </bs.Card.Body>
+                                                    </Link>
+                                                    </bs.Card>
+                                                )
+                                            }
                                                 
-                                                <bs.Card.Img variant="top" src={item.imgsrc} />
-                                                <bs.Card.Body>
-                                                    <bs.Card.Title>{item.name}</bs.Card.Title>
-                                                    <bs.Card.Text>
-                                                    {item.description}
-                                                    </bs.Card.Text>
-                                                </bs.Card.Body>
-                                                </Link>
-                                                </bs.Card>
                                             )
                                         }
-                                            
-                                        )
-                                    }
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })
-                }
+                            )
+                        })
+                    }
+                </div>
+                            
             </div>
-                        
-        </div>
-        
-        
-    )
+            
+            
+        )
+    }
+    else{
+        return(
+            <div className="py-0">
+                <bs.Jumbotron fluid style={divStyle} >
+                    <bs.Container style={{my: "5rem"}} className="py-0">
+                        <h1 className="title">Best of BYU</h1>
+                        <bs.Form>
+                            <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
+                                <bs.Col md="6">
+                                <bs.Form.Control placeholder="Search classes, games, recipes, and more..." />
+                                </bs.Col>
+                            </bs.Row>
+                        </bs.Form>
+                        <h4 className="subtitle">
+                        Post. Vote. Browse.
+                        </h4>
+                    </bs.Container>
+                </bs.Jumbotron>
+                <div>
+                    {
+                        categoryData.map(category => {
+                            return(
+                                <div key={category.name} className="categorySection">
+                                    <h1>{category.name}</h1>
+                                    <div className="categoryPreview">
+    
+                                        {
+                                            category.items.map(item => {
+                                                return(
+                                                    <bs.Card key={item.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
+                                                    <Link to={item.link} className="nav-link" style={{color: "black"}}>
+                                                    
+                                                    <bs.Card.Img variant="top" src={item.imgsrc} />
+                                                    <bs.Card.Body>
+                                                        <bs.Card.Title>{item.name}</bs.Card.Title>
+                                                        <bs.Card.Text>
+                                                        {item.description}
+                                                        </bs.Card.Text>
+                                                    </bs.Card.Body>
+                                                    </Link>
+                                                    </bs.Card>
+                                                )
+                                            }
+                                                
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+                            
+            </div>
+            
+            
+        )
+    }
+    
 }
 
 export default Home

@@ -817,3 +817,126 @@ export const deleteProfessorComment = /* GraphQL */ `
     }
   }
 `;
+export const createCategory = /* GraphQL */ `
+  mutation CreateCategory(
+    $input: CreateCategoryInput!
+    $condition: ModelCategoryConditionInput
+  ) {
+    createCategory(input: $input, condition: $condition) {
+      id
+      name
+      description
+      numRatings
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateCategory = /* GraphQL */ `
+  mutation UpdateCategory(
+    $input: UpdateCategoryInput!
+    $condition: ModelCategoryConditionInput
+  ) {
+    updateCategory(input: $input, condition: $condition) {
+      id
+      name
+      description
+      numRatings
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteCategory = /* GraphQL */ `
+  mutation DeleteCategory(
+    $input: DeleteCategoryInput!
+    $condition: ModelCategoryConditionInput
+  ) {
+    deleteCategory(input: $input, condition: $condition) {
+      id
+      name
+      description
+      numRatings
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createCategoryItem = /* GraphQL */ `
+  mutation CreateCategoryItem(
+    $input: CreateCategoryItemInput!
+    $condition: ModelCategoryItemConditionInput
+  ) {
+    createCategoryItem(input: $input, condition: $condition) {
+      id
+      categoryID
+      category {
+        id
+        name
+        description
+        numRatings
+        createdAt
+        updatedAt
+      }
+      name
+      imgsrc
+      description
+      content
+      score
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateCategoryItem = /* GraphQL */ `
+  mutation UpdateCategoryItem(
+    $input: UpdateCategoryItemInput!
+    $condition: ModelCategoryItemConditionInput
+  ) {
+    updateCategoryItem(input: $input, condition: $condition) {
+      id
+      categoryID
+      category {
+        id
+        name
+        description
+        numRatings
+        createdAt
+        updatedAt
+      }
+      name
+      imgsrc
+      description
+      content
+      score
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteCategoryItem = /* GraphQL */ `
+  mutation DeleteCategoryItem(
+    $input: DeleteCategoryItemInput!
+    $condition: ModelCategoryItemConditionInput
+  ) {
+    deleteCategoryItem(input: $input, condition: $condition) {
+      id
+      categoryID
+      category {
+        id
+        name
+        description
+        numRatings
+        createdAt
+        updatedAt
+      }
+      name
+      imgsrc
+      description
+      content
+      score
+      createdAt
+      updatedAt
+    }
+  }
+`;

@@ -141,9 +141,12 @@ export const listDepartments = /* GraphQL */ `
             name
             title
             score
+            imgsrc
             department {
+              id
               name
               school {
+                id
                 name
               }
             }
@@ -156,10 +159,39 @@ export const listDepartments = /* GraphQL */ `
             name
             numCredits
             score
+            code
             description
+            isGeneral
+            generalReqID
+            classes {
+              items {
+                id
+                professorID
+                courseID
+                createdAt
+                updatedAt
+                professor {
+                  id
+                  name
+                  title
+                  score
+                  department {
+                    id
+                    name
+                    school {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+              nextToken
+            }
             department {
+              id
               name
               school {
+                id
                 name
               }
             }
@@ -210,6 +242,16 @@ export const getProfessor = /* GraphQL */ `
         }
         nextToken
       }
+      classes {
+        items {
+          id
+          professorID
+          courseID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -239,6 +281,9 @@ export const listProfessors = /* GraphQL */ `
         comments {
           nextToken
         }
+        classes {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -249,35 +294,38 @@ export const listProfessors = /* GraphQL */ `
 export const getCourse = /* GraphQL */ `
   query GetCourse($id: ID!) {
     getCourse(id: $id) {
+    name
+    numCredits
+    score
+    code
+    isGeneral
+    imgsrc
+    id
+    generalReqID
+    description
+    department {
       id
       name
-      code
-      numCredits
-      departmentID
-      department {
+      school {
         id
         name
-        schoolID
-        school {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        professors {
-          nextToken
-        }
-        courses {
-          nextToken
-        }
-        createdAt
-        updatedAt
       }
-      imgsrc
-      description
-      score
-      createdAt
-      updatedAt
+    }
+    classes {
+      items {
+        id
+        courseID
+        professor {
+          name
+          id
+          score
+          title
+          department {
+            name
+          }
+        }
+      }
+    }
     }
   }
 `;
@@ -304,6 +352,27 @@ export const listCourses = /* GraphQL */ `
         imgsrc
         description
         score
+        isGeneral
+        generalReqID
+        classes {
+          items {
+            id
+            professorID
+            courseID
+            createdAt
+            updatedAt
+            professor {
+              id
+              name
+              title
+              score
+              department {
+                name
+              }
+            }
+          }
+          nextToken
+        }
         createdAt
         updatedAt
       }
