@@ -5,6 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 import { updateCourse as updateCourseMutation } from '../graphql/mutations';
 import { updateProfessor as updateProfessorMutation } from '../graphql/mutations';
+import * as FaIcons from 'react-icons/fa'
+import * as AiIcons from 'react-icons/ai'
+import ClassImg from '../images/class.jpg'
 import AppContext from '../context/context'
 
 
@@ -17,7 +20,8 @@ function Table (props) {
 
     const CLASS_VOTE_UP = "tableSelectedUp";
     const CLASS_VOTE_DOWN = "tableSelectedDown";
-    const CLASS_NO_VOTE = "tableNotSelected";
+    const CLASS_NO_VOTE_DOWN = "tableNotSelectedDown";
+    const CLASS_NO_VOTE_UP = "tableNotSelectedUp";
     const URL_PARAM_COURSES = "courses";
     const URL_PARAM_PROFESSORS = "professors"
     const VOTE_UP  = "up";
@@ -37,8 +41,20 @@ function Table (props) {
         // setIsLoading(false);
     }
 
+    let getCardDetails = (course) => {
+        if(course.isGeneral){
+            return(
+                <p>{course.numCredits} Credits &middot; May fulfill {course.generalReqID} GE</p>  
+            )
+        } else {
+            return(
+                <p>{course.numCredits} Credits &middot; Not a GE</p>
+            )
+        }
+    }
 
-    let handleRatingClick = (id, increment, mutation, score) => {
+
+    let handleRatingClick = (event, id, increment, mutation, score) => {
         
         props.createRating(id, increment, mutation, score);
         if(props.refreshProfessors) {
@@ -69,21 +85,26 @@ function Table (props) {
                     {
                         props.courses.map((course, index) => (
                             <div className="ratingRow">
+                                
+                            <div key={index} className="tableItem" >
                                 <div className="scoreInfo">                               
                                     <div className={"ratingButtons"}>
-                                        <div className={course.userRating === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE } style={{ cursor: "pointer"}} onClick={() => handleRatingClick(course.id, VOTE_UP, updateCourseMutation, course.score)}>
-                                            <FontAwesomeIcon icon={faSortUp}/>
-                                        </div>
-                                        <div className={course.userRating === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE } style={{ cursor: "pointer"}} onClick={() => handleRatingClick(course.id, VOTE_DOWN, updateCourseMutation, course.score)}>
-                                            <FontAwesomeIcon icon={faSortDown}/>                                                
+                                        <div className={course.userRating === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE_UP }  onClick={(event) => handleRatingClick(event, course.id, VOTE_UP, updateCourseMutation, course.score)}>
+                                        <AiIcons.AiFillUpCircle />
                                         </div>
                                     </div>
                                     <div className="scoreDisplay">
-                                        {course.score}
+                                        {course.score} Points
                                     </div>
+                                    <div className={"ratingButtons"}>
+                                        <div className={course.userRating === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE_DOWN }  onClick={() => handleRatingClick(course.id, VOTE_DOWN, updateCourseMutation, course.score)}>
+                                        <AiIcons.AiFillDownCircle />                                              
+                                        </div>
+                                    </div>
+                                    
                                 </div>
-                            <div key={index} className="tableItem" >
-                                <div className="tableItemImg">
+                                <div className="tableItemImg" onClick={() => {handleClick(course.id)}}>
+                                    <img className="profile" alt={course.name} style={{height:"100%", width: "80%"}} src={ClassImg} />
 
                                 </div>
                                 <div className="tableItemContent" onClick={() => {handleClick(course.id)}}>
@@ -94,37 +115,33 @@ function Table (props) {
                                                     : `#${course.ranking}`}
                                         </div>
                                         <div className={"tableItemTitleHeading"}>
-                                            {course.name}
+                                            {course.name} ({course.code})
                                         </div>
                                     </div>
                                     <div className="tableItemSubtitle">
-                                        {course.code}
+                                        {course.department.name} in {course.department.school.name}
 
                                     </div>
 
                                     <div className="tableItemDetails">
-                                    <div>
-                                            <strong>Credits</strong> {": "  + course.numCredits}
-                                        </div>
-                                        <div>
-                                            <strong>Department</strong> {": " + course.department.name}
-                                        </div>
-                                        <div>
-                                            <strong>College</strong> {": " + course.department.school.name}
-                                        </div>
+                                        {getCardDetails(course)}
+                                    </div>
 
+                                    <div className="tableItemDetails">
+                                        <p>{course.description}</p>
                                     </div>
   
                                 </div>
                                 <div className="tableItemExtra">
-                                        <bs.Dropdown>
-                                            <bs.Dropdown.Toggle variant="info" id="dropdown-basic">
-                                                {/* <FontAwesomeIcon icon={faEllipsisV}/> */}
+                                        <bs.Dropdown >
+                                            <bs.Dropdown.Toggle  className="cardEllipsis" id="dropdown-basic">
+                                                <FaIcons.FaEllipsisH />
                                             </bs.Dropdown.Toggle>
 
                                             <bs.Dropdown.Menu>
-                                                <bs.Dropdown.Item href={`${match.url}/${URL_PARAM_COURSES}/${course.id}`}>View Details</bs.Dropdown.Item>
+                                                <bs.Dropdown.Item href={`${match.url}/${course.id}`}>View Details</bs.Dropdown.Item>
                                                 <bs.Dropdown.Item href="">Save {course.name}</bs.Dropdown.Item>
+                                                <bs.Dropdown.Item onClick={() => alert("Thank you uploading a photo.")}>Upload Photo</bs.Dropdown.Item>
                                                 <bs.Dropdown.Item onClick={() => alert("Thank you for marking " + course.name + " as a duplicate.")}>Mark Duplicate</bs.Dropdown.Item>
                                                 <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + course.name + ".")}>Report</bs.Dropdown.Item> 
                                             </bs.Dropdown.Menu>
@@ -200,7 +217,7 @@ function Table (props) {
                                         </bs.Dropdown.Toggle>
 
                                         <bs.Dropdown.Menu>
-                                            <bs.Dropdown.Item href={`${match.url}/${URL_PARAM_PROFESSORS}/${professor.id}`}>View Details</bs.Dropdown.Item>
+                                            <bs.Dropdown.Item href={`${match.url}/${professor.id}`}>View Details</bs.Dropdown.Item>
                                             <bs.Dropdown.Item href="">Save {professor.name}</bs.Dropdown.Item>
                                             <bs.Dropdown.Item onClick={() => alert("Thank you for marking " + professor.name + " as a duplicate.")}>Mark Duplicate</bs.Dropdown.Item>
                                             <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + professor.name + ".")}>Report</bs.Dropdown.Item>
@@ -219,25 +236,30 @@ function Table (props) {
         } else if (props.professors) {
             return(
                 <div className="table">
-                {
-                    props.professors.map((professor, index) => (
-                        <div className="ratingRow">
-                            <div className="scoreInfo">                               
-                                <div className={"ratingButtons"}>
-                                    <div className={professor.userRating === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE } style={{ cursor: "pointer"}} onClick={() => handleRatingClick(professor.id, VOTE_UP, updateProfessorMutation, professor.score)}>
-                                        <FontAwesomeIcon icon={faSortUp}/>
-                                    </div>
-                                    <div className={professor.userRating === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE } style={{ cursor: "pointer"}} onClick={() => handleRatingClick(professor.id, VOTE_DOWN, updateProfessorMutation, professor.score)}>
-                                        <FontAwesomeIcon icon={faSortDown}/>                                                
-                                    </div>
-                                </div>
-                                <div className="scoreDisplay">
-                                    {professor.score}
-                                </div>
-                            </div>
+                    {
+                        props.professors.map((professor, index) => (
+                            <div className="ratingRow">
+                                
                             <div key={index} className="tableItem" >
-                                <div className="tableItemImg">
+                                <div className="scoreInfo">                               
+                                    <div className={"ratingButtons"}>
+                                        <div className={professor.userRating === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE_UP }  onClick={(event) => handleRatingClick(event, professor.id, VOTE_UP, updateProfessorMutation, professor.score)}>
+                                        <AiIcons.AiFillUpCircle />
+                                        </div>
+                                    </div>
+                                    <div className="scoreDisplay">
+                                        {professor.score} Points
+                                    </div>
+                                    <div className={"ratingButtons"}>
+                                        <div className={professor.userRating === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE_DOWN }  onClick={() => handleRatingClick(professor.id, VOTE_DOWN, updateProfessorMutation, professor.score)}>
+                                        <AiIcons.AiFillDownCircle />                                              
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div className="tableItemImg" onClick={() => {handleClick(professor.id)}}>
                                     {props.getImg(professor)}
+
                                 </div>
                                 <div className="tableItemContent" onClick={() => {handleClick(professor.id)}}>
                                     <div className="tableItemTitle">
@@ -250,46 +272,43 @@ function Table (props) {
                                             {professor.name}
                                         </div>
                                     </div>
-                                    {/* <div className="tableItemSubtitle">
-                                        {course.code}
+                                    <div className="tableItemSubtitle">
+                                        {professor.department.name} in {professor.department.school.name}
 
-                                    </div> */}
+                                    </div>
 
                                     <div className="tableItemDetails">
-                                    <div>
-                                            <strong>Title</strong> {": "  + professor.title}
-                                        </div>
-                                        <div>
-                                            <strong>Department</strong> {": " + professor.department.name}
-                                        </div>
-                                        {/* <div>
-                                            <strong>College</strong> {": " + course.department.school.name}
-                                        </div> */}
+                                        {getCardDetails(professor)}
+                                    </div>
 
+                                    <div className="tableItemDetails">
+                                        <p>{professor.description}</p>
                                     </div>
   
                                 </div>
                                 <div className="tableItemExtra">
-                                    <bs.Dropdown>
-                                        <bs.Dropdown.Toggle variant="info" id="dropdown-basic">
-                                        </bs.Dropdown.Toggle>
+                                        <bs.Dropdown >
+                                            <bs.Dropdown.Toggle  className="cardEllipsis" id="dropdown-basic">
+                                                <FaIcons.FaEllipsisH />
+                                            </bs.Dropdown.Toggle>
 
-                                        <bs.Dropdown.Menu>
-                                            <bs.Dropdown.Item href={`${match.url}/${URL_PARAM_PROFESSORS}/${professor.id}`}>View Details</bs.Dropdown.Item>
-                                            <bs.Dropdown.Item href="">Save {professor.name}</bs.Dropdown.Item>
-                                            <bs.Dropdown.Item onClick={() => alert("Thank you for marking " + professor.name + " as a duplicate.")}>Mark Duplicate</bs.Dropdown.Item>
-                                            <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + professor.name + ".")}>Report</bs.Dropdown.Item>
-                                            
-                                        </bs.Dropdown.Menu>
-                                    </bs.Dropdown>
+                                            <bs.Dropdown.Menu>
+                                                <bs.Dropdown.Item href={`${match.url}/${professor.id}`}>View Details</bs.Dropdown.Item>
+                                                <bs.Dropdown.Item href="">Save {professor.name}</bs.Dropdown.Item>
+                                                <bs.Dropdown.Item onClick={() => alert("Thank you uploading a photo.")}>Upload Photo</bs.Dropdown.Item>
+                                                <bs.Dropdown.Item onClick={() => alert("Thank you for marking " + professor.name + " as a duplicate.")}>Mark Duplicate</bs.Dropdown.Item>
+                                                <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + professor.name + ".")}>Report</bs.Dropdown.Item> 
+                                            </bs.Dropdown.Menu>
+                                        </bs.Dropdown>
 
-                                </div>
+                                    </div>
                             </div>
-                            
-                        </div>
-                    ))
-                }
-            </div>
+                            </div>
+                        ))
+                    }
+                    
+                </div>
+                
             )
         }
         else {

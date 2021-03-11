@@ -7,6 +7,7 @@ import { updateProfessor as updateProfessorMutation } from '../graphql/mutations
 import TableFooter from '../utilities/tablefooter'
 import PreviousPage from '../utilities/previousPage'
 import NextPage from '../utilities/nextPage'
+import BooksImg from '../images/books.jpg'
 import SearchBar from '../utilities/searchbar'
 import CategoryToggle from '../utilities/categorytoggle'
 import PageNav from '../utilities/pageNav'
@@ -40,7 +41,7 @@ function ProfessorTable(props) {
             )
         } else {
             return(
-                <img className="profile" alt={professor.name} style={{height:"80px", width: "80px", cursor: "pointer"}} onClick={() => {alert("thanks for adding a photo")}} src="https://static.thenounproject.com/png/187803-200.png" />
+                <img className="profile" alt={professor.name} style={{height:"160px", width: "140px"}} src={BooksImg} />
             )
 
         }

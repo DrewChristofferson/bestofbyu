@@ -1,9 +1,7 @@
-#main-container {
-  width: 70%;
-}
+
 @media(min-width:1400px){
   #main-container {
-    width: 70%;
+    width: 85%;
   }
 }
 
@@ -15,8 +13,14 @@
 
 @media(max-width: 1399px){
   #main-container {
-    width: 85%;
+    width: 95%;
   }
+}
+
+.banner {
+  width: 100%;
+  height: 400px;
+  background: black;
 }
 
 .title {
@@ -54,12 +58,41 @@
   color: green
 }
 
+.tableSelectedUp:hover {
+  color: rgb(184, 235, 177);
+  transition: color 200ms linear;
+}
+
 .tableSelectedDown {
   color: red
 }
 
-.tableNotSelected {
+.tableSelectedDown:hover {
+  color: rgb(221, 146, 146);
+  transition: color 200ms linear;
+}
+
+.tableNotSelectedUp {
   color: black
+}
+
+.tableNotSelectedUp:not(:focus):hover {
+  color: rgb(184, 235, 177);
+  transition: color 200ms linear;
+}
+
+.tableNotSelectedUp:focus {
+  color: green;
+  transition: color 200ms linear;
+}
+
+.tableNotSelectedDown {
+  color: black
+}
+
+.tableNotSelectedDown:hover {
+  color: rgb(221, 146, 146);
+  transition: color 200ms linear;
 }
 
 #jumbo {
@@ -232,21 +265,20 @@
 
 @media(min-width:760px){
   .tableItem {
-    flex-basis: 90%;
+    /* flex-basis: 90%; */
     display: flex;
     flex-direction: row;
     justify-content: left;
     align-items: center;
     align-content: center;
-    margin-right: 6em;
     margin-top: 3em;
     text-align: left;
     margin-bottom: 2em;
     padding-bottom: 2em;
     padding-top: 2em;
     /* border-bottom: 1px #ccc solid; */
-    border: 1px rgba(0, 0, 0, 0.2) solid;
-    box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.2);
+    /* border: 1px rgba(0, 0, 0, 0.2) solid; */
+    box-shadow: 0 8px 16px 0 rgb(0 0 0 / 8%), 0 0 4px 0 rgb(0 0 0 / 8%);
     border-radius: 20px;
   }
 }
@@ -272,45 +304,57 @@
   }
 }
 
-.ratingRow {
+/* .ratingRow {
   display: flex;
   flex-direction: row;
   justify-content: left;
   align-items: center;
   align-content: center;
-}
+} */
 
 .scoreInfo {
-  flex-basis: 10%;
+  flex-basis: 15%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: right;
   align-items: center;
   align-content: center;
+  padding-left: 1em;
 }
 
 .ratingButtons {
-  flex-basis: 80%;
-  padding-left: 5em;
-  font-size: 2em;
+  /* flex-basis: 20%; */
+  /* padding-left: 5em; */
+  font-size: 2.5em;
+  cursor: pointer;
+  
+}
+
+.ratingButtons:hover {
+  /* flex-basis: 20%; */
+  /* padding-left: 5em; */
+  font-size: 2.5em;
+  cursor: pointer;
   
 }
 
 .scoreDisplay {
-  flex-basis: 20%;
-  padding-left: 1em;
-  padding-right: 2em;
-  font-size: 2em;
+  /* flex-basis: 20%; */
+  /* padding-left: 1em;
+  padding-right: 2em; */
+  font-size: 1.3em;
+  padding: 1em 0;
   
 }
 
 .tableItemImg {
   flex-basis: 25%;
   padding-left: 3em;
+  cursor: pointer;
 }
 
 .tableItemContent {
-  flex-basis: 65%;
+  flex-basis: 60%;
     display: flex;
     padding-left: 1em;
     flex-direction: column;
@@ -323,11 +367,12 @@
 
 .tableItemExtra {
   flex-basis: 10%;
-    cursor: pointer;
+  cursor: pointer;
+  align-self: flex-start;
 }
 
 .tableItemTitle {
-  width: 80%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: left;
@@ -335,24 +380,76 @@
 }
 
 .tableItemSubtitle {
-  margin-left: 2.8em;
-  font-size: 2em;
-  font-weight: 600;
+  /* margin-left: 2.8em; */
+  font-size: 1.2em;
+  font-weight: 300;
 }
 
 .tableItemDetails {
-  margin-top: 1.5em;
-  margin-left: 4.6em;
-  font-size: 1.2em;
+  margin-top: 0.5em;
+  /* margin-left: 4.6em; */
+  font-weight: 500;
+  font-size: 1em;
 }
 
 .tableItemTitleHeading {
-  font-size: 2.5em;
-  padding-left: 1em;
+  font-size: 1.5em;
+  font-weight: 600;
+  padding-left: 0.5em;
 }
 
 .tableItemTitleRanking {
-  font-size: 2.5em;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.dot {
+  height: 8px;
+  width: 8px;
+  background-color: gray;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+#dropdown-basic::after {
+  display:none;
+}
+
+.cardEllipsis {
+  color: black;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  background-color: white;
+  border: none;
+  transition: none;
+}
+.cardEllipsis:hover {
+  color: black;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  background: radial-gradient(rgba(136, 136, 136, 0.2), white);
+  border: none;
+  
+}
+.cardEllipsis:active {
+  color: black;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  background: radial-gradient(rgba(136, 136, 136, 0.2), white);
+  border: none;
+  
+}
+.cardEllipsis:focus {
+  color: black;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  background: radial-gradient(rgba(136, 136, 136, 0.2), white);
+  border: none;
+  
 }
 
 
@@ -377,13 +474,13 @@
 }
 
 .headerContainer {
-  background-image: url("https://media.glassdoor.com/l/21395/brigham-young-university-byu-office.jpg");
+  background-image: url("../images/academics.jpg");
   margin: 0 0 3em 0;
   background-size: cover;
   background-position: center center;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  position: relative;
+  position: relative; 
   width: 100%;
   height: 300px;
   box-shadow: inset 0px -20px 100px rgba(0,0,0,0.9);

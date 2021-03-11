@@ -14,6 +14,7 @@ import idea from '../images/idea.png'
 import byu from '../images/byu1.jpg'
 import { listCategorys } from '../graphql/queries'
 import { API } from 'aws-amplify'
+import CreateCatModal from '../utilities/createcatmodal'
 
 
 
@@ -111,6 +112,9 @@ function Home() {
                 <bs.Jumbotron fluid style={divStyle} >
                     <bs.Container style={{my: "5rem"}} className="py-0">
                         <h1 className="title">Best of BYU</h1>
+                        <h4 className="subtitle">
+                            Post. Vote. Browse.
+                        </h4>
                         <bs.Form>
                             <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
                                 <bs.Col md="6">
@@ -118,15 +122,12 @@ function Home() {
                                 </bs.Col>
                             </bs.Row>
                         </bs.Form>
-                        <h4 className="subtitle">
-                        Post. Vote. Browse.
-                        </h4>
+                        <p style={{color: "white", fontWeight: "700"}}>Now Trending: Classes, Baby Names, TV Shows on Netflix</p>
+                        
                     </bs.Container>
                 </bs.Jumbotron>
                 <div id="main-container">
-                    <div>
-                        <bs.Button >TODO: Create New Category</bs.Button>
-                    </div>
+                    
                     
                     <div className="categorySection">
                         <h1>Recently Added</h1>
@@ -151,6 +152,9 @@ function Home() {
                             }
                         </div>
                         
+                    </div>
+                    <div>
+                        <CreateCatModal />
                     </div>
                     
                     
