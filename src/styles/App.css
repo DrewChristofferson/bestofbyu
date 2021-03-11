@@ -1,3 +1,17 @@
+#main-container {
+  width: 70%;
+}
+@media(min-width:760px){
+  #main-container {
+    width: 70%;
+  }
+}
+
+@media(max-width:759px){
+  #main-container {
+    width: 100%;
+  }
+}
 
 .title {
   color: rgb(255, 255, 255);
@@ -58,8 +72,10 @@
 
 @media(min-width:760px){
   .pageNavigation {
+    width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    border-bottom: 2px black solid;
     align-items: flex-start;
     align-content: center;
     margin-top: 3em
@@ -204,16 +220,19 @@
   }
 }
 
+.table {
+  width: 100%;
+}
 
 @media(min-width:760px){
   .tableItem {
+    flex-basis: 90%;
     display: flex;
     flex-direction: row;
     justify-content: left;
     align-items: center;
     align-content: center;
     margin-right: 6em;
-    margin-left: 6em;
     margin-top: 3em;
     text-align: left;
     margin-bottom: 2em;
@@ -225,6 +244,8 @@
     border-radius: 20px;
   }
 }
+
+
 
 @media(max-width:759px){
   .tableItem {
@@ -245,6 +266,88 @@
   }
 }
 
+.ratingRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  align-content: center;
+}
+
+.scoreInfo {
+  flex-basis: 10%;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  align-items: center;
+  align-content: center;
+}
+
+.ratingButtons {
+  flex-basis: 80%;
+  padding-left: 5em;
+  font-size: 2em;
+  
+}
+
+.scoreDisplay {
+  flex-basis: 20%;
+  padding-left: 1em;
+  padding-right: 2em;
+  font-size: 2em;
+  
+}
+
+.tableItemImg {
+  flex-basis: 25%;
+  padding-left: 3em;
+}
+
+.tableItemContent {
+  flex-basis: 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: flex-start;
+    align-content: center;
+
+    text-align: left;
+}
+
+.tableItemExtra {
+  flex-basis: 10%;
+    cursor: pointer;
+}
+
+.tableItemTitle {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+
+}
+
+.tableItemSubtitle {
+  margin-left: 2.8em;
+  font-size: 2em;
+  font-weight: 600;
+}
+
+.tableItemDetails {
+  margin-top: 1.5em;
+  margin-left: 4.6em;
+  font-size: 1.2em;
+}
+
+.tableItemTitleHeading {
+  font-size: 2.5em;
+  padding-left: 1em;
+}
+
+.tableItemTitleRanking {
+  font-size: 2.5em;
+}
+
 
 
 /* select ever item in the table (excluding the first one) */
@@ -253,70 +356,37 @@
   padding-top: 0;
 } */
 
-@media(min-width:760px){
-  .tableItemChildSmall {
-    flex-basis: 10%;
-  }
-}
 
-@media(min-width:760px){
-  .tableItemChildBig {
-    flex-basis: 35%;
-  }
-}
 
-@media(max-width:759px){
-  .tableItemChildSmall {
-    margin: 2em;
-  }
-}
 
-@media(max-width:759px){
-  .tableItemChildBig {
-    margin: 2em;
-  }
-}
 
-.ratingButtons {
-  margin-left: 2em;
-  font-size: 2em;
-}
 
-@media(min-width:760px){
-  .tableRating {
-    font-size: 1.5em;
-    text-align: center;
-  }
-}
 
-@media(max-width:759px){
-  .tableRating {
-    font-size: 3em;
-    text-align: center;
-  }
-}
 
-.tableItemTitle {
-  font-size: 1.6em;
-  font-weight: 700;
-}
 
-.tableItemSubtitle {
-  font-size: 1.4em;
-  font-weight: 600;
-}
 
 .tableItemThirdTitle {
   font-size: 1.4em;
 }
 
 .headerContainer {
-  background-color: #f2daab;
+  background-image: url("https://media.glassdoor.com/l/21395/brigham-young-university-byu-office.jpg");
   margin: 0 0 3em 0;
+  background-size: cover;
+  background-position: center center;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  position: relative;
+  width: 100%;
+  height: 300px;
+  box-shadow: inset 0px -20px 100px rgba(0,0,0,0.9);
 }
 
 #categoryTitle {
-  padding: 1em 0 1em 0;
+  left: 80px;
+  bottom: 10px;
+  color: white;
+  position: absolute;
 }
 
 @media(min-width:760px){
@@ -342,12 +412,12 @@
 }
 
 .categorySection {
-  margin: 4em 6em 10em 6em;
+  margin: 0 6em 10em 0;
   text-align: left;
 }
 
 .categoryItemPreview {
-  margin: 0 2em 0 2em;
+  margin: 0 2em 2em 2em;
   height: 400px;
   border: none;
   box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2);

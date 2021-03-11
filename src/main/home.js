@@ -123,69 +123,74 @@ function Home() {
                         </h4>
                     </bs.Container>
                 </bs.Jumbotron>
-                <div>
-                    <bs.Button >Create New Category</bs.Button>
-                </div>
-                <div className="categorySection">
-                    <h1>Recently Added</h1>
-                    <div className="categoryPreview">
+                <div id="main-container">
+                    <div>
+                        <bs.Button >Create New Category</bs.Button>
+                    </div>
+                    
+                    <div className="categorySection">
+                        <h1>Recently Added</h1>
+                        <div className="categoryPreview">
+                            {
+                                categorys.map(category => {
+                                    return(
+                                        <bs.Card key={category.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
+                                        <Link to={`/category/${category.id}`} className="nav-link" style={{color: "black"}}>
+                                        
+                                        <bs.Card.Img variant="top" src={boardgame} />
+                                        <bs.Card.Body>
+                                            <bs.Card.Title>{category.name}</bs.Card.Title>
+                                            <bs.Card.Text>
+                                            {category.description}
+                                            </bs.Card.Text>
+                                        </bs.Card.Body>
+                                        </Link>
+                                        </bs.Card>
+                                    )
+                                })
+                            }
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    
+                    <div>
                         {
-                            categorys.map(category => {
+                            categoryData.map(category => {
                                 return(
-                                    <bs.Card key={category.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
-                                    <Link to={`/category/${category.id}`} className="nav-link" style={{color: "black"}}>
-                                    
-                                    <bs.Card.Img variant="top" src={boardgame} />
-                                    <bs.Card.Body>
-                                        <bs.Card.Title>{category.name}</bs.Card.Title>
-                                        <bs.Card.Text>
-                                        {category.description}
-                                        </bs.Card.Text>
-                                    </bs.Card.Body>
-                                    </Link>
-                                    </bs.Card>
+                                    <div key={category.name} className="categorySection">
+                                        <h1>{category.name}</h1>
+                                        <div className="categoryPreview">
+        
+                                            {
+                                                category.items.map(item => {
+                                                    return(
+                                                        <bs.Card key={item.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
+                                                        <Link to={item.link} className="nav-link" style={{color: "black"}}>
+                                                        
+                                                        <bs.Card.Img variant="top" src={item.imgsrc} />
+                                                        <bs.Card.Body>
+                                                            <bs.Card.Title>{item.name}</bs.Card.Title>
+                                                            <bs.Card.Text>
+                                                            {item.description}
+                                                            </bs.Card.Text>
+                                                        </bs.Card.Body>
+                                                        </Link>
+                                                        </bs.Card>
+                                                    )
+                                                }
+                                                    
+                                                )
+                                            }
+                                        </div>
+                                    </div>
                                 )
                             })
                         }
                     </div>
-                    
+                                
                 </div>
-                
-                <div>
-                    {
-                        categoryData.map(category => {
-                            return(
-                                <div key={category.name} className="categorySection">
-                                    <h1>{category.name}</h1>
-                                    <div className="categoryPreview">
-    
-                                        {
-                                            category.items.map(item => {
-                                                return(
-                                                    <bs.Card key={item.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
-                                                    <Link to={item.link} className="nav-link" style={{color: "black"}}>
-                                                    
-                                                    <bs.Card.Img variant="top" src={item.imgsrc} />
-                                                    <bs.Card.Body>
-                                                        <bs.Card.Title>{item.name}</bs.Card.Title>
-                                                        <bs.Card.Text>
-                                                        {item.description}
-                                                        </bs.Card.Text>
-                                                    </bs.Card.Body>
-                                                    </Link>
-                                                    </bs.Card>
-                                                )
-                                            }
-                                                
-                                            )
-                                        }
-                                    </div>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
-                            
             </div>
             
             

@@ -11,6 +11,8 @@ import SearchBar from '../utilities/searchbar'
 import CategoryToggle from '../utilities/categorytoggle'
 import PageNav from '../utilities/pageNav'
 import Table from './table'
+import NewSideBarDesktop from'../main/newsidebardesktop'
+
 
 
 
@@ -65,6 +67,7 @@ function CourseTable(props) {
     return(
         <div>
             {getHeader()}
+            <NewSideBarDesktop colleges={props.colleges} initPageNum={props.initPageNum}/>
             <Table courses={courses} createRating={props.createRating} getRatings={props.getRatings}/>
             <TableFooter numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
         </div>   

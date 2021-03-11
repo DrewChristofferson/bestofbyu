@@ -208,9 +208,10 @@ function BYUSchools() {
 
                 <Route path="/schools">
                     <div className="headerContainer">
+                        {/* <img alt="picture" src="https://brightspotcdn.byu.edu/31/bf/faa1cee3405387ff8d0d135ffab1/1810-23-0021-1200-4.jpg" /> */}
                         <h1 id="categoryTitle">BYU Academics</h1>
-                        <NewSideBarDesktop colleges={colleges} initPageNum={initPageNum}/>
                     </div>
+                    
                     
                     {/* <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{textAlign: "left"}}>
                         <bs.Row className=" pb-5 pl-3 flex-grow-0 flex-shrink-0 border-bottom shadow-sm" >
@@ -232,6 +233,7 @@ function BYUSchools() {
                                 userRatings={userRatings} 
                                 createRating={createRating} 
                                 departments={departments} 
+                                colleges={colleges}
                                 isLoading={isLoadingDepartments}
                                 nextPage={nextPage}
                                 previousPage={previousPage}
