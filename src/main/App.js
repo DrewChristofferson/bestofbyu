@@ -29,9 +29,13 @@ export default class App extends React.Component {
           </bs.Row>
         </bs.Container>
         <center>
+          
+            
             <Switch>
             <Route path="/schools">
-                <BYUSchools />               
+              <div id="main-container">
+                <BYUSchools />    
+              </div>           
               </Route>
               <Route path="/category">
                 <PageTemplate />               
@@ -47,7 +51,9 @@ export default class App extends React.Component {
                 <Home />
               </Route>
             </Switch>
+          
         </center>
+        
       {/* <Footer /> */}
           {/* <AmplifySignOut /> */}
     </Router>

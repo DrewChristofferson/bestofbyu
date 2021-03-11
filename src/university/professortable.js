@@ -11,6 +11,8 @@ import SearchBar from '../utilities/searchbar'
 import CategoryToggle from '../utilities/categorytoggle'
 import PageNav from '../utilities/pageNav'
 import Table from './table'
+import NewSideBarDesktop from'../main/newsidebardesktop'
+
 
 
 
@@ -33,12 +35,12 @@ function ProfessorTable(props) {
     let getImg = (professor) => {
         if (professor.imgsrc){
             return(
-                <img className="profile" alt={professor.name} style={{height:"100px", width: "90px"}} src={professor.imgsrc} />
+                <img className="profile" alt={professor.name} style={{height:"160px", width: "140px"}} src={professor.imgsrc} />
 
             )
         } else {
             return(
-                <img className="profile" alt={professor.name} style={{height:"100px", width: "100px"}} src="https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255626-stock-illustration-avatar-male-profile-gray-person.jpg" />
+                <img className="profile" alt={professor.name} style={{height:"80px", width: "80px", cursor: "pointer"}} onClick={() => {alert("thanks for adding a photo")}} src="https://static.thenounproject.com/png/187803-200.png" />
             )
 
         }
@@ -97,6 +99,9 @@ function ProfessorTable(props) {
     return(
         <div>
             {getHeader()}
+            
+            <NewSideBarDesktop colleges={props.colleges} initPageNum={props.initPageNum}/>
+                    
             <Table professors={professors} getImg={getImg} createRating={props.createRating} getRatings={props.getRatings}/>
             {getFooter()}
         </div>   

@@ -8,22 +8,23 @@ import * as RiIcons from 'react-icons/ri';
 
 const SidebarLink = styled(Link)`
     display: flex;
-    color: white;
+    color: black;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    margin: 0 10px;
+    margin: 0 10px 10px 0;
     position: relative;
     height: 40px;
     text-decoration: none;
     font-size: 14px;
-    background: black;
+    background: #8ab4ce;
+
 
     &:hover {
-        background: black;
-        border-bottom: 8px solid white;
+
+        border-bottom: 4px solid black;
         cursor: pointer;
-        color: white;
+        color: black;
         text-decoration: none;
     }
 `;
@@ -35,6 +36,8 @@ const SidebarLabel = styled.span`
 const DropdownContent = styled.div`
     display: block;
     position: absolute;
+    top: 40px;
+    left: 0;
     background-color: #f1f1f1;
     min-width: 300px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -44,9 +47,13 @@ const DropdownContent = styled.div`
 const DropdownLink = styled(Link)`
     background: #414757;
     height: 60px;
-    padding: 5px 1em 0 2em;
+    line-height: 60px;
+    padding: 0 10px;
     text-decoration: none;
-    text-align: left;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     display: block;
     color: #f5f5f5;
     font-size: 14px;
@@ -69,56 +76,129 @@ function Submenu(props) {
     // const wrapperRef = useRef(null);
     // useOutsideAlerter(wrapperRef, subnav);
 
-    let match = useRouteMatch();
-    let matchvars = useRouteMatch("/schools/:sid/:did/:type");
+    // let match = useRouteMatch();
+    let match = useRouteMatch("/:cat/:sid/:did/:type");
 
     let showSubnav = () => setSubnav(!subnav)
-    
 
-    return (
-        <div>
-            {/* <SidebarLink to={`${match.url}/all/all/${matchvars.params.type}`} >
+    let getAllDept = () => {
+        console.log(props.item)
+        if(subnav && !props.ge){
+            return(
+                <DropdownLink key="all" to={`/${match.params.cat}/${props.item.id}/all/${match.params.type}`} onClick={showSubnav}>
+                    {/* <FaIcons.FaBook /> */}
+                    <SidebarLabel>All Departments</SidebarLabel>
+                </DropdownLink>
+            )
+            
+        } else if (subnav && props.ge){
+            return(
+                <DropdownLink key="all" to={`/${match.params.cat}/${props.item.id}/all/${match.params.type}`} onClick={showSubnav}>
+                    {/* <FaIcons.FaBook /> */}
+                    <SidebarLabel>All Requirements</SidebarLabel>
+                </DropdownLink>
+                )
+        }
+    }
+
+
+    if (props.allColleges) {
+        return(
+            <SidebarLink to={`/${match.params.cat}/all/all/${match.params.type}`} >
                 <div>
-                    <FaIcons.FaBook />
-                    <SidebarLabel>Show All</SidebarLabel>
+                    {/* <FaIcons.FaBook /> */}
+                    <SidebarLabel>All Colleges</SidebarLabel>
                     
-                </div>
-            </SidebarLink> */}
-            <SidebarLink to={`${match.url}/${props.item.id}/all/${matchvars.params.type}`} onClick={showSubnav}>
-                <div>
-                    <FaIcons.FaBook />
-                    <SidebarLabel>{props.item.name}</SidebarLabel>
-                    
-                </div>
-                <div>
-                    {props.item.departments.items && subnav 
-                        ? dropdownIcon.opened
-                        : props.item.departments.items
-                        ? dropdownIcon.closed
-                        : null}
                 </div>
             </SidebarLink>
+        )
+    } else if (props.ge) {
+        return (
             <div style={{position: "relative", display: "inline-block"}}>
-                <DropdownContent >
-                        {/* <DropdownLink key="all" to={`${match.url}/${props.item.id}/all/${matchvars.params.type}`} onClick={showSubnav}>
-                            <FaIcons.FaBook />
-                            <SidebarLabel>All Departments</SidebarLabel>
-                        </DropdownLink> */}
-                    {subnav && props.item.departments.items.map((department, index) => {
-                        return(
-                            <DropdownLink key={index} to={`${match.url}/${props.item.id}/${department.id}/${matchvars.params.type}`} onClick={showSubnav}>
-                                <FaIcons.FaBook />
-                                <SidebarLabel>{department.name}</SidebarLabel>
-                            </DropdownLink>
-                        )
-                    })
-                    }
-                </DropdownContent>
+                {/* <SidebarLink to={`${match.url}/all/all/${match.params.type}`} >
+                    <div>
+                        <FaIcons.FaBook />
+                        <SidebarLabel>Show All</SidebarLabel>
+                        
+                    </div>
+                </SidebarLink> */}
+                <SidebarLink to={`/${match.params.cat}/${props.item.id}/all/${match.params.type}`} onClick={showSubnav}>
+                    <div>
+                        {/* <FaIcons.FaBook /> */}
+                        <SidebarLabel>General Education</SidebarLabel>
+                        
+                    </div>
+                    <div>
+                        {props.item && subnav 
+                            ? dropdownIcon.opened
+                            : props.item
+                            ? dropdownIcon.closed
+                            : null}
+                    </div>
+                </SidebarLink>
+                <div >
+                    <DropdownContent >
+                        {getAllDept()} 
+                        {subnav && props.item.requirements.map((requirement, index) => {
+                            return(
+                                <DropdownLink key={index} to={`/${match.params.cat}/${props.item.id}/${requirement.id}/${match.params.type}`} onClick={showSubnav}>
+                                    {/* <FaIcons.FaBook /> */}
+                                    <SidebarLabel>{requirement.reqName}</SidebarLabel>
+                                </DropdownLink>
+                            )
+                        })
+                        }
+                    </DropdownContent>
+                    
+                </div>
                 
             </div>
-            
-        </div>
-    )
+        )
+    }else {
+        return (
+            <div style={{position: "relative", display: "inline-block"}}>
+                {/* <SidebarLink to={`${match.url}/all/all/${match.params.type}`} >
+                    <div>
+                        <FaIcons.FaBook />
+                        <SidebarLabel>Show All</SidebarLabel>
+                        
+                    </div>
+                </SidebarLink> */}
+                <SidebarLink to={`/${match.params.cat}/${props.item.id}/all/${match.params.type}`} onClick={showSubnav}>
+                    <div>
+                        {/* <FaIcons.FaBook /> */}
+                        <SidebarLabel>{props.item.name}</SidebarLabel>
+                        
+                    </div>
+                    <div>
+                        {props.item.departments.items && subnav 
+                            ? dropdownIcon.opened
+                            : props.item.departments.items
+                            ? dropdownIcon.closed
+                            : null}
+                    </div>
+                </SidebarLink>
+                <div >
+                    <DropdownContent >
+                        {getAllDept()} 
+                        {subnav && props.item.departments.items.map((department, index) => {
+                            return(
+                                <DropdownLink key={index} to={`/${match.params.cat}/${props.item.id}/${department.id}/${match.params.type}`} onClick={showSubnav}>
+                                    {/* <FaIcons.FaBook /> */}
+                                    <SidebarLabel>{department.name}</SidebarLabel>
+                                </DropdownLink>
+                            )
+                        })
+                        }
+                    </DropdownContent>
+                    
+                </div>
+                
+            </div>
+        )
+    }
+
+    
 }
 
 export default Submenu;

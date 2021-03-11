@@ -23,7 +23,8 @@ const NavIcon = styled(Link)`
 `
 
 const SidebarNav = styled.nav`
-    width: 100%;
+    margin: 4em 0;
+    width: 75%;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -39,10 +40,98 @@ function NewSideBarDesktop(props) {
 
     // const showSidebar = () => setSidebar(!sidebar);
 
+    const schools = [
+        {
+            "name": "All Colleges"
+        }
+    ]
+
+    const generalEd = 
+        {
+            "id": "ge",
+            "requirements": [ 
+                {
+                    "id": "ge1",
+                    "reqName": "Social Science"
+
+                },
+                {
+                    "id": "ge2",
+                    "reqName": "Physical Science"
+
+                },
+                {
+                    "id": "ge3",
+                    "reqName": "Biological Science"
+
+                },
+                {
+                    "id": "ge4",
+                    "reqName": "Letters"
+
+                },
+                {
+                    "id": "ge5",
+                    "reqName": "Arts"
+
+                },
+                {
+                    "id": "ge6",
+                    "reqName": "Civilization 1"
+
+                },
+                {
+                    "id": "ge7",
+                    "reqName": "Civilization 2"
+
+                },
+                {
+                    "id": "ge8",
+                    "reqName": "Languages of Learning"
+
+                },
+                {
+                    "id": "ge9",
+                    "reqName": "Quantitative Reasoning"
+
+                },
+                {
+                    "id": "ge10",
+                    "reqName": "Adv Written & Oral Communication"
+
+                },
+                {
+                    "id": "ge11",
+                    "reqName": "First-Year Writing"
+
+                },
+                {
+                    "id": "ge12",
+                    "reqName": "Global and Cultural Awareneness"
+
+                },
+                {
+                    "id": "ge13",
+                    "reqName": "American Heritage"
+
+                },
+                {
+                    "id": "ge14",
+                    "reqName": "Religion"
+
+                }
+                
+            ]
+        }
+    
+
     return (
         <div>
             <SidebarNav >
                 {/* <SidebarWrap> */}
+                <SubMenu allColleges={true} key="all" />
+                <SubMenu ge={true} key="ge" item={generalEd}/>
+
                     {
                 props.colleges.map((college, index) => (
                     <SubMenu item={college} key={index} />
