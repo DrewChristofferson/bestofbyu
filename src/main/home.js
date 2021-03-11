@@ -114,7 +114,7 @@ function Home() {
                         <bs.Form>
                             <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
                                 <bs.Col md="6">
-                                <bs.Form.Control placeholder="Search classes, games, recipes, and more..." />
+                                <bs.Form.Control placeholder="TODO: Search classes, games, recipes, and more..." />
                                 </bs.Col>
                             </bs.Row>
                         </bs.Form>
@@ -125,7 +125,7 @@ function Home() {
                 </bs.Jumbotron>
                 <div id="main-container">
                     <div>
-                        <bs.Button >Create New Category</bs.Button>
+                        <bs.Button >TODO: Create New Category</bs.Button>
                     </div>
                     
                     <div className="categorySection">

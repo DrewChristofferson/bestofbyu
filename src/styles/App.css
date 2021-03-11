@@ -1,15 +1,21 @@
 #main-container {
   width: 70%;
 }
-@media(min-width:760px){
+@media(min-width:1400px){
   #main-container {
     width: 70%;
   }
 }
 
-@media(max-width:759px){
+@media(max-width:999px){
   #main-container {
     width: 100%;
+  }
+}
+
+@media(max-width: 1399px){
+  #main-container {
+    width: 85%;
   }
 }
 
@@ -306,11 +312,12 @@
 .tableItemContent {
   flex-basis: 65%;
     display: flex;
+    padding-left: 1em;
     flex-direction: column;
     justify-content: left;
     align-items: flex-start;
     align-content: center;
-
+    cursor: pointer;
     text-align: left;
 }
 
