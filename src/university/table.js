@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import * as bs from 'react-bootstrap'
-import { Link, useRouteMatch } from 'react-router-dom'
+import { Link, useRouteMatch, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 import { updateCourse as updateCourseMutation } from '../graphql/mutations';
@@ -9,9 +9,10 @@ import AppContext from '../context/context'
 
 
 function Table (props) {
-    const match = useRouteMatch("/schools/:sid/:did")
+    const match = useRouteMatch("/schools/:sid/:did/:type")
     const [profs, setProfs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    let history = useHistory();
 
 
     const CLASS_VOTE_UP = "tableSelectedUp";
@@ -54,14 +55,12 @@ function Table (props) {
                     setIsLoading(false)
                 }
             }
-        }
-    
-            
-            
-            
-        
-        
+        } 
     }
+
+    function handleClick(id) {
+        history.push(`${match.url}/${id}`);
+      }
 
     if(!isLoading){
         if (props.courses) { 
@@ -83,11 +82,11 @@ function Table (props) {
                                         {course.score}
                                     </div>
                                 </div>
-                            <div key={index} className="tableItem">
+                            <div key={index} className="tableItem" >
                                 <div className="tableItemImg">
 
                                 </div>
-                                <div className="tableItemContent">
+                                <div className="tableItemContent" onClick={() => {handleClick(course.id)}}>
                                     <div className="tableItemTitle">
                                         <div className={"tableItemTitleRanking"}>
                                             {course.ranking === 1 ? 
@@ -95,7 +94,7 @@ function Table (props) {
                                                     : `#${course.ranking}`}
                                         </div>
                                         <div className={"tableItemTitleHeading"}>
-                                            <Link to={`${match.url}/${URL_PARAM_COURSES}/${course.id}`}>{course.name}</Link>
+                                            {course.name}
                                         </div>
                                     </div>
                                     <div className="tableItemSubtitle">
@@ -161,11 +160,11 @@ function Table (props) {
                                     {professor.score}
                                 </div>
                             </div>
-                            <div key={index} className="tableItem">
+                            <div key={index} className="tableItem" >
                                 <div className="tableItemImg">
                                     {props.getImg(professor)}
                                 </div>
-                                <div className="tableItemContent">
+                                <div className="tableItemContent" onClick={() => {handleClick(professor.id)}}>
                                     <div className="tableItemTitle">
                                         <div className={"tableItemTitleRanking"}>
                                             {professor.ranking === 1 ? 
@@ -173,7 +172,7 @@ function Table (props) {
                                                     : `#${professor.ranking}`}
                                         </div>
                                         <div className={"tableItemTitleHeading"}>
-                                            <Link to={`${match.url}/${URL_PARAM_PROFESSORS}/${professor.id}`}>{professor.name}</Link>
+                                            {professor.name}
                                         </div>
                                     </div>
                                     {/* <div className="tableItemSubtitle">
@@ -236,11 +235,11 @@ function Table (props) {
                                     {professor.score}
                                 </div>
                             </div>
-                            <div key={index} className="tableItem">
+                            <div key={index} className="tableItem" >
                                 <div className="tableItemImg">
                                     {props.getImg(professor)}
                                 </div>
-                                <div className="tableItemContent">
+                                <div className="tableItemContent" onClick={() => {handleClick(professor.id)}}>
                                     <div className="tableItemTitle">
                                         <div className={"tableItemTitleRanking"}>
                                             {professor.ranking === 1 ? 
@@ -248,7 +247,7 @@ function Table (props) {
                                                     : `#${professor.ranking}`}
                                         </div>
                                         <div className={"tableItemTitleHeading"}>
-                                            <Link to={`${match.url}/${URL_PARAM_PROFESSORS}/${professor.id}`}>{professor.name}</Link>
+                                            {professor.name}
                                         </div>
                                     </div>
                                     {/* <div className="tableItemSubtitle">
