@@ -102,33 +102,33 @@ function BYUSchools() {
             try {
                 await API.graphql({ query: createRatingMutation, variables: { input: { "contentID": contentID, "userID": userid, "ratingType": type } }});
                 updateScore(contentID, score, type, mutationName);
-                getRatings(userid);
+                //getRatings(userid);
             } catch (e) {
                 return e;
             } finally {
-                getData();
+                //getData();
             }
         } else if (ratingIdFromAPI[0].ratingType === type){
             type === VOTE_UP ? type = VOTE_DOWN : type = VOTE_UP;
             try {
                 await API.graphql({ query: deleteRatingMutation, variables: { input: { "id": ratingIdFromAPI[0].id } }});
                 updateScore(contentID, score, type, mutationName);
-                getRatings(userid);
+                //getRatings(userid);
             } catch (e) {
                 return e;
             }finally {
-               getData();
+               //getData();
             }
         } else {
             type === VOTE_UP ? score += 1 : score -= 1;
             try {
                 await API.graphql({ query: updateRatingMutation, variables: { input: { "id": ratingIdFromAPI[0].id, "ratingType": type } }});
                 updateScore(contentID, score, type, mutationName);
-                getRatings(userid);
+                //getRatings(userid);
             } catch (e) {
                 return e;
             }finally {
-                getData();
+                //getData();
             }
         }
     }
@@ -188,6 +188,7 @@ function BYUSchools() {
                         <Detail 
                             professorsForCourse={professorsForCourse}
                             // getProfsForCourse={getProfessorsForCourse}
+                            getDepartments={getData}
                             detailsLoading={isLoadingProfessorsForCourse}
                             updateScore={updateScore} 
                             getRatings={getRatings} 
@@ -232,6 +233,7 @@ function BYUSchools() {
                                 getRatings={getRatings} 
                                 userRatings={userRatings} 
                                 createRating={createRating} 
+                                getDepartments={getData}
                                 departments={departments} 
                                 colleges={colleges}
                                 isLoading={isLoadingDepartments}

@@ -58,19 +58,19 @@
   color: green
 }
 
-.tableSelectedUp:hover {
+/* .tableSelectedUp:hover {
   color: rgb(184, 235, 177);
   transition: color 200ms linear;
-}
+} */
 
 .tableSelectedDown {
   color: red
 }
 
-.tableSelectedDown:hover {
+/* .tableSelectedDown:hover {
   color: rgb(221, 146, 146);
   transition: color 200ms linear;
-}
+} */
 
 .tableNotSelectedUp {
   color: black
@@ -262,6 +262,7 @@
 .table {
   width: 100%;
 }
+
 
 @media(min-width:760px){
   .tableItem {

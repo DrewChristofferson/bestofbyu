@@ -89,7 +89,7 @@ function ProfessorTable(props) {
     let getFooter = () => {
         if (!props.detail){
             return(
-                    <TableFooter numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
+                    <TableFooter numPages={numPages} getDepartments={props.getDepartments} departments={props.departments} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
             )
         } else {
             return null;

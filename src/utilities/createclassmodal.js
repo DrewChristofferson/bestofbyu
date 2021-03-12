@@ -61,6 +61,7 @@ function CreateClassModal(props) {
         //use props as state
         //props.setProfessors([ ...props.professors, formData ]);
         console.log("class was created")
+        props.fetchData();
         setSearchFormData(initialSearchFormState);
         
       }

@@ -56,6 +56,7 @@ function CreateProfModal(props) {
           const image = await Storage.get(formData.image);
           formData.image = image;
         }
+        props.getDepartments();
         setFormData(initialFormState);
       }
 
