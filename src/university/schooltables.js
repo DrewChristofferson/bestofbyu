@@ -296,10 +296,10 @@ function SchoolTables(props) {
     
                 <Switch>
                     <Route path={`${match.path}/${URL_PARAM_PROFESSORS}`}>
-                        <ProfessorTable  userid={userid} colleges={props.colleges} professors={getProfessors()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue} />
+                        <ProfessorTable  userid={userid} getDepartments={props.getDepartments} departments={props.departments} colleges={props.colleges} professors={getProfessors()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue} />
                     </Route>
                     <Route path={`${match.path}/${URL_PARAM_COURSES}`}>
-                        <CourseTable  userid={userid} colleges={props.colleges} courses={getCourses()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue} />
+                        <CourseTable  userid={userid} getDepartments={props.getDepartments} departments={props.departments}  colleges={props.colleges} courses={getCourses()} userRatings={props.userRatings} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue} />
                     </Route>
                 </Switch>
     

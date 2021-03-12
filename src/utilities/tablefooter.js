@@ -13,11 +13,11 @@ function TableFooter (props) {
     let returnButton = () => {
         if(match.params.type === "professors"){
             return(
-                <CreateProfModal />
+                <CreateProfModal getDepartments={props.getDepartments}/>
             )
         } else {
             return(
-                <CreateCourseModal />
+                <CreateCourseModal getDepartments={props.getDepartments}/>
             )
         }
     }

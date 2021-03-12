@@ -20,6 +20,8 @@ import NewSideBarDesktop from'../main/newsidebardesktop'
 function CourseTable(props) {
     const match = useRouteMatch("/schools/:sid/:did")
     let courses = props.courses[0]
+    
+    let totalItemsCount = props.courses[1];
     let numPages = Math.ceil(props.courses[1] / 10) ;
     let myIndex = props.courses[2];
 
@@ -41,7 +43,8 @@ function CourseTable(props) {
                         <SearchBar handleChangeSearch={props.handleChangeSearch} />
                     </div>
                     <div className="tableHeaderChildMed">
-                        <PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} />
+                        {/* <PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /> */}
+                        <p>Showing {courses.length} of {totalItemsCount} Results</p>
                     </div>
                 </div>
             )
@@ -68,8 +71,8 @@ function CourseTable(props) {
         <div>
             {getHeader()}
             <NewSideBarDesktop colleges={props.colleges} initPageNum={props.initPageNum}/>
-            <Table courses={courses} createRating={props.createRating} getRatings={props.getRatings}/>
-            <TableFooter numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
+            <Table courses={courses} totalItemsCount={totalItemsCount} departments={props.departments} createRating={props.createRating} getRatings={props.getRatings} userRatings={props.userRatings}/>
+            <TableFooter getDepartments={props.getDepartments} numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
         </div>   
     )
 }

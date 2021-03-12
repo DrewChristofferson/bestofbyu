@@ -9,6 +9,10 @@ import Table from './table'
 import DataLineChart from '../utilities/linechart'
 import DataPieChart from '../utilities/piechart'
 import CreateModalClass from '../utilities/createclassmodal'
+import { ratingsByUserAndContent } from '../graphql/queries';
+import { createRating as createRatingMutation } from '../graphql/mutations';
+import { updateRating as updateRatingMutation } from '../graphql/mutations';
+import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
 import img1 from '../images/detailplaceholders/one.jpg'
 import img2 from '../images/detailplaceholders/two.jpg'
 import img3 from '../images/detailplaceholders/three.jpg'
@@ -32,6 +36,8 @@ function Detail(props) {
     const [isLoadingComments, setIsLoadingComments] = useState(true);
     const [name, setName] = useState("");
     const context = useContext(AppContext)
+    const VOTE_UP  = "up";
+    const VOTE_DOWN = "down";
 
 
 
@@ -202,6 +208,65 @@ function Detail(props) {
         
     }
 
+    async function updateScore(id, score, increment, mutationName) {
+        try{
+            if (increment === VOTE_UP) {
+                await API.graphql({ query: mutationName, variables: { input: {"id": id, "score": score + 1} } });
+            }    
+            else if (increment === VOTE_DOWN){
+                await API.graphql({ query: mutationName, variables: { input: {"id": id, "score": score - 1} } });
+            }
+        }
+        catch (e) {
+            return e;
+        }
+  
+      }
+
+    async function createRating(contentID, type, mutationName, score) {
+        let ratingIdFromAPI;
+        if (!context.userid) return;
+        try {
+            const ratingData = await API.graphql({ query: ratingsByUserAndContent, variables: { "userID": context.userid, "contentID": {eq: contentID } }});
+            ratingIdFromAPI = ratingData.data.ratingsByUserAndContent.items;
+        } catch (e) {
+            return e;
+        }
+        if(ratingIdFromAPI[0] === undefined){
+            try {
+                await API.graphql({ query: createRatingMutation, variables: { input: { "contentID": contentID, "userID": context.userid, "ratingType": type } }});
+                updateScore(contentID, score, type, mutationName);
+                //getRatings(userid);
+            } catch (e) {
+                return e;
+            } finally {
+                //fetchData();
+            }
+        } else if (ratingIdFromAPI[0].ratingType === type){
+            type === VOTE_UP ? type = VOTE_DOWN : type = VOTE_UP;
+            try {
+                await API.graphql({ query: deleteRatingMutation, variables: { input: { "id": ratingIdFromAPI[0].id } }});
+                updateScore(contentID, score, type, mutationName);
+                //getRatings(userid);
+            } catch (e) {
+                return e;
+            }finally {
+                //fetchData();
+            }
+        } else {
+            type === VOTE_UP ? score += 1 : score -= 1;
+            try {
+                await API.graphql({ query: updateRatingMutation, variables: { input: { "id": ratingIdFromAPI[0].id, "ratingType": type } }});
+                updateScore(contentID, score, type, mutationName);
+                //getRatings(userid);
+            } catch (e) {
+                return e;
+            }finally {
+                //fetchData();
+            }
+        }
+    }
+
 
    async function fetchData() {
        setIsLoadingProfessors(true)
@@ -367,7 +432,7 @@ function Detail(props) {
         }
      
         //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
-        (professorsForCourse).sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
+        (professorsForCourse).sort((a, b) => (a.professor.score < b.professor.score) ? 1 : (a.professor.score === b.professor.score) ? ((a.professor.name > b.professor.name) ? 1 : -1) : -1 )
                 
         for (let i = 0; i < professorsForCourse.length; i++){
             professorsForCourse[i].professor.ranking = i + 1;
@@ -433,21 +498,25 @@ function Detail(props) {
    let returnProfessors = () => {
        if (isLoadingCourse || isLoadingProfessors){
             return(
-                <bs.Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </bs.Spinner>
+                <div style={{height: "200px"}}>
+                    <bs.Spinner animation="border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </bs.Spinner>
+                </div>
+                
             )
        } else {   
             if(!isLoadingProfessors){
                 return(
                     <bs.Container style={{paddingTop: "2rem"}} fluid>
                         <Table 
-                            professors={getProfessors()}
+                            getDepartments={props.getDepartments}
+                            professorsDetail={getProfessors()}
                             refreshProfessors={fetchData}
                             getRatings={props.getRatings}
                             courseid={course.id}
                             getImg={getImg}
-                            createRating={props.createRating} 
+                            createRating={createRating} 
                             pageNum={props.pageNum}
                             detail={true}
                         />  
@@ -518,7 +587,7 @@ function Detail(props) {
 
                      <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
                      <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em"}}>
-                             <CreateModalClass />  
+                             <CreateModalClass fetchData={fetchData}/>  
                              {/* <DataLineChart data={dataProfessors}/>                       */}
                              {returnProfessors()}
                          </bs.Tab>
