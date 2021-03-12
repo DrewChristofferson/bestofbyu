@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import * as bs from 'react-bootstrap'
-import { Link, useRouteMatch, useLocation } from 'react-router-dom'
+import { Link, useRouteMatch, useHistory } from 'react-router-dom'
 import classroom from '../images/classroom.jpg'
 import boardgame from '../images/boardgame.jpg'
 import date from '../images/date.jpg'
@@ -86,6 +86,7 @@ const categoryData = [
 function Home() {
     const [categorys, setCategorys] = useState({});
     const [isLoadingCategorys, setIsLoadingCategorys] = useState(true);
+    let history = useHistory();
 
 
     useState(() => {
@@ -105,6 +106,10 @@ function Home() {
         console.log(apiData.data.listCategorys.items);
         setIsLoadingCategorys(false);
     }
+
+    function handleClick(id) {
+        history.push(`category/${id}`);
+      }
 
     if(categorys[0]){
         return(
@@ -135,27 +140,49 @@ function Home() {
                             {
                                 categorys.map(category => {
                                     return(
-                                        <bs.Card key={category.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
-                                        <Link to={`/category/${category.id}`} className="nav-link" style={{color: "black"}}>
+                                        <div >
                                         
-                                        <bs.Card.Img variant="top" src={boardgame} />
-                                        <bs.Card.Body>
-                                            <bs.Card.Title>{category.name}</bs.Card.Title>
-                                            <bs.Card.Text>
-                                            {category.description}
-                                            </bs.Card.Text>
-                                        </bs.Card.Body>
-                                        </Link>
-                                        </bs.Card>
+                                            {/* <div className="catPreviewImg">
+                                                
+                                            </div>
+                                            <div className="catPreviewTitle">
+                                                {category.name}
+                                            </div>
+                                            <div className="catPreviewSubtitle">
+                                                {category.description}
+                                            </div> */}
+                                            <bs.Card key={category.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
+                                            <Link to={`/category/${category.id}`} className="nav-link" style={{color: "black"}}>
+                                            
+                                            <bs.Card.Img variant="top" src={boardgame} />
+                                            <bs.Card.Body>
+                                                <bs.Card.Title>{category.name}</bs.Card.Title>
+                                                <bs.Card.Text>
+                                                {category.description}
+                                                </bs.Card.Text>
+                                            </bs.Card.Body>
+                                            </Link>
+                                            </bs.Card>
+                                        </div>
                                     )
                                 })
                             }
                         </div>
                         
                     </div>
-                    <div>
-                        <CreateCatModal />
+                    <div className="banner">
+                        <div className="bannerTitle">
+                            Start a New Category
+                        </div>
+                        <div className="bannerSubtitle">
+                            In just a couple minutes you can set up a new ratings board for anything from TV Shows on Netflix to Protein Powder.
+                        </div>
+                        <div className="bannerCTA">
+                            <CreateCatModal />
+                        </div>
                     </div>
+                    
+                    
                     
                     
                     

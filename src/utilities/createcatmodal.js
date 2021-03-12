@@ -29,10 +29,8 @@ function CreateCatModal(props) {
 
 
     return (
-      <div style={{paddingLeft: "1rem"}}>
-        <div className="banner">
+      <div>
 
-        </div>
         <Button onClick={handleShow}>Add a New Category</Button>
   
         <Modal show={show} onHide={handleClose}>
