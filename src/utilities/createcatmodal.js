@@ -24,6 +24,7 @@ function CreateCatModal(props) {
           const image = await Storage.get(formData.image);
           formData.image = image;
         }
+        props.getCategorys();
         setFormData(initialFormState);
       }
 

@@ -175,10 +175,10 @@ function Home() {
                             Start a New Category
                         </div>
                         <div className="bannerSubtitle">
-                            In just a couple minutes you can set up a new ratings board for anything from TV Shows on Netflix to Protein Powder.
+                            In less than a minute you can set up a new ratings board for anything from TV Shows on Netflix to Protein Powder.
                         </div>
                         <div className="bannerCTA">
-                            <CreateCatModal />
+                            <CreateCatModal getCategorys={getData}/>
                         </div>
                     </div>
                     
