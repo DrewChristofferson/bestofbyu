@@ -120,7 +120,7 @@ function SchoolTables(props) {
             }
             
         }
-        for (let i = props.pageStartIndex; paginatedCourses.length < 10; i++){
+        for (let i = 0; i < props.pageStartIndex + 10; i++){
             
             if(filteredCourses[i]){
                 paginatedCourses.push(filteredCourses[i])
@@ -179,7 +179,7 @@ function SchoolTables(props) {
             
         }
         
-        for (let i = props.pageStartIndex; paginatedProfessors.length < 10; i++){
+        for (let i = 0; i < props.pageStartIndex + 10; i++){
             
             if(filteredProfessors[i]){
                 paginatedProfessors.push(filteredProfessors[i])

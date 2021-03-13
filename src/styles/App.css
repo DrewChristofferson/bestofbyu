@@ -1,4 +1,8 @@
 
+body {
+  font-family: 'Poppins', serif;
+}
+
 @media(min-width:1400px){
   #main-container {
     width: 85%;
@@ -13,7 +17,7 @@
 
 @media(max-width: 1399px){
   #main-container {
-    width: 95%;
+    width: 90%;
   }
 }
 
@@ -139,23 +143,7 @@
   color: black;
 }
 
-@media(min-width:760px){
-  .pageNavigation {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 2px black solid;
-    align-items: flex-start;
-    align-content: center;
-    margin-top: 3em
-  }
-}
 
-@media(max-width:759px){
-  .pageNavigation {
-    font-size: ".5em";
-  }
-}
 
 .pageNav {
   display: inline-block;
@@ -248,23 +236,49 @@
   flex-basis: 60%;
 }
 
-.tableHeaderChildBig {
-  flex-basis: 40%;
+@media(min-width:760px){
+  .tableHeader {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    border-bottom: 2px black solid;
+    align-items: flex-end;
+    align-content: flex-end;
+    margin-top: 3em
+  }
+}
+
+@media(max-width:759px){
+  .tableHeader {
+    font-size: ".5em";
+  }
+}
+
+.tableHeaderSearch {
+  flex-basis: 60%;
   margin: 20px;
   margin-left: 0;
 }
 
-.tableHeaderChildMed {
-  flex-basis: 30%;
+.tableHeaderToggle {
+  flex-basis: 20%;
   margin: 20px;
   margin-left: 0;
 }
 
-.tableHeaderChildSmall {
-  flex-basis: 10%;
+.tableHeaderResults {
+  flex-basis: 20%;
   margin: 20px;
   margin-left: 0;
+  font-size: 1.1em;
+  font-weight: 700;
 }
+
+.headerSearchBar {
+  width: 70%;
+}
+
 
 
 
@@ -585,4 +599,50 @@
 
 .catPreviewItem {
   margin: 0 2em 2em 2em;
+}
+
+.tableFooter {
+  margin: 2em 0;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  /* flex-flow: wrap; */
+  align-items: flex-start;
+  align-content: flex-start;
+  border: none;
+}
+
+.footerResults {
+  flex-basis: 35%;
+  margin-right: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* flex-flow: wrap; */
+  align-items: flex-end;
+  align-content: flex-start;
+}
+
+.footerDetail {
+  font-size: 1.2em;
+  /* margin-bottom: 5px; */
+}
+
+.footerButton {
+  font-size: 1em;
+  /* margin-bottom: 2em; */
+  color: #0000EE;
+  cursor: pointer;
+}
+
+.footerButton:hover {
+  font-size: 1em;
+  /* margin-bottom: 2em; */
+  color: #00beee;
+  text-decoration: underline;
+}
+
+.footerExtra {
+  font-size: .8em;
+  /* margin-bottom: 2em; */
 }

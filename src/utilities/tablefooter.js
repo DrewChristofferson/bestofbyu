@@ -25,49 +25,42 @@ function TableFooter (props) {
     let returnCreateButton = () => {
         if (props.numPages === 1 || props.numPages === 0 || props.pageNum === props.numPages){
             return(
-                <>
-                    <bs.Col md="3"></bs.Col>
-                        <bs.Col style={{fontSize: "2rem"}} md="7">
-                            <bs.Row>
-                                <h3>Don't see what you're looking for?</h3>
-                            </bs.Row>
-                            <bs.Row style={{paddingLeft: "8rem"}}>
-                                {returnButton()}
-                            </bs.Row>
-                        </bs.Col>
-                    <bs.Col md="2"></bs.Col>
-                </>
+                    <div>
+                        <h5>Don't see what you're looking for?</h5>
+                        {returnButton()}
+                    </div>
             )
         } else {
-            return null;
+            return (
+                <bs.Button onClick={() => props.nextPage(props.myIndex)}>See More</bs.Button>
+            )
         }
     }
     
     return(
-        <bs.Container>
-            <bs.Row style={{paddingBottom: "3em"}}>
+        <div className="tableFooter">
+            <div className="footerResults">
+                <div className="footerDetail">
+                    {props.totalItemsCount > 0 ?
+                        `Showing Results 1 -  ${props.myIndex} of ${props.totalItemsCount}`
+                        : null
+                    }
+                    
+                </div>
+                <div className="footerButton" onClick={() => window.scrollTo(0, 0)}>
+                {props.totalItemsCount > 0 ?
+                        "Back to Top"
+                        : null
+                    }
+                </div>
+            </div>
+            <div className="footerExtra">
                 {returnCreateButton()}
-            </bs.Row>
-            <bs.Row>
-                <bs.Col md="4"></bs.Col>
-                <bs.Col style={{fontSize: "1.2rem"}} md="5">
-                    <bs.Row>
-                        <bs.Col md="2">
-                            <PreviousPage pageNum={props.pageNum} previousPage={props.previousPage} myIndex={props.myIndex}/>
-                        </bs.Col>
-                        <bs.Col md="5" >
-                            <h5>Page {props.pageNum} of {props.numPages}</h5>
-                        </bs.Col>
-                        <bs.Col md="2">
-                            <NextPage pageNum={props.pageNum} numPages={props.numPages} nextPage={props.nextPage} myIndex={props.myIndex}/>
-                        </bs.Col>
-                        
-                    </bs.Row>
-                </bs.Col>
-                <bs.Col md="2"></bs.Col>
-            </bs.Row>
-        
-        </bs.Container>     
+            </div>
+            <div>
+
+            </div>
+        </div>   
     )
     
 }

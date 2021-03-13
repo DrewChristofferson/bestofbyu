@@ -180,7 +180,8 @@ function BYUSchools() {
         colleges.push(schools[i])
     }
 
-    return(
+    if(!isLoadingDepartments){
+        return(
 
             <Switch>
                 <Route path={`${match.path}/:schId/:deptId/:type/:oid`}>
@@ -258,7 +259,16 @@ function BYUSchools() {
             </Switch>
         
         
-    )
+        )
+    } else {
+        return(
+            <bs.Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+            </bs.Spinner>
+        )
+    }
+
+    
 }
 
 export default withAuthenticator(BYUSchools);

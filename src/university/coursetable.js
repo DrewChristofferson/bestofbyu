@@ -18,7 +18,7 @@ import NewSideBarDesktop from'../main/newsidebardesktop'
 
 
 function CourseTable(props) {
-    const match = useRouteMatch("/schools/:sid/:did")
+    const match = useRouteMatch("/schools/:sid/:did/:type")
     let courses = props.courses[0]
     
     let totalItemsCount = props.courses[1];
@@ -33,30 +33,19 @@ function CourseTable(props) {
     const VOTE_DOWN = "down";
 
     let getHeader = () => {
-        if (props.courses[1] >= 0){
+        if (!props.detail){
             return(
-                <div className="pageNavigation">
-                    <div className="tableHeaderChildMed">
+                <div className="tableHeader">
+                    <div className="tableHeaderToggle">
                         <CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/>
                     </div>
-                    <div className="tableHeaderChildBig">
+                    <div className="tableHeaderSearch">
                         <SearchBar handleChangeSearch={props.handleChangeSearch} />
                     </div>
-                    <div className="tableHeaderChildMed">
-                        {/* <PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} /> */}
-                        <p>Showing {courses.length} of {totalItemsCount} Results</p>
+                    <div className="tableHeaderResults">
+                        Found {totalItemsCount} {match.params.type}
                     </div>
                 </div>
-            )
-        } 
-        else if (props.courses[1] === 0){
-            return(
-                <div>
-                    <CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/>
-                    <SearchBar handleChangeSearch={props.handleChangeSearch} />  
-                </div>
-                        
-
             )
         } else {
             return null;
@@ -72,7 +61,7 @@ function CourseTable(props) {
             {getHeader()}
             <NewSideBarDesktop colleges={props.colleges} initPageNum={props.initPageNum}/>
             <Table courses={courses} totalItemsCount={totalItemsCount} departments={props.departments} createRating={props.createRating} getRatings={props.getRatings} userRatings={props.userRatings}/>
-            <TableFooter getDepartments={props.getDepartments} numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
+            <TableFooter getDepartments={props.getDepartments} totalItemsCount={totalItemsCount} numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
         </div>   
     )
 }

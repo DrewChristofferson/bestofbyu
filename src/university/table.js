@@ -8,7 +8,6 @@ import { updateProfessor as updateProfessorMutation } from '../graphql/mutations
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
 import ClassImg from '../images/class.jpg'
-import AppContext from '../context/context'
 import { Auth } from 'aws-amplify';
 
 
@@ -39,10 +38,6 @@ function Table (props) {
         // initCourses();
     }, [])
 
-    useEffect(() => {
-        console.log(props.userRatings)
-        console.log(props);
-    });
 
     let initData = () => {
         // let professors = Promise.resolve(props.professors)
@@ -172,8 +167,13 @@ function Table (props) {
         // } 
     }
 
-    function handleClick(id) {
-        history.push(`${match.url}/${id}`);
+    function handleClick(id, type) {
+        if(type){
+            history.push(`/schools/all/all/${type}/${id}`);
+        }
+        else {
+            history.push(`${match.url}/${id}`);
+        }
       }
 
     if(!isLoading){
@@ -281,11 +281,11 @@ function Table (props) {
                                     </div>
                                     
                                 </div>
-                                <div className="tableItemImg" onClick={() => {handleClick(professor.id)}}>
+                                <div className="tableItemImg" onClick={() => {handleClick(professor.id, "professors")}}>
                                     {props.getImg(professor)}
 
                                 </div>
-                                <div className="tableItemContent" onClick={() => {handleClick(professor.id)}}>
+                                <div className="tableItemContent" onClick={() => {handleClick(professor.id, "professors")}}>
                                     <div className="tableItemTitle">
                                         <div className={"tableItemTitleRanking"}>
                                             {professor.ranking === 1 ? 
@@ -297,8 +297,7 @@ function Table (props) {
                                         </div>
                                     </div>
                                     <div className="tableItemSubtitle">
-                                        {professor.department.name} in 
-                                        {/* {professor.department.school.name} */}
+                                        {professor.department.name} Department in {professor.department.school.name}
 
                                     </div>
 

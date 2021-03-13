@@ -128,7 +128,7 @@ function CreateProfModal(props) {
 
 
     return (
-      <div style={{paddingLeft: "1rem"}}>
+      <div>
         <Button onClick={handleShow}>Add a Professor</Button>
   
         <Modal show={show} onHide={handleClose}>

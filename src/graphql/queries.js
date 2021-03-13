@@ -322,6 +322,9 @@ export const getCourse = /* GraphQL */ `
           title
           department {
             name
+            school {
+              name
+            }
           }
         }
       }
