@@ -126,7 +126,7 @@ function CreateCourseModal(props) {
 
 
     return (
-      <div style={{paddingLeft: "1rem"}}>
+      <div>
         <Button onClick={handleShow}>Add a Course</Button>
   
         <Modal show={show} onHide={handleClose}>

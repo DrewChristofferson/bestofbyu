@@ -19,8 +19,9 @@ import NewSideBarDesktop from'../main/newsidebardesktop'
 
 
 function ProfessorTable(props) {
-    const match = useRouteMatch("/schools/:sid/:did")
+    const match = useRouteMatch("/schools/:sid/:did/:type")
     let professors = props.professors[0]
+    let totalItemsCount = props.professors[1];
     //if there are no professors, default the number of pages to 1
     let numPages = Math.ceil(props.professors[1] / 10);
     let myIndex = props.professors[2];
@@ -48,36 +49,19 @@ function ProfessorTable(props) {
     }
 
     let getHeader = () => {
-        if (props.detail && props.professors[1] >= 1){
+        if (!props.detail){
             return(
-                <div>
-                    <PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} />
-                </div>
-            )   
-        } 
-        else if (!props.detail && props.professors[1] >= 0){
-            return(
-                <div className="pageNavigation">
-                    <div className="tableHeaderChildMed">
+                <div className="tableHeader">
+                    <div className="tableHeaderToggle">
                         <CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/>
                     </div>
-                    <div className="tableHeaderChildBig">
+                    <div className="tableHeaderSearch">
                         <SearchBar handleChangeSearch={props.handleChangeSearch} />
                     </div>
-                    <div className="tableHeaderChildMed">
-                        <PageNav pageNum={props.pageNum} previousPage={props.previousPage} myIndex={myIndex} nextPage={props.nextPage} numPages={numPages} />
+                    <div className="tableHeaderResults">
+                        Found {totalItemsCount} {match.params.type}
                     </div>
                 </div>
-            )
-        } 
-        else if (!props.detail && props.professors[1] === 0){
-            return(
-                <div>
-                    <CategoryToggle handleChangeToggle={props.handleChangeToggle} CATEGORIES={props.CATEGORIES} categoryValue={props.categoryValue}/>
-                    <SearchBar handleChangeSearch={props.handleChangeSearch} />  
-                </div>
-                        
-
             )
         } else {
             return null;
@@ -89,7 +73,7 @@ function ProfessorTable(props) {
     let getFooter = () => {
         if (!props.detail){
             return(
-                    <TableFooter numPages={numPages} getDepartments={props.getDepartments} departments={props.departments} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
+                    <TableFooter numPages={numPages} totalItemsCount={totalItemsCount} getDepartments={props.getDepartments} departments={props.departments} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
             )
         } else {
             return null;
