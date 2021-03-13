@@ -1,4 +1,8 @@
 
+body {
+  font-family: 'Poppins', serif;
+}
+
 @media(min-width:1400px){
   #main-container {
     width: 85%;

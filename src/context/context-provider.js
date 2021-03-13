@@ -2,6 +2,10 @@ import React from 'react'
 import AppContext from './context'
 import App from '../main/App'
 import { Auth } from 'aws-amplify';
+import { listDepartments } from '../graphql/queries';
+import { API } from 'aws-amplify'
+
+
 
 /** The context provider for our app */
 export default class AppProvider extends React.Component {
