@@ -124,6 +124,10 @@ function CreateCourseModal(props) {
         setFormData({ ...formData, 'departmentID': schools[selectedSchool].departments.items[e.target.value].id});
       }
 
+      let submitHandler = (e) => {
+        e.preventDefault();
+      }
+
 
     return (
       <div>
@@ -134,7 +138,7 @@ function CreateCourseModal(props) {
             <Modal.Title>Add a New Course</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form>
+            <Form onSubmit={submitHandler}>
                 <Form.Group controlId="exampleForm.ControlInput1" onChange={e => setFormData({ ...formData, 'name': e.target.value})}>
                     <Form.Label>Course Name</Form.Label>
                     <Form.Control type="text" placeholder="Principles of Accounting" />

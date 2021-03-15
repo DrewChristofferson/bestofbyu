@@ -126,6 +126,10 @@ function CreateProfModal(props) {
         setFormData({ ...formData, 'departmentID': schools[selectedSchool].departments.items[e.target.value].id});
       }
 
+      let submitHandler = (e) => {
+        e.preventDefault();
+      }
+
 
     return (
       <div>
@@ -136,7 +140,7 @@ function CreateProfModal(props) {
             <Modal.Title>Add a New Professor</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form>
+            <Form onSubmit={submitHandler}>
                 <Form.Group controlId="exampleForm.ControlInput1" onChange={e => setFormData({ ...formData, 'name': e.target.value})}>
                     <Form.Label>Professor Name</Form.Label>
                     <Form.Control type="text" placeholder="James Smith" />

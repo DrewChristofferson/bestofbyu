@@ -16,6 +16,9 @@ function CreateCatModal(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    let submitHandler = (e) => {
+      e.preventDefault();
+    }
 
     async function createCategory() {
         if (!formData.name || !formData.description) return;
@@ -39,7 +42,7 @@ function CreateCatModal(props) {
             <Modal.Title>Add a New Category</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form>
+            <Form onSubmit={submitHandler}>
                 <Form.Group controlId="exampleForm.ControlInput1" onChange={e => setFormData({ ...formData, 'name': e.target.value})}>
                     <Form.Label>Category Name</Form.Label>
                     <Form.Control type="text" placeholder="Gift Ideas" />

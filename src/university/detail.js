@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import * as bs from 'react-bootstrap'
 import { Link, useRouteMatch, useHistory, useLocation } from 'react-router-dom'
-import { getProfessor, getCourse, listRatings } from '../graphql/queries'
+import { getProfessor, getCourse, listRatings, searchProfessors } from '../graphql/queries'
 import { API } from 'aws-amplify'
 import ProfessorTable from './professortable'
 import AppContext from '../context/context'
@@ -9,6 +9,9 @@ import Table from './table'
 import DataLineChart from '../utilities/linechart'
 import DataPieChart from '../utilities/piechart'
 import CreateModalClass from '../utilities/createclassmodal'
+import CreateModalClassProf from '../utilities/createclassmodalprof'
+import Button from "react-bootstrap/Button"
+import Form from "react-bootstrap/Form"
 import { ratingsByUserAndContent, listDepartments } from '../graphql/queries';
 import { createRating as createRatingMutation } from '../graphql/mutations';
 import { updateRating as updateRatingMutation } from '../graphql/mutations';
@@ -30,11 +33,14 @@ function Detail(props) {
     const [type, setType ] = useState(match.params.type);
     const [departments, setDepartments] = useState({});
     const [professorsForCourse, setProfessorsForCourse] = useState([]);
+    const [coursesForProfessor, setCoursesForProfessor] = useState([]);
     const [ratings, setRatings] = useState();
     const [isLoadingRatings, setIsLoadingRatings] = useState(true);
     const [comments, setComments] = useState();
+    const [isLoadingProfessor, setIsLoadingProfessor] = useState(true);
     const [isLoadingProfessors, setIsLoadingProfessors] = useState(true);
     const [isLoadingCourse, setIsLoadingCourse] = useState(true);
+    const [isLoadingCourses, setIsLoadingCourses] = useState(true);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
     const [isLoadingDepartments, setIsLoadingDepartments] = useState(true);
     const [name, setName] = useState("");
@@ -280,18 +286,33 @@ function Detail(props) {
 
 
    async function fetchData() {
-       setIsLoadingProfessors(true)
        if(match.params.type === "professors") {
+            setIsLoadingCourses(true);
             try{ 
                 const apiData = await API.graphql({ query: getProfessor, variables: { id: match.params.oid }  });
                 setProfessor(apiData.data.getProfessor)
                 setName(apiData.data.getProfessor.name)
                 setComments(apiData.data.getProfessor.comments.items)
                 setIsLoadingComments(false);
+                setIsLoadingProfessor(false);
+
+                if(apiData.data.getProfessor.classes) {
+                    let coursesFromAPI = apiData.data.getProfessor.classes.items;
+                    await Promise.all(coursesFromAPI.map(async course => {
+                        return course;
+                      })).then((values) => {
+                        setCoursesForProfessor(values);
+                        setIsLoadingCourses(false);
+                      }) 
+                } else {
+                    setIsLoadingCourses(false);
+                }
+
             } catch (e) {
                 console.log('Error: ' + e)
             }
        } else if (match.params.type === "courses"){
+            setIsLoadingProfessors(true);
             try{ 
                 const apiData = await API.graphql({ query: getCourse, variables: { id: match.params.oid } });
                 setCourse(apiData.data.getCourse);
@@ -427,6 +448,41 @@ function Detail(props) {
    }
 
 
+   let getCourses = async() => {
+        let courses = [];
+        let filteredCourses = [];
+        let paginatedCourses = [];
+        let endingIndex;
+
+        //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
+        (coursesForProfessor).sort((a, b) => (a.course.score < b.course.score) ? 1 : (a.course.score === b.course.score) ? ((a.course.name > b.course.name) ? 1 : -1) : -1 )
+                
+        for (let i = 0; i < coursesForProfessor.length; i++){
+            coursesForProfessor[i].course.ranking = i + 1;
+            if(coursesForProfessor[i].course.name.toLowerCase().includes(props.searchFilter.toLowerCase())){
+                for(let j = 0; j < props.userRatings.length; j++){
+                    if (props.userRatings[j].contentID === coursesForProfessor[i].course.id){
+                        coursesForProfessor[i].course.userRating = props.userRatings[j].ratingType;
+                    }   
+                }
+                filteredCourses.push(coursesForProfessor[i].course)
+            }
+        }
+
+        for (let i = props.pageStartIndex; paginatedCourses.length < 10; i++){
+                
+            if(filteredCourses[i]){
+                paginatedCourses.push(filteredCourses[i])
+            } else {
+                break;
+            }
+            endingIndex = i + 1;
+        }
+
+        return(paginatedCourses);
+
+    }
+
 
 
     let getProfessors = async() => {
@@ -436,15 +492,15 @@ function Detail(props) {
         let endingIndex;
         let classes ;
 
-        for (let i = 0; i < props.departments.length; i++) {
-            for(let j = 0; j < props.departments[i].courses.items.length; j ++){
-                if(props.departments[i].courses.items[j].classes.courseID === match.params.oid){
-                    for (let k = 0; k < props.departments[i].courses.items[j].classes.length; k ++){ 
-                        classes.push(props.departments[i].courses.items[j].classes[k].professor)
-                    }
-                }
-            }
-        }
+        // for (let i = 0; i < props.departments.length; i++) {
+        //     for(let j = 0; j < props.departments[i].courses.items.length; j ++){
+        //         if(props.departments[i].courses.items[j].classes.courseID === match.params.oid){
+        //             for (let k = 0; k < props.departments[i].courses.items[j].classes.length; k ++){ 
+        //                 classes.push(props.departments[i].courses.items[j].classes[k].professor)
+        //             }
+        //         }
+        //     }
+        // }
      
         //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
         (professorsForCourse).sort((a, b) => (a.professor.score < b.professor.score) ? 1 : (a.professor.score === b.professor.score) ? ((a.professor.name > b.professor.name) ? 1 : -1) : -1 )
@@ -543,21 +599,40 @@ function Detail(props) {
                     </bs.Container>
                 )
             }
-            //  else{
-            //     return(
-            //         <bs.Spinner animation="border" role="status">
-            //             <span className="sr-only">Loading...</span>
-            //         </bs.Spinner>
-            //     )
-            // }
-           
-                
-
         } 
     }
 
+   let returnCourses = () => {
+       if (isLoadingProfessor || isLoadingCourses){
+            return(
+                <div style={{height: "200px"}}>
+                    <bs.Spinner animation="border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </bs.Spinner>
+                </div>
+                
+            )
+       } else {   
+            if(!isLoadingCourses){
+                return(
+                    <bs.Container style={{paddingTop: "2rem"}} fluid>
+                        <Table 
+                            getDepartments={props.getDepartments}
+                            coursesDetail={getCourses()}
+                            refreshProfessors={fetchData}
+                            getRatings={props.getRatings}
+                            professorid={professor.id}
+                            getImg={getImg}
+                            createRating={createRating} 
+                            pageNum={props.pageNum}
+                            detail={true}
+                        />  
+                    </bs.Container>
+                )
+            }
+        } 
+    }
 
-   
 
    if (course && match.params.type === "courses"){
        return(
@@ -602,10 +677,12 @@ function Detail(props) {
                    
 
                      <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
-                     <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em"}}>
-                             <CreateModalClass fetchData={fetchData}/>  
+                        <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em", paddingBottom: "2em"}}>
+                             
                              {/* <DataLineChart data={dataProfessors}/>                       */}
                              {returnProfessors()}
+                             <h5>Do you know a professor who teaches {course.code}?</h5>
+                             <CreateModalClass fetchData={fetchData} courseCode={course.code}/>  
                          </bs.Tab>
                          <bs.Tab eventKey="about" title="About">
                              <h3 style={{paddingTop:"2rem"}}>Description</h3>
@@ -718,7 +795,14 @@ function Detail(props) {
             <bs.Row style={{marginTop: "3em", marginBottom: "3em"}}>
                 <bs.Col md="1"></bs.Col>
                 <bs.Col md="10">
-                    <bs.Tabs defaultActiveKey="home" id="controlled-tab-example">
+                    <bs.Tabs defaultActiveKey="courses" id="controlled-tab-example">
+                        <bs.Tab eventKey="courses" title="Courses" style={{paddingTop: "3em", paddingBottom: "2em"}}>
+                             
+                             {/* <DataLineChart data={dataProfessors}/>                       */}
+                             {returnCourses()}
+                             <h5>Do you know a course that {professor.name} teaches?</h5>
+                             <CreateModalClassProf fetchData={fetchData} name={professor.name}/>  
+                         </bs.Tab>
                         <bs.Tab eventKey="home" title="About">
                             <h3 style={{paddingTop:"2rem"}}>Description</h3>
                             <p>Write an unbiased description of {professor.name}. </p>

@@ -17,7 +17,7 @@ type Department @model
   courses: [Course] @connection(keyName: "byDepartmentCourse", fields: ["id"])
 }
 
-type Professor @model 
+type Professor @model @searchable
   @key(name: "byDepartment", fields: ["departmentID", "name"]) 
 {
   id: ID!
