@@ -4,21 +4,21 @@ import React, { useState, useEffect } from "react"
 import { useRouteMatch } from 'react-router-dom'
 import Form from "react-bootstrap/Form"
 import { API } from 'aws-amplify'
-import { listProfessors, listSchools } from '../graphql/queries';
+import { listCourses, listSchools } from '../graphql/queries';
 import { createClass as createClassMutation } from '../graphql/mutations';
 
 
 
     
-function CreateClassModal(props) {
+function CreateClassModalProf(props) {
     const match = useRouteMatch("/schools/:sid/:did/:type/:oid")
 
-    const initialSearchFormState = { professorID: '', courseID: match.params.oid}
+    const initialSearchFormState = { professorID: match.params.oid, courseID: ''}
     const [show, setShow] = useState(false);
     const [searchFormData, setSearchFormData] = useState(initialSearchFormState);
     
 
-    const [professors, setProfessors] = useState();
+    const [courses, setCourses] = useState();
     const [myFilteredProfessors, setMyFilteredProfessors] = useState();
     const [selectedProfessor, setSelectedProfessor] = useState();
     const [searchFilter, setSearchFilter] = useState('');
@@ -33,27 +33,27 @@ function CreateClassModal(props) {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        getProfessors();
+        getCourses();
     }, []);
 
-    async function getProfessors() {
+    async function getCourses() {
         let apiData;
-        let professors;
+        let courses;
         try {
-          apiData = await API.graphql({ query: listProfessors, variables: {limit: 500} });
-          professors = apiData.data.listProfessors.items;
+          apiData = await API.graphql({ query: listCourses, variables: {limit: 500} });
+          courses = apiData.data.listCourses.items;
     
-          await Promise.all(professors.map(async professor => {
-            return professor;
+          await Promise.all(courses.map(async course => {
+            return course;
           }))
         }catch (e) {
           console.log(e);
         }finally {
-          if(professors[0].id){
-            setSearchFormData({ ...searchFormData, 'professorID': professors[0].id});
+          if(courses[0].id){
+            setSearchFormData({ ...searchFormData, 'courseID': courses[0].id});
           }
         }
-        setProfessors(apiData.data.listProfessors.items);
+        setCourses(apiData.data.listCourses.items);
         setIsLoading(false);
       }
 
@@ -69,14 +69,14 @@ function CreateClassModal(props) {
         setSearchFormData(initialSearchFormState);
       }
 
-      let getProfessorsFromSearch = () => {
-          let filteredProfessors = [];
+      let getCoursesFromSearch = () => {
+          let filteredCourses = [];
         // console.log(professors)
 
-        if(professors){
-            professors.forEach(professor => {
-                if(professor.name.toLowerCase().includes(searchFilter.toLowerCase())){
-                    filteredProfessors.push(professor);
+        if(courses){
+            courses.forEach(course => {
+                if(course.name.toLowerCase().includes(searchFilter.toLowerCase())){
+                    filteredCourses.push(course);
                 }
             })
 
@@ -92,8 +92,8 @@ function CreateClassModal(props) {
                 {/* <option value={'DEFAULT'} disabled>Choose a college</option> */}
 
                 {
-                  filteredProfessors.map((professor, indx) => (
-                    <option key={indx} value={indx}>{professor.name}</option>
+                  filteredCourses.map((course, indx) => (
+                    <option key={indx} value={indx}>{course.code} - {course.name}</option>
 
                   ))
                 }
@@ -109,37 +109,37 @@ function CreateClassModal(props) {
 
  
 
-      let handleProfessorChange = (e) => {
-        let filteredProfessors = [];
-        if(professors){
-          professors.forEach(professor => {
-              if(professor.name.toLowerCase().includes(searchFilter.toLowerCase())){
-                  filteredProfessors.push(professor);
+      let handleCourseChange = (e) => {
+        let filteredCourses = [];
+        if(courses){
+          courses.forEach(course => {
+              if(course.name.toLowerCase().includes(searchFilter.toLowerCase()) || course.code.toLowerCase().includes(searchFilter.toLowerCase())){
+                filteredCourses.push(course);
               }
           })
         }
         console.log(e.target.value);
-        console.log(filteredProfessors[e.target.value].id)
-        console.log(filteredProfessors[e.target.value].name)
+        console.log(filteredCourses[e.target.value].id)
+        console.log(filteredCourses[e.target.value].name)
         setSelectedProfessor(e.target.value);
-        if(filteredProfessors[e.target.value]){
-            setSearchFormData({ ...searchFormData, 'professorID': filteredProfessors[e.target.value].id});
+        if(filteredCourses[e.target.value]){
+            setSearchFormData({ ...searchFormData, 'courseID': filteredCourses[e.target.value].id});
           }
       }
 
       let handleChangeSearch = (val) => {
         // console.log(val);
-        let filteredProfessors = [];
+        let filteredCourses = [];
         setSearchFilter(val);
-        if(professors){
-          professors.forEach(professor => {
-              if(professor.name.toLowerCase().includes(searchFilter.toLowerCase())){
-                  filteredProfessors.push(professor);
+        if(courses){
+          courses.forEach(course => {
+              if(course.name.toLowerCase().includes(searchFilter.toLowerCase())){
+                filteredCourses.push(course);
               }
           })
         }
-        if(filteredProfessors[0]){
-          setSearchFormData({ ...searchFormData, 'professorID': filteredProfessors[0].id});
+        if(filteredCourses[0]){
+          setSearchFormData({ ...searchFormData, 'courseID': filteredCourses[0].id});
         }
         // getProfessorsFromSearch();
     }
@@ -151,22 +151,22 @@ function CreateClassModal(props) {
 
     return (
       <div style={{paddingLeft: "1rem"}}>
-        <Button onClick={handleShow}>Add Professor for {props.courseCode}</Button>
+        <Button onClick={handleShow}>Add Course for {props.name}</Button>
         {/* <FontAwesomeIcon icon={faPlusCircle} onClick={handleShow} style={{cursor: "pointer", fontSize: "30px", marginTop: ".7rem"}} /> */}
   
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Add a New Professor for this Course</Modal.Title>
+            <Modal.Title>Add a New Course for this Professor</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form style={{paddingLeft: "1rem"}} onSubmit={submitHandler}>
                 <Form.Group controlId="exampleForm.ControlInput2" >
             
-                    <Form.Control type="text" placeholder="Search for a Professor" onChange={(e) => handleChangeSearch(e.currentTarget.value)}/>
+                    <Form.Control type="text" placeholder="Search for a Course" onChange={(e) => handleChangeSearch(e.currentTarget.value)}/>
                 </Form.Group>
-                <Form.Group controlId="exampleForm.ControlSelect2" onChange={handleProfessorChange}>
-                    <Form.Label>Professors</Form.Label>
-                    {getProfessorsFromSearch()}
+                <Form.Group controlId="exampleForm.ControlSelect2" onChange={handleCourseChange}>
+                    <Form.Label>Courses</Form.Label>
+                    {getCoursesFromSearch()}
                 </Form.Group>
             </Form>
           </Modal.Body>
@@ -175,7 +175,7 @@ function CreateClassModal(props) {
               Close
             </Button>
             <Button variant="primary" onClick={() => { createClass(); handleClose(); }}>
-              Add Professor
+              Add Course
             </Button>
           </Modal.Footer>
         </Modal>
@@ -183,4 +183,4 @@ function CreateClassModal(props) {
     );   
   }
   
-  export default CreateClassModal;
+  export default CreateClassModalProf;
