@@ -38,7 +38,9 @@ export default class App extends React.Component {
               </div>           
               </Route>
               <Route path="/category">
-                <PageTemplate />               
+              <div id="main-container">
+                <PageTemplate />    
+              </div>               
               </Route>
               <Route path="/home">
                 <Home />

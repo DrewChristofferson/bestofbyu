@@ -183,7 +183,8 @@ function PageTemplate() {
         colleges.push(category[i])
     }
 
-    return(
+    if(!isLoadingItems){
+        return(
             
             <Switch>
                 <Route path={`${match.path}/:oid`}>
@@ -211,9 +212,17 @@ function PageTemplate() {
                 </Route>
 
                 <Route path={match.path}>
+                    <div className="headerContainer">
+                        {/* <img alt="picture" src="https://brightspotcdn.byu.edu/31/bf/faa1cee3405387ff8d0d135ffab1/1810-23-0021-1200-4.jpg" /> */}
+                        <h1 id="categoryTitle">{category.name}</h1>
+                    </div>
                     <div>
-                        <h1>{category.name}</h1>
-                        <TableView categoryItems={categoryItems} />
+                        <div style={{textAlign: "left"}}>
+                            <h3>Description</h3>
+                            <p>{category.description}</p>
+                        </div>
+                        
+                        <TableView categoryItems={categoryItems} userRatings={userRatings} pageStartIndex={pageStartIndex}/>
 
                     </div>
                     {/* <div className="headerContainer">
@@ -247,6 +256,14 @@ function PageTemplate() {
         
         
     )
+    } else{
+        return(
+            <bs.Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+            </bs.Spinner>
+        )
+    }
+    
 }
 
 export default withAuthenticator(PageTemplate);
