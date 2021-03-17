@@ -12,6 +12,7 @@ import dog from '../images/dogs.jpg'
 import gift from '../images/gift.jpg'
 import idea from '../images/idea.png'
 import byu from '../images/byu1.jpg'
+import * as BsIcons from 'react-icons/bs'
 import { listCategorys } from '../graphql/queries'
 import { API } from 'aws-amplify'
 import CreateCatModal from '../utilities/createcatmodal'
@@ -86,6 +87,7 @@ const categoryData = [
 function Home() {
     const [categorys, setCategorys] = useState({});
     const [isLoadingCategorys, setIsLoadingCategorys] = useState(true);
+    const [searchSuggestions, setSearchSuggestions] = useState();
     let history = useHistory();
 
 
@@ -108,11 +110,55 @@ function Home() {
     }
 
     function handleClick(id) {
-        history.push(`category/${id}`);
+        if(id){
+            history.push(`category/${id}`);
+        }
       }
+
+    let handleSearchChange = (val) => {
+        let searchCategorys = [];
+        let regex;
+        if(val){
+            regex = new RegExp(`${val.toUpperCase()}`);
+
+            let i = 0;
+            while (searchCategorys.length <= 5){
+                if(categorys[i]){
+                    if(regex && regex.test(categorys[i].name.toUpperCase())){
+                        searchCategorys.push(categorys[i]);
+                    }     
+                    i++;
+                } else break;
+                
+            }
+            setSearchSuggestions(searchCategorys);
+        } else {
+            setSearchSuggestions();
+        }
+        
+        
+    }
+
+    let returnSearchSuggestions = () => {
+        if(searchSuggestions){
+            return(
+                searchSuggestions.map(category => ( 
+                    <div key={category.id} onClick={() => handleClick(category.id)}>
+                        <p>{category.name}</p>
+                    </div>   
+                ))
+            );
+        } else return null;
+    }
+
+    let submitHandler = (e) => {
+        e.preventDefault();
+    }
+
 
     if(categorys[0]){
         return(
+            <>
             <div className="py-0">
                 <bs.Jumbotron fluid style={divStyle} >
                     <bs.Container style={{my: "5rem"}} className="py-0">
@@ -120,14 +166,29 @@ function Home() {
                         <h4 className="subtitle">
                             Post. Vote. Browse.
                         </h4>
-                        <bs.Form>
+                        <bs.Form onSubmit={submitHandler}>
                             <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
                                 <bs.Col md="6">
-                                <bs.Form.Control placeholder="TODO: Search classes, games, recipes, and more..." />
+                                    <bs.InputGroup>
+                                        <bs.Form.Control style={{position: "relative"}} onChange={(e) => handleSearchChange(e.currentTarget.value)} placeholder="Search classes, games, recipes, and more..." />
+                                        <bs.InputGroup.Append onClick={() => handleClick(searchSuggestions ? searchSuggestions[0].id : null)}>
+                                            <bs.InputGroup.Text id="basic-addon2" style={{backgroundColor: "#2077B0", border: "none"}}><BsIcons.BsSearch style={{color: "white", cursor: "pointer"}}/></bs.InputGroup.Text>
+                                        </bs.InputGroup.Append>
+                                    </bs.InputGroup>
+                                
                                 </bs.Col>
                             </bs.Row>
                         </bs.Form>
-                        <p style={{color: "white", fontWeight: "700"}}>Now Trending: Classes, Baby Names, TV Shows on Netflix</p>
+                        <div className="searchDropdown">
+                            {returnSearchSuggestions()}
+                        </div>
+                        {/* !hardcoded! */}
+                        <p className="trending">
+                            Now Trending: 
+                            <span className="trending-item" onClick={() => handleClick(categorys[0].id)}> {categorys[0].name}</span>
+                            , <span className="trending-item" onClick={() => handleClick(categorys[1].id)}> {categorys[1].name}</span>
+                            , <span className="trending-item" onClick={() => handleClick(categorys[2].id)}> {categorys[2].name}</span>
+                        </p>
                         
                     </bs.Container>
                 </bs.Jumbotron>
@@ -140,7 +201,7 @@ function Home() {
                             {
                                 categorys.map(category => {
                                     return(
-                                        <div >
+                                        <div key={category.id}>
                                         
                                             {/* <div className="catPreviewImg">
                                                 
@@ -224,7 +285,7 @@ function Home() {
                 </div>
             </div>
             
-            
+            </>
         )
     }
     else{
