@@ -11,6 +11,7 @@ function Header() {
             bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
         }).then (user => {
             setUserEmail(user.attributes.email)
+            console.log(user.attributes.email)
         })
         .catch(err => console.log(err));
     }, []);
@@ -19,7 +20,9 @@ function Header() {
         createNavDropdown();
     });
 
+
     let createNavDropdown = () => {
+        console.log(userEmail)
         if(userEmail){
             return(
                 <bs.Nav>
@@ -33,7 +36,9 @@ function Header() {
             </bs.Nav>
             )
         } else {
-            return;
+            return (
+                <AmplifySignInButton>Sign In</AmplifySignInButton> 
+            );
         }
 
     }
