@@ -36,6 +36,7 @@ function Header() {
             </bs.Nav>
             )
         } else {
+            //change size
             return (
                 <AmplifySignInButton>Sign In</AmplifySignInButton> 
             );
