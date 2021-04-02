@@ -142,6 +142,30 @@ export const listDepartments = /* GraphQL */ `
             title
             score
             imgsrc
+            classes {
+              items {
+                id
+                professorID
+                courseID
+                createdAt
+                updatedAt
+                course {
+                  id
+                  name
+                  code
+                  score
+                  department {
+                    id
+                    name
+                    school {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+              nextToken
+            }
             department {
               id
               name
@@ -249,6 +273,20 @@ export const getProfessor = /* GraphQL */ `
           courseID
           createdAt
           updatedAt
+          course {
+            id
+            name
+            code
+            score
+            department {
+              id
+              name
+              school {
+                id
+                name
+              }
+            }
+          }
         }
         nextToken
       }
@@ -597,6 +635,50 @@ export const categoryByScore = /* GraphQL */ `
         updatedAt
       }
       nextToken
+    }
+  }
+`;
+
+export const searchProfessors = /* GraphQL */ `
+  query SearchProfessors(
+    $filter: SearchableProfessorFilterInput
+    $sort: SearchableProfessorSortInput
+    $limit: Int
+    $nextToken: String
+    $from: Int
+  ) {
+    searchProfessors(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+    ) {
+      items {
+        id
+        name
+        title
+        departmentID
+        department {
+          id
+          name
+          schoolID
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        score
+        comments {
+          nextToken
+        }
+        classes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+      total
     }
   }
 `;

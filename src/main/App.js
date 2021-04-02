@@ -7,7 +7,7 @@ import Content from '../content'
 import Header from './header'
 import Home from './home'
 import Detail from '../university/detail'
-import Testing from './testing.js'
+import CreateCategory from './createcategory.js'
 import BYUSchools from '../university/byuschools'
 import Footer from './footer'
 import PageTemplate from '../pages/pagetemplate'
@@ -37,7 +37,7 @@ export default class App extends React.Component {
                 <BYUSchools />    
               </div>           
               </Route>
-              <Route path="/category">
+              <Route path="/category/">
               <div id="main-container">
                 <PageTemplate />    
               </div>               
@@ -45,8 +45,8 @@ export default class App extends React.Component {
               <Route path="/home">
                 <Home />
               </Route>
-              <Route path="/test">
-                <Testing />
+              <Route path="/create/category">
+                <CreateCategory />
               </Route>
 
               <Route path="/">

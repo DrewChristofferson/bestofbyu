@@ -509,6 +509,7 @@ export const listCategorys = /* GraphQL */ `
         name
         description
         numRatings
+        imgsrc
         createdAt
         updatedAt
       }

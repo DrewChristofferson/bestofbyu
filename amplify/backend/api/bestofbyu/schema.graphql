@@ -82,6 +82,7 @@ type Category @model
   name: String!
   description: String!
   numRatings: Int
+  imgsrc: String
 }
 
 type CategoryItem @model 

@@ -827,6 +827,7 @@ export const createCategory = /* GraphQL */ `
       name
       description
       numRatings
+      imgsrc
       createdAt
       updatedAt
     }
@@ -842,6 +843,7 @@ export const updateCategory = /* GraphQL */ `
       name
       description
       numRatings
+      imgsrc
       createdAt
       updatedAt
     }
@@ -857,6 +859,7 @@ export const deleteCategory = /* GraphQL */ `
       name
       description
       numRatings
+      imgsrc
       createdAt
       updatedAt
     }
@@ -875,6 +878,7 @@ export const createCategoryItem = /* GraphQL */ `
         name
         description
         numRatings
+        imgsrc
         createdAt
         updatedAt
       }
@@ -901,6 +905,7 @@ export const updateCategoryItem = /* GraphQL */ `
         name
         description
         numRatings
+        imgsrc
         createdAt
         updatedAt
       }
@@ -927,6 +932,7 @@ export const deleteCategoryItem = /* GraphQL */ `
         name
         description
         numRatings
+        imgsrc
         createdAt
         updatedAt
       }

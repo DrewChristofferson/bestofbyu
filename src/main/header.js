@@ -4,6 +4,8 @@ import * as bs from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { AmplifySignOut, AmplifySignInButton } from '@aws-amplify/ui-react'
 
+
+
 function Header() {
     const [userEmail, setUserEmail] = useState(null);
     useEffect(() => {
