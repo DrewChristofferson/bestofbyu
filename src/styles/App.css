@@ -712,3 +712,19 @@ body {
   font-size: .8em;
   /* margin-bottom: 2em; */
 }
+
+.testImage {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.testImageClicked {
+  cursor: pointer;
+  border: 5px solid blue;
+  box-sizing: border-box;
+}
+
+.testImageContainer {
+  display: flex;
+  flex-wrap: wrap;
+}

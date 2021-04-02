@@ -16,6 +16,7 @@ import * as BsIcons from 'react-icons/bs'
 import { listCategorys } from '../graphql/queries'
 import { API } from 'aws-amplify'
 import CreateCatModal from '../utilities/createcatmodal'
+import CreateCategory from './createcategory'
 
 
 
@@ -164,7 +165,7 @@ function Home() {
                     <bs.Container style={{my: "5rem"}} className="py-0">
                         <h1 className="title">Best of BYU</h1>
                         <h4 className="subtitle">
-                            Post. Vote. Browse.
+                            Crowd-sourced Ratings by Category
                         </h4>
                         <bs.Form onSubmit={submitHandler}>
                             <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
@@ -215,7 +216,7 @@ function Home() {
                                             <bs.Card key={category.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
                                             <Link to={`/category/${category.id}`} className="nav-link" style={{color: "black"}}>
                                             
-                                            <bs.Card.Img variant="top" src={boardgame} />
+                                            <bs.Card.Img variant="top" alt="img" src={category.imgsrc ? category.imgsrc : boardgame} />
                                             <bs.Card.Body>
                                                 <bs.Card.Title>{category.name}</bs.Card.Title>
                                                 <bs.Card.Text>
@@ -239,7 +240,8 @@ function Home() {
                             In less than a minute you can set up a new ratings board for anything from TV Shows on Netflix to Protein Powder.
                         </div>
                         <div className="bannerCTA">
-                            <CreateCatModal getCategorys={getData}/>
+                            <bs.Button onClick={() => history.push("/create/category")}>Create New Category</bs.Button>
+                            {/* <CreateCatModal getCategorys={getData}/> */}
                         </div>
                     </div>
                     
