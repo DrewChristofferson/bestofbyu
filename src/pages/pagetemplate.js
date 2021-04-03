@@ -3,7 +3,7 @@ import * as bs from 'react-bootstrap'
 import { API, container, Storage } from 'aws-amplify'
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { listSchools, listDepartments, getCourse, getCategory, listCategoryItems } from '../graphql/queries';
-import { Switch, Route, useRouteMatch } from 'react-router-dom'
+import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom'
 import { ratingsByUserAndContent } from '../graphql/queries';
 import { createRating as createRatingMutation } from '../graphql/mutations';
 import { updateRating as updateRatingMutation } from '../graphql/mutations';
@@ -11,6 +11,7 @@ import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
 import SchoolTables from '../university/schooltables'
 import Detail from './detail'
 import TableView from './tableview'
+import CreateCatItem from '../main/createcatitem'
 
 import NewSideBarDesktop from'../main/newsidebardesktop'
 import { Auth } from 'aws-amplify';
@@ -33,7 +34,8 @@ function PageTemplate() {
     const VOTE_DOWN = "down";
     let colleges = []
     const context = useContext(AppContext)
-    const match = useRouteMatch("/category/:cid")
+    const match = useRouteMatch("/category/:cid");
+    const history = useHistory();
 
 
     useEffect(() => {
@@ -177,6 +179,10 @@ function PageTemplate() {
         setPageNum(1);
         setPageStartIndex(0);
     }
+
+    let handleCreateItem = () => {
+        history.push(`${match.path}/create`)
+    }
     
     
     for (let i = 0; i < category.length; i ++) {
@@ -184,6 +190,7 @@ function PageTemplate() {
     }
 
     if(!isLoadingItems){
+        console.log(category.imgsrc)
         return(
             
             <Switch>
@@ -210,17 +217,46 @@ function PageTemplate() {
                     </div>
                     
                 </Route>
+                <Route path={`${match.path}/create`}>
+                    <div style={{marginTop: "3rem"}}>
+                        <CreateCatItem categoryItems={categoryItems} category={category} getRatings={getRatings} />
+                        {/* <Detail 
+                            professorsForCourse={professorsForCourse}
+                            // getProfsForCourse={getProfessorsForCourse}
+                            detailsLoading={isLoadingProfessorsForCourse}
+                            updateScore={updateScore} 
+                            getRatings={getRatings} 
+                            userRatings={userRatings} 
+                            departments={departments}
+                            createRating={createRating} 
+                            isLoading={isLoadingProfessors}
+                            nextPage={nextPage}
+                            previousPage={previousPage}
+                            pageNum={pageNum}
+                            pageStartIndex={pageStartIndex}
+                            searchFilter={searchFilter}
+                            handleChangeSearch={handleChangeSearch}
+                        /> */}
+                    </div>
+                    
+                </Route>
 
                 <Route path={match.path}>
-                    <div className="headerContainer">
+                    <div style={{background: `url(${category.imgsrc}&w=800&dpr=2`}} className="headerContainer" >
                         {/* <img alt="picture" src="https://brightspotcdn.byu.edu/31/bf/faa1cee3405387ff8d0d135ffab1/1810-23-0021-1200-4.jpg" /> */}
                         <h1 id="categoryTitle">{category.name}</h1>
                     </div>
                     <div>
-                        <div style={{textAlign: "left"}}>
-                            <h3>Description</h3>
-                            <p>{category.description}</p>
+                        <div className="categoryDetails">
+                            <div style={{textAlign: "left"}}>
+                                <h3>Description</h3>
+                                <p>{category.description}</p>
+                            </div>
+                            <div>
+                                <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
+                            </div>
                         </div>
+                        
                         
                         <TableView categoryItems={categoryItems} userRatings={userRatings} pageStartIndex={pageStartIndex}/>
 

@@ -6,11 +6,11 @@ import Modal from "react-bootstrap/Modal"
 import Form from "react-bootstrap/Form"
 import { API } from 'aws-amplify'
 import { listSchools } from '../graphql/queries';
-import { createCategory as createCategoryMutation } from '../graphql/mutations';
+import { createCategoryItem as createCategoryItemMutation } from '../graphql/mutations';
 
-const initialFormState = { name: '', description: '', imgsrc: '', numRatings: '0'}
+const initialFormState = { categoryID: '', name: '', description: '', imgsrc: '', content: '', score: '0'}
 
-function CreateCategory() {
+function CreateCategoryItem(props) {
     const unsplashAccessKey = 'Vi_vrZ3sI2PbvoBYAnrYfDEbqTSa75R7_zcO0lHR7z8';
     const [photos, setPhotos] = useState([]);
     const [searchFilter, setSearchFilter] = useState('');
@@ -24,11 +24,16 @@ function CreateCategory() {
       });
     
     useEffect(() => {
-        console.log(formData)
+        setFormData({ ...formData, 'categoryID': props.category.id})
+    }, [])
+
+    useEffect(() => {
+        console.log(formData);
     })
-    async function createCategory() {
+
+    async function createCategoryItem() {
         if (!formData.name || !formData.description) return;
-        let response = await API.graphql({ query: createCategoryMutation, variables: { input: formData } });
+        let response = await API.graphql({ query: createCategoryItemMutation, variables: { input: formData } });
         console.log(response);
         if (formData.image) {
           const image = await Storage.get(formData.image);
@@ -36,7 +41,7 @@ function CreateCategory() {
         }
         // props.getCategorys();
         setFormData(initialFormState);
-        history.push(`/category/${response.data.createCategory.id}`)
+        // history.push(`/category/${response.data.createCategory.id}`)
       }
 
 
@@ -75,7 +80,7 @@ function CreateCategory() {
 
     let handleFormSubmit = (e) => {
         e.preventDefault();
-        createCategory();
+        createCategoryItem();
     }
 
     let photoClickHandler = (id, link) => {
@@ -100,9 +105,10 @@ function CreateCategory() {
     return (
         <div>
             <div style={{width: '50%'}}>
+                Create New
                 <Form onSubmit={submitHandler}>
                     <Form.Group controlId="exampleForm.ControlInput1" onChange={e => setFormData({ ...formData, 'name': e.target.value})}>
-                        <Form.Label>Category Name</Form.Label>
+                        <Form.Label>Item Name</Form.Label>
                         <Form.Control type="text" placeholder="Gift Ideas" />
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlTextarea1" onChange={e => setFormData({ ...formData, 'description': e.target.value})}>
@@ -142,4 +148,4 @@ function CreateCategory() {
     
 }
 
-export default CreateCategory;
+export default CreateCategoryItem;

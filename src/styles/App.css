@@ -585,7 +585,6 @@ body {
 }
 
 .headerContainer {
-  background-image: url("../images/academics.jpg");
   margin: 0 0 3em 0;
   background-size: cover;
   background-position: center center;
@@ -727,4 +726,9 @@ body {
 .testImageContainer {
   display: flex;
   flex-wrap: wrap;
+}
+
+.categoryDetails {
+  display: flex;
+  justify-content: space-between;
 }
