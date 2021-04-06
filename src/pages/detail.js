@@ -358,6 +358,13 @@ function Detail(props) {
              
 
                 <div className={"detailContent"}>
+                    <div>
+                        {categoryItem.imgsrc ? 
+                            <img alt={categoryItem.name} className="profile" src={categoryItem.imgsrc} style={{marginRight: '20px'}}/>
+                            :
+                            <></>
+                        }
+                    </div>
                     <div className={"detailChildTitle"}>
                         <h2>{categoryItem.name}</h2>
                         <h5>{ categoryItem.description }</h5>

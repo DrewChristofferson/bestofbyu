@@ -248,12 +248,13 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    flex-flow: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     align-content: center;
     margin-right: 6em;
     margin-left: 6em;
     margin-top: 2em;
+    margin-bottom: 2em;
     text-align: left;
   }
 }
@@ -585,7 +586,6 @@ body {
 }
 
 .headerContainer {
-  background-image: url("../images/academics.jpg");
   margin: 0 0 3em 0;
   background-size: cover;
   background-position: center center;
@@ -627,7 +627,7 @@ body {
 }
 
 .categorySection {
-  margin: 6em 6em 4em 0;
+  margin: 6em 0 4em 0;
   text-align: left;
 }
 
@@ -727,4 +727,9 @@ body {
 .testImageContainer {
   display: flex;
   flex-wrap: wrap;
+}
+
+.categoryDetails {
+  display: flex;
+  justify-content: space-between;
 }

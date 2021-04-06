@@ -3,7 +3,7 @@ import * as bs from 'react-bootstrap'
 import { Link, useRouteMatch, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
-import { updateCourse as updateCourseMutation } from '../graphql/mutations';
+import { updateCategoryItem, updateCategoryItem as updateCategoryItemMutation } from '../graphql/mutations';
 import { updateProfessor as updateProfessorMutation } from '../graphql/mutations';
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
@@ -96,11 +96,6 @@ function TableView (props) {
             tempRatings[key] = value;
         }
 
-
-
-
-
-
         if (increment === VOTE_UP){
             if (tempRatings[id] === VOTE_UP){
                 item.score -= 1;
@@ -131,13 +126,13 @@ function TableView (props) {
         console.log("new ratings",ratings);
         
         
-        // props.createRating(id, increment, mutation, score);
+        props.createRating(id, increment, mutation, score);
         setIsLoading(false)
     }
 
 
     let handleClick = (id) => {
-        history.push(`/category/${id}`);
+        history.push(`${match.url}/${id}`);
     }
 
     if(!isLoading){
@@ -152,7 +147,7 @@ function TableView (props) {
                                 <div key={index} className="tableItem" >
                                     <div className="scoreInfo">                               
                                         <div className={"ratingButtons"}>
-                                            <div className={ratings[catItem.id] === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE_UP }  onClick={() => handleRatingClick( catItem.id, VOTE_UP, updateCourseMutation, catItem.score, catItem)}>
+                                            <div className={ratings[catItem.id] === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE_UP }  onClick={() => handleRatingClick( catItem.id, VOTE_UP, updateCategoryItemMutation, catItem.score, catItem)}>
                                             <AiIcons.AiFillUpCircle />
                                             </div>
                                             
@@ -161,7 +156,7 @@ function TableView (props) {
                                             {catItem.score} Points
                                         </div>
                                         <div className={"ratingButtons"}>
-                                            <div className={ratings[catItem.id] === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE_DOWN }  onClick={() => handleRatingClick(catItem.id, VOTE_DOWN, updateCourseMutation, catItem.score, catItem)}>
+                                            <div className={ratings[catItem.id] === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE_DOWN }  onClick={() => handleRatingClick(catItem.id, VOTE_DOWN, updateCategoryItemMutation, catItem.score, catItem)}>
                                             <AiIcons.AiFillDownCircle />                                              
                                             </div>
                                            
@@ -169,7 +164,7 @@ function TableView (props) {
                                         
                                     </div>
                                     <div className="tableItemImg" onClick={() => {handleClick(catItem.id)}}>
-                                        <img className="profile" alt={catItem.name} style={{height:"100%", width: "80%"}} src={ClassImg} />
+                                        <img className="profile" alt={catItem.name} style={{height:"100%", width: "80%"}} src={catItem.imgsrc} />
     
                                     </div>
                                     <div className="tableItemContent" onClick={() => {handleClick(catItem.id)}}>
