@@ -41,7 +41,7 @@ function CreateCategoryItem(props) {
         }
         // props.getCategorys();
         setFormData(initialFormState);
-        // history.push(`/category/${response.data.createCategory.id}`)
+        history.push(`/category/${props.category.id}/${response.data.createCategoryItem.id}`)
       }
 
 
@@ -119,7 +119,7 @@ function CreateCategoryItem(props) {
                         <Form.File id="photofile" label="Upload photo" />
                     </Form.Group>
                 </Form>
-                <Button onClick={handleFormSubmit}>Create Category</Button>
+                <Button onClick={handleFormSubmit}>Create Category Item</Button>
             </div>
             <div>
                 <form>

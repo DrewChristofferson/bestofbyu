@@ -213,13 +213,13 @@ function Home() {
                                             <div className="catPreviewSubtitle">
                                                 {category.description}
                                             </div> */}
-                                            <bs.Card key={category.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
+                                            <bs.Card key={category.id} style={{ width: '12rem', color: "black" }} className="categoryItemPreview">
                                             <Link to={`/category/${category.id}`} className="nav-link" style={{color: "black"}}>
                                             
                                             <bs.Card.Img variant="top" alt="img" src={category.imgsrc ? category.imgsrc : boardgame} />
                                             <bs.Card.Body>
                                                 <bs.Card.Title>{category.name}</bs.Card.Title>
-                                                <bs.Card.Text>
+                                                <bs.Card.Text style={{fontSize: '14px'}}>
                                                 {category.description}
                                                 </bs.Card.Text>
                                             </bs.Card.Body>

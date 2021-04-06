@@ -37,6 +37,11 @@ function PageTemplate() {
     const match = useRouteMatch("/category/:cid");
     const history = useHistory();
 
+    useEffect(() => {
+        console.log(match.path);
+        console.log(match.url);
+        console.log(category)
+    })
 
     useEffect(() => {
         //navigates user to the top of the page on page load
@@ -181,43 +186,20 @@ function PageTemplate() {
     }
 
     let handleCreateItem = () => {
-        history.push(`${match.path}/create`)
+        history.push(`${match.url}/create`)
     }
     
     
-    for (let i = 0; i < category.length; i ++) {
-        colleges.push(category[i])
-    }
+    // for (let i = 0; i < category.length; i ++) {
+    //     colleges.push(category[i])
+    // }
 
     if(!isLoadingItems){
         console.log(category.imgsrc)
         return(
             
             <Switch>
-                <Route path={`${match.path}/:oid`}>
-                    <div style={{marginTop: "3rem"}}>
-                        <Detail categoryItems={categoryItems} category={category} getRatings={getRatings} />
-                        {/* <Detail 
-                            professorsForCourse={professorsForCourse}
-                            // getProfsForCourse={getProfessorsForCourse}
-                            detailsLoading={isLoadingProfessorsForCourse}
-                            updateScore={updateScore} 
-                            getRatings={getRatings} 
-                            userRatings={userRatings} 
-                            departments={departments}
-                            createRating={createRating} 
-                            isLoading={isLoadingProfessors}
-                            nextPage={nextPage}
-                            previousPage={previousPage}
-                            pageNum={pageNum}
-                            pageStartIndex={pageStartIndex}
-                            searchFilter={searchFilter}
-                            handleChangeSearch={handleChangeSearch}
-                        /> */}
-                    </div>
-                    
-                </Route>
-                <Route path={`${match.path}/create`}>
+                <Route path={`${match.url}/create`}>
                     <div style={{marginTop: "3rem"}}>
                         <CreateCatItem categoryItems={categoryItems} category={category} getRatings={getRatings} />
                         {/* <Detail 
@@ -240,6 +222,30 @@ function PageTemplate() {
                     </div>
                     
                 </Route>
+                <Route path={`${match.url}/:oid`}>
+                    <div style={{marginTop: "3rem"}}>
+                        <Detail categoryItems={categoryItems} category={category} createRating={createRating} getRatings={getRatings} />
+                        {/* <Detail 
+                            professorsForCourse={professorsForCourse}
+                            // getProfsForCourse={getProfessorsForCourse}
+                            detailsLoading={isLoadingProfessorsForCourse}
+                            updateScore={updateScore} 
+                            getRatings={getRatings} 
+                            userRatings={userRatings} 
+                            departments={departments}
+                            createRating={createRating} 
+                            isLoading={isLoadingProfessors}
+                            nextPage={nextPage}
+                            previousPage={previousPage}
+                            pageNum={pageNum}
+                            pageStartIndex={pageStartIndex}
+                            searchFilter={searchFilter}
+                            handleChangeSearch={handleChangeSearch}
+                        /> */}
+                    </div>
+                    
+                </Route>
+                
 
                 <Route path={match.path}>
                     <div style={{background: `url(${category.imgsrc}&w=800&dpr=2`}} className="headerContainer" >
@@ -258,7 +264,7 @@ function PageTemplate() {
                         </div>
                         
                         
-                        <TableView categoryItems={categoryItems} userRatings={userRatings} pageStartIndex={pageStartIndex}/>
+                        <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex}/>
 
                     </div>
                     {/* <div className="headerContainer">
