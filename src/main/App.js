@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import Content from '../content'
 import Header from './header'
 import Home from './home'
+import About from './about'
 import Detail from '../university/detail'
 import CreateCategory from './createcategory.js'
 import BYUSchools from '../university/byuschools'
@@ -44,6 +45,9 @@ export default class App extends React.Component {
               </Route>
               <Route path="/home">
                 <Home />
+              </Route>
+              <Route path="/about">
+                <About />
               </Route>
               <Route path="/create/category">
                 <CreateCategory />

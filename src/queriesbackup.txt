@@ -492,6 +492,7 @@ export const getCategory = /* GraphQL */ `
       name
       description
       numRatings
+      imgsrc
       createdAt
       updatedAt
     }
@@ -509,6 +510,7 @@ export const listCategorys = /* GraphQL */ `
         name
         description
         numRatings
+        imgsrc
         createdAt
         updatedAt
       }

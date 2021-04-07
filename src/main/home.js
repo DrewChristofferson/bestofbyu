@@ -21,66 +21,42 @@ import CreateCategory from './createcategory'
 
 
 let divStyle={
-    backgroundImage: "url(https://upload.wikimedia.org/wikipedia/commons/c/cf/BYU_Campus_North.jpg)",
-    paddingBottom: "8rem"
+    backgroundImage: "url(https://images.unsplash.com/photo-1495903546524-cdb71d0aed7d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTV8fHVwfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60)",
+    paddingBottom: "8rem",
+    backgroundPosition: "center center"
 }
 
 const categoryData = [
     {
-        name: "Popular",
-        items: [
-            {
-                id: "akhsgfaksdhf",
-                name: "Classes",
-                description: "The top classes in your major or by GE requirement.",
-                ratings: 1480,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/courses",
-                imgsrc: classroom
-            },
-            {
-                id: "dnfgnfg",
-                name: "Professors",
-                description: "Top professors by department and class.",
-                ratings: 1158,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/professors",
-                imgsrc: professor
-            },
-            {
-                id: "zdzxbdf",
-                name: "Date Ideas",
-                description: "Find the perfect date ranging from casual to romantic.",
-                ratings: 366,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/courses",
-                imgsrc: date
-            },
-        ]
+        id: "classes",
+        name: "Classes",
+        description: "The top classes in your major or by GE requirement.",
+        numRatings: 1480,
+        createdBy: "Best of BYU",
+        link: "/schools/all/all/courses",
+        imgsrc: classroom,
+        createdAt: '2021-03-14T',
+        items: {
+            items: [ 
+                {},{},{}
+            ]
+        }
     },
     {
-        name: "All Categories",
-        items: [
-            {
-                id: "bvertsdfg",
-                name: "Business Ideas",
-                description: "Validate your business ideas with the community.",
-                ratings: 96,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/courses",
-                imgsrc: idea
-            },
-            {
-                id: "bvsgshmhgmfgg",
-                name: "Movies",
-                description: "The top movies for each streaming service.",
-                ratings: 85,
-                createdBy: "Best of BYU",
-                link: "/schools/all/all/courses",
-                imgsrc: movie
-            },
-        ]
-    }
+        id: "professors",
+        name: "Professors",
+        description: "Top professors by department and class.",
+        numRatings: 1158,
+        createdBy: "Best of BYU",
+        link: "/schools/all/all/professors",
+        imgsrc: professor,
+        createdAt: '2021-03-14T',
+        items: {
+            items: [ 
+                {},{},{}
+            ]
+        }
+    },
 
     
 ]
@@ -98,14 +74,21 @@ function Home() {
 
 
     async function getData() {
+        let sortedByName; //TODO
+        let sortedByRatings;
         const apiData = await API.graphql({ query: listCategorys });
         const categorysFromAPI = apiData.data.listCategorys.items;
 
         await Promise.all(categorysFromAPI.map(async category => {
           return category;
         }))
+        categoryData.forEach(category => ( 
+            apiData.data.listCategorys.items.push(category)
+        ))
 
-        setCategorys(apiData.data.listCategorys.items);
+        sortedByRatings = apiData.data.listCategorys.items;
+        sortedByRatings.sort((a, b) => (a.numRatings < b.numRatings) ? 1 : (a.numRatings === b.numRatings) ? ((a.name > b.name) ? 1 : -1) : -1 )
+        setCategorys(sortedByRatings);
         console.log(apiData.data.listCategorys.items);
         setIsLoadingCategorys(false);
     }
@@ -132,9 +115,12 @@ function Home() {
                 } else break;
                 
             }
+            if(!searchCategorys[0]){
+                searchCategorys = 'noData'
+            }
             setSearchSuggestions(searchCategorys);
         } else {
-            setSearchSuggestions();
+            setSearchSuggestions(null);
         }
         
         
@@ -142,13 +128,22 @@ function Home() {
 
     let returnSearchSuggestions = () => {
         if(searchSuggestions){
-            return(
-                searchSuggestions.map(category => ( 
-                    <div key={category.id} onClick={() => handleClick(category.id)}>
-                        <p>{category.name}</p>
-                    </div>   
-                ))
-            );
+            if(searchSuggestions === 'noData'){
+                return(
+                    <div>
+                        <p>No categories found</p>
+                    </div> 
+                )
+            }
+            else{
+                return(
+                    searchSuggestions.map(category => ( 
+                        <div key={category.id} onClick={() => handleClick(category.id)}>
+                            <p>{category.name}</p>
+                        </div>   
+                    ))
+                );
+            } 
         } else return null;
     }
 
@@ -201,37 +196,98 @@ function Home() {
                         <div className="categoryPreview">
                             {
                                 categorys.map(category => {
-                                    return(
-                                        <div key={category.id}>
-                                        
-                                            {/* <div className="catPreviewImg">
-                                                
-                                            </div>
-                                            <div className="catPreviewTitle">
-                                                {category.name}
-                                            </div>
-                                            <div className="catPreviewSubtitle">
-                                                {category.description}
-                                            </div> */}
-                                            <bs.Card key={category.id} style={{ width: '12rem', color: "black" }} className="categoryItemPreview">
-                                            <Link to={`/category/${category.id}`} className="nav-link" style={{color: "black"}}>
+                                    if(category.createdAt.split('T')[0] === '2021-04-07'){
+                                        return(
+                                            <div key={category.id}>
                                             
-                                            <bs.Card.Img variant="top" alt="img" src={category.imgsrc ? category.imgsrc : boardgame} />
-                                            <bs.Card.Body>
-                                                <bs.Card.Title>{category.name}</bs.Card.Title>
-                                                <bs.Card.Text style={{fontSize: '14px'}}>
-                                                {category.description}
-                                                </bs.Card.Text>
-                                            </bs.Card.Body>
-                                            </Link>
-                                            </bs.Card>
-                                        </div>
-                                    )
+                                                {/* <div className="catPreviewImg">
+                                                    
+                                                </div>
+                                                <div className="catPreviewTitle">
+                                                    {category.name}
+                                                </div>
+                                                <div className="catPreviewSubtitle">
+                                                    {category.description}
+                                                </div> */}
+                                                <bs.Card key={category.id} style={{ width: '12rem', color: "black" }} className="categoryItemPreview">
+                                                <Link to={`/category/${category.id}`} className="nav-link" style={{color: "black"}}>
+                                                <bs.Card.Text style={{fontSize: '14px', marginBottom: '.3rem', textAlign: 'center'}}>
+                                                        {`${category.numRatings} Ratings | ${category.items.items.length} Items`}
+
+                                                    </bs.Card.Text>
+                                                <bs.Card.Img variant="top" alt="img" src={category.imgsrc ? category.imgsrc : boardgame} />
+                                                <bs.Card.Body style={{padding: '20px 5px'}}>
+                                                    <bs.Card.Title>{category.name}</bs.Card.Title>
+                                                    
+                                                    <bs.Card.Text style={{fontSize: '12px', fontWeight: '600', marginBottom: '.3rem'}}>
+                                          
+                                                        {`Created By: ${category.createdBy ? category.createdBy : 'Private User'}`}
+                                                   
+                                                    </bs.Card.Text>
+                                                    <bs.Card.Text style={{fontSize: '14px', marginBottom: 0}}>
+                                        
+                                                        {category.description}
+                                                    </bs.Card.Text>
+                                                </bs.Card.Body>
+                                                </Link>
+                                                </bs.Card>
+                                            </div>
+                                        )
+                                    } else return <></>
+                                    
                                 })
                             }
-                        </div>
-                        
+                        </div> 
                     </div>
+                    <div className="categorySection">
+                        <h1>Popular</h1>
+                        <div className="categoryPreview">
+                            {
+                                categorys.map(category => {
+                                    if(category.numRatings >= 5){
+                                        return(
+                                            <div key={category.id}>
+                                            
+                                                {/* <div className="catPreviewImg">
+                                                    
+                                                </div>
+                                                <div className="catPreviewTitle">
+                                                    {category.name}
+                                                </div>
+                                                <div className="catPreviewSubtitle">
+                                                    {category.description}
+                                                </div> */}
+                                                <bs.Card key={category.id} style={{ width: '12rem', color: "black" }} className="categoryItemPreview">
+                                                <Link to={category.link ? category.link : `/category/${category.id}`} className="nav-link" style={{color: "black"}}>
+                                                <bs.Card.Text style={{fontSize: '14px', marginBottom: '.3rem', textAlign: 'center'}}>
+                                                        {`${category.numRatings} Ratings | ${category.items.items.length} Items`}
+                                                      
+                                                    </bs.Card.Text>
+                                                <bs.Card.Img variant="top" alt="img" src={category.imgsrc ? category.imgsrc : boardgame} />
+                                                <bs.Card.Body style={{padding: '20px 5px'}}>
+                                                    <bs.Card.Title>{category.name}</bs.Card.Title>
+                                                    
+                                                    <bs.Card.Text style={{fontSize: '12px', fontWeight: '600', marginBottom: '.3rem'}}>
+                                          
+                                                        {`Created By: ${category.createdBy ? category.createdBy : 'Private User'}`}
+                                                   
+                                                    </bs.Card.Text>
+                                                    <bs.Card.Text style={{fontSize: '14px', marginBottom: 0}}>
+                                        
+                                                        {category.description}
+                                                    </bs.Card.Text>
+                                                </bs.Card.Body>
+                                                </Link>
+                                                </bs.Card>
+                                            </div>
+                                        )
+                                    } else return <></>
+                                    
+                                })
+                            }
+                        </div> 
+                    </div>
+
                     <div className="banner">
                         <div className="bannerTitle">
                             Start a New Category
@@ -244,44 +300,54 @@ function Home() {
                             {/* <CreateCatModal getCategorys={getData}/> */}
                         </div>
                     </div>
-                    
-                    
-                    
-                    
-                    
-                    <div>
-                        {
-                            categoryData.map(category => {
-                                return(
-                                    <div key={category.name} className="categorySection">
-                                        <h1>{category.name}</h1>
-                                        <div className="categoryPreview">
-        
-                                            {
-                                                category.items.map(item => {
-                                                    return(
-                                                        <bs.Card key={item.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
-                                                        <Link to={item.link} className="nav-link" style={{color: "black"}}>
-                                                        
-                                                        <bs.Card.Img variant="top" src={item.imgsrc} />
-                                                        <bs.Card.Body>
-                                                            <bs.Card.Title>{item.name}</bs.Card.Title>
-                                                            <bs.Card.Text>
-                                                            {item.description}
-                                                            </bs.Card.Text>
-                                                        </bs.Card.Body>
-                                                        </Link>
-                                                        </bs.Card>
-                                                    )
-                                                }
+
+                    <div className="categorySection">
+                        <h1>All Categories</h1>
+                        <div className="categoryPreview">
+                            {
+                                categorys.map(category => {
+                                    // if(category.numRatings <= 5){
+                                        return(
+                                            <div key={category.id}>
+                                            
+                                                {/* <div className="catPreviewImg">
                                                     
-                                                )
-                                            }
-                                        </div>
-                                    </div>
-                                )
-                            })
-                        }
+                                                </div>
+                                                <div className="catPreviewTitle">
+                                                    {category.name}
+                                                </div>
+                                                <div className="catPreviewSubtitle">
+                                                    {category.description}
+                                                </div> */}
+                                                <bs.Card key={category.id} style={{ width: '12rem', color: "black" }} className="categoryItemPreview">
+                                                <Link to={category.link ? category.link : `/category/${category.id}`} className="nav-link" style={{color: "black"}}>
+                                                <bs.Card.Text style={{fontSize: '14px', marginBottom: '.3rem', textAlign: 'center'}}>
+                                                        {`${category.numRatings} Ratings | ${category.items.items.length} Items`}
+                                                      
+                                                    </bs.Card.Text>
+                                                <bs.Card.Img variant="top" alt="img" src={category.imgsrc ? category.imgsrc : boardgame} />
+                                                <bs.Card.Body style={{padding: '20px 5px'}}>
+                                                    <bs.Card.Title>{category.name}</bs.Card.Title>
+                                                    
+                                                    <bs.Card.Text style={{fontSize: '12px', fontWeight: '600', marginBottom: '.3rem'}}>
+                                          
+                                                        {`Created By: ${category.createdBy ? category.createdBy : 'Private User'}`}
+                                                   
+                                                    </bs.Card.Text>
+                                                    <bs.Card.Text style={{fontSize: '14px', marginBottom: 0}}>
+                                        
+                                                        {category.description}
+                                                    </bs.Card.Text>
+                                                </bs.Card.Body>
+                                                </Link>
+                                                </bs.Card>
+                                            </div>
+                                        )
+                                    // } else return <></>
+                                    
+                                })
+                            }
+                        </div> 
                     </div>
                                 
                 </div>
@@ -309,38 +375,7 @@ function Home() {
                     </bs.Container>
                 </bs.Jumbotron>
                 <div>
-                    {
-                        categoryData.map(category => {
-                            return(
-                                <div key={category.name} className="categorySection">
-                                    <h1>{category.name}</h1>
-                                    <div className="categoryPreview">
-    
-                                        {
-                                            category.items.map(item => {
-                                                return(
-                                                    <bs.Card key={item.id} style={{ width: '18rem', color: "black" }} className="categoryItemPreview">
-                                                    <Link to={item.link} className="nav-link" style={{color: "black"}}>
-                                                    
-                                                    <bs.Card.Img variant="top" src={item.imgsrc} />
-                                                    <bs.Card.Body>
-                                                        <bs.Card.Title>{item.name}</bs.Card.Title>
-                                                        <bs.Card.Text>
-                                                        {item.description}
-                                                        </bs.Card.Text>
-                                                    </bs.Card.Body>
-                                                    </Link>
-                                                    </bs.Card>
-                                                )
-                                            }
-                                                
-                                            )
-                                        }
-                                    </div>
-                                </div>
-                            )
-                        })
-                    }
+                    Loading Data
                 </div>
                             
             </div>
