@@ -29,9 +29,10 @@ const SubmitButton = styled(Button)`
 `
 
 function CreateCategoryItem(props) {
-    const initialFormState = { categoryID: props.category.id, name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: props.category.subCategoryOptions[0]}
+    const initialFormState = { categoryID: props.category.id, name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: props.category.subCategoryOptions[0], customFields: []}
     const unsplashAccessKey = 'Vi_vrZ3sI2PbvoBYAnrYfDEbqTSa75R7_zcO0lHR7z8';
     const [photos, setPhotos] = useState([]);
+    const [customFields, setCustomFields] = useState([]);
     const [searchFilter, setSearchFilter] = useState('');
     const [selected, setSelected] = useState();
     const [formData, setFormData] = useState(initialFormState);
@@ -108,6 +109,22 @@ function CreateCategoryItem(props) {
         createCategoryItem();
     }
 
+    let handleCustomFieldsChange = (text, key) => {
+        let tempArr = [];
+        let tempObj = {};
+
+        customFields.forEach(element => {
+            if(element.key != key) {
+                tempArr.push(element)
+            }
+        })
+        tempObj.key = key;
+        tempObj.value = text;
+        tempArr.push(tempObj);
+        setCustomFields(tempArr);
+        setFormData({ ...formData, 'customFields': tempArr})
+    }
+
     let photoClickHandler = (id, link) => {
         console.log(`photo ${id} clicked`);
         if (id === selected){
@@ -130,7 +147,7 @@ function CreateCategoryItem(props) {
     return (
         <FormContainer>
             <div>
-                <h1>Create New</h1>
+                <h1>Create New {props.category.name}</h1>
                 <Form onSubmit={submitHandler}>
                     <Form.Group controlId="exampleForm.ControlInput1" onChange={e => setFormData({ ...formData, 'name': e.target.value})}>
                         <Form.Label>Item Name</Form.Label>
@@ -158,6 +175,19 @@ function CreateCategoryItem(props) {
                             }
                
                         </Form.Control>
+                    </Form.Group>
+                    <h2>Custom Fields</h2>
+                    <Form.Group controlId="exampleForm.ControlDropdown2" >
+                        {
+                            props.category.customFields.map((category, index) => {
+                                return(
+                                    <>
+                                        <Form.Label>{category}</Form.Label>
+                                        <Form.Control type="text"  onChange={e => handleCustomFieldsChange(e.target.value, category)}/>
+                                    </>
+                                )
+                            })
+                        }
                     </Form.Group>
                     <p>Upload an Image</p>
                     <ButtonGroup toggle style={{marginBottom: '20px'}}>

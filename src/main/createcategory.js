@@ -8,11 +8,13 @@ import { API } from 'aws-amplify'
 import { listSchools } from '../graphql/queries';
 import { createCategory as createCategoryMutation } from '../graphql/mutations';
 
-const initialFormState = { name: '', description: '', imgsrc: '', numRatings: '0', subCategoryOptions: []}
+const initialFormState = { name: '', description: '', imgsrc: '', numRatings: '0', subCategoryOptions: [], customFields: []}
 
 function CreateCategory() {
     const unsplashAccessKey = 'Vi_vrZ3sI2PbvoBYAnrYfDEbqTSa75R7_zcO0lHR7z8';
     const [photos, setPhotos] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
+    const [customFields, setCustomFields] = useState([]);
     const [searchFilter, setSearchFilter] = useState('');
     const [selected, setSelected] = useState();
     const [formData, setFormData] = useState(initialFormState);
@@ -84,7 +86,18 @@ function CreateCategory() {
         tempArr.forEach((word,index) => (
             tempArr[index] = word.trim()
         ))
+        setSubCategories(tempArr);
         setFormData({ ...formData, 'subCategoryOptions': tempArr})
+    }
+
+    let handleCustomFieldChange = (text) => {
+        let tempArr;
+        tempArr = text.split(',')
+        tempArr.forEach((word,index) => (
+            tempArr[index] = word.trim()
+        ))
+        setCustomFields(tempArr);
+        setFormData({ ...formData, 'customFields': tempArr})
     }
 
     let photoClickHandler = (id, link) => {
@@ -122,6 +135,40 @@ function CreateCategory() {
                         <Form.Label>Subcategories (enter in comma-separated list)</Form.Label>
                         <Form.Control as="textarea" rows={3} placeholder="Subcategories help to fiter items in your category. For example, you could have subcategories Breakfast, Lunch, and Dinner for a Recipe Category."    />
                     </Form.Group>
+                    <p style={{textAlign: 'left'}}>Your subcategories: 
+                    <ul style={{fontWeight: 'bold'}}>
+                        {
+                        subCategories.map((item, index) => {
+                            if(index === subCategories.length - 1){
+                                return <li> {item}</li>
+                            } else {
+                                return <li> {item}</li>
+                            }
+                            
+                        })
+                        }
+                    </ul>
+                    
+                    </p>
+                    <Form.Group controlId="exampleForm.ControlTextarea1" onChange={e => handleCustomFieldChange(e.target.value)}>
+                        <Form.Label>Custom Fields (enter in comma-separated list)</Form.Label>
+                        <Form.Control as="textarea" rows={3} placeholder="Custom Fields help to fiter items in your category. For example, you could have subcategories Breakfast, Lunch, and Dinner for a Recipe Category."    />
+                    </Form.Group>
+                    <p style={{textAlign: 'left'}}>Your custom fields: 
+                    <ul style={{fontWeight: 'bold'}}>
+                        {
+                        customFields.map((item, index) => {
+                            if(index === subCategories.length - 1){
+                                return <li> {item}</li>
+                            } else {
+                                return <li> {item}</li>
+                            }
+                            
+                        })
+                        }
+                    </ul>
+                    
+                    </p>
                     <Form.Group>
                         <Form.File id="photofile" label="Upload photo" />
                     </Form.Group>

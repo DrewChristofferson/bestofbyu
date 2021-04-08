@@ -201,8 +201,14 @@ function Detail(props) {
 
 
    async function fetchData() {
+       let apiData;
         try{ 
-            const apiData = await API.graphql({ query: getCategoryItem, variables: { id: match.params.oid }  });
+            try {
+                apiData = await API.graphql({ query: getCategoryItem, variables: { id: match.params.oid }  });
+            } catch (e) {
+                console.log('Error' + e)
+            }
+            console.log(apiData.data.getCategoryItem)
             setCategoryItem(apiData.data.getCategoryItem)
             setName(apiData.data.getCategoryItem.name)
             // setComments(apiData.data.getCategoryItem.comments.items)
@@ -367,7 +373,15 @@ function Detail(props) {
                     </div>
                     <div className={"detailChildTitle"}>
                         <h2>{categoryItem.name}</h2>
-                        <h5>{ categoryItem.description }</h5>
+                        {
+                            categoryItem.customFields?.map(field => {
+                                return(
+                                    <h5>{field.key}: {field.value}</h5>
+                                )
+                            })
+                        }
+                        <p>{ categoryItem.description }</p>
+                        
                     </div>
                     {/* <div className={"detailChild"}>
                         <bs.Badge className="badges" variant="danger">Hard Tests</bs.Badge>{' '}

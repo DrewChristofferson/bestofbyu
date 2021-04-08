@@ -831,6 +831,7 @@ export const createCategory = /* GraphQL */ `
       imgsrc
       createdBy
       subCategoryOptions
+      customFields
       items {
         items {
           id
