@@ -87,8 +87,15 @@ type Category @model
   imgsrc: String
   createdBy: String
   subCategoryOptions: [String]
+  customFields: [String]
   items: [CategoryItem] @connection(keyName: "byCategory", fields: ["id"])
 }
+
+type customFieldTuple {
+     key: String
+     value: String
+}
+
 
 type CategoryItem @model 
   @key(name: "byCategory", fields: ["categoryID", "name"]) 
@@ -104,4 +111,5 @@ type CategoryItem @model
   SubCategory: String
   score: Int!
   createdBy: String
+  customFields: [customFieldTuple]
 }

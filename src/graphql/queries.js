@@ -496,6 +496,7 @@ export const getCategory = /* GraphQL */ `
       imgsrc
       createdBy
       subCategoryOptions
+      customFields 
       items {
         items {
           id
@@ -579,6 +580,10 @@ export const getCategoryItem = /* GraphQL */ `
       score
       createdBy
       SubCategory
+      customFields {
+        key
+        value
+      }
       createdAt
       updatedAt
     }
@@ -612,6 +617,10 @@ export const listCategoryItems = /* GraphQL */ `
         score
         createdBy
         SubCategory
+        customFields {
+          key
+          value
+        }
         createdAt
         updatedAt
       }
