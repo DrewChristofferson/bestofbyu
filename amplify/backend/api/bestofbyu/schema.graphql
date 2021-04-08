@@ -77,12 +77,17 @@ type ProfessorComment @model
 }
 
 type Category @model
+  @key(fields: ["id"]) 
 {
   id: ID!
   name: String!
   description: String!
   numRatings: Int
+  numCategoryItems: Int
   imgsrc: String
+  createdBy: String
+  subCategoryOptions: [String]
+  items: [CategoryItem] @connection(keyName: "byCategory", fields: ["id"])
 }
 
 type CategoryItem @model 
@@ -96,5 +101,7 @@ type CategoryItem @model
   imgsrc: String
   description: String
   content: String
+  SubCategory: String
   score: Int!
+  createdBy: String
 }

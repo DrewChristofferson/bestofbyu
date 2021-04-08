@@ -492,7 +492,25 @@ export const getCategory = /* GraphQL */ `
       name
       description
       numRatings
+      numCategoryItems
       imgsrc
+      createdBy
+      subCategoryOptions
+      items {
+        items {
+          id
+          categoryID
+          name
+          imgsrc
+          description
+          content
+          score
+          createdBy
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -500,17 +518,34 @@ export const getCategory = /* GraphQL */ `
 `;
 export const listCategorys = /* GraphQL */ `
   query ListCategorys(
+    $id: ID
     $filter: ModelCategoryFilterInput
     $limit: Int
     $nextToken: String
+    $sortDirection: ModelSortDirection
   ) {
-    listCategorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listCategorys(
+      id: $id
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
       items {
         id
         name
         description
         numRatings
+        numCategoryItems
         imgsrc
+        createdBy
+        items {
+          items {
+            id
+            name
+          }
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -528,6 +563,12 @@ export const getCategoryItem = /* GraphQL */ `
         name
         description
         numRatings
+        numCategoryItems
+        imgsrc
+        createdBy
+        items {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -536,6 +577,8 @@ export const getCategoryItem = /* GraphQL */ `
       description
       content
       score
+      createdBy
+      SubCategory
       createdAt
       updatedAt
     }
@@ -556,6 +599,9 @@ export const listCategoryItems = /* GraphQL */ `
           name
           description
           numRatings
+          numCategoryItems
+          imgsrc
+          createdBy
           createdAt
           updatedAt
         }
@@ -564,6 +610,8 @@ export const listCategoryItems = /* GraphQL */ `
         description
         content
         score
+        createdBy
+        SubCategory
         createdAt
         updatedAt
       }
@@ -625,6 +673,9 @@ export const categoryByScore = /* GraphQL */ `
           name
           description
           numRatings
+          numCategoryItems
+          imgsrc
+          createdBy
           createdAt
           updatedAt
         }
@@ -633,6 +684,7 @@ export const categoryByScore = /* GraphQL */ `
         description
         content
         score
+        createdBy
         createdAt
         updatedAt
       }
@@ -640,7 +692,6 @@ export const categoryByScore = /* GraphQL */ `
     }
   }
 `;
-
 export const searchProfessors = /* GraphQL */ `
   query SearchProfessors(
     $filter: SearchableProfessorFilterInput

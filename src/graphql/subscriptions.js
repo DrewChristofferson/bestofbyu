@@ -761,7 +761,24 @@ export const onCreateCategory = /* GraphQL */ `
       name
       description
       numRatings
+      numCategoryItems
       imgsrc
+      createdBy
+      items {
+        items {
+          id
+          categoryID
+          name
+          imgsrc
+          description
+          content
+          score
+          createdBy
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -774,7 +791,24 @@ export const onUpdateCategory = /* GraphQL */ `
       name
       description
       numRatings
+      numCategoryItems
       imgsrc
+      createdBy
+      items {
+        items {
+          id
+          categoryID
+          name
+          imgsrc
+          description
+          content
+          score
+          createdBy
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -787,7 +821,24 @@ export const onDeleteCategory = /* GraphQL */ `
       name
       description
       numRatings
+      numCategoryItems
       imgsrc
+      createdBy
+      items {
+        items {
+          id
+          categoryID
+          name
+          imgsrc
+          description
+          content
+          score
+          createdBy
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -803,7 +854,12 @@ export const onCreateCategoryItem = /* GraphQL */ `
         name
         description
         numRatings
+        numCategoryItems
         imgsrc
+        createdBy
+        items {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -812,6 +868,7 @@ export const onCreateCategoryItem = /* GraphQL */ `
       description
       content
       score
+      createdBy
       createdAt
       updatedAt
     }
@@ -827,7 +884,12 @@ export const onUpdateCategoryItem = /* GraphQL */ `
         name
         description
         numRatings
+        numCategoryItems
         imgsrc
+        createdBy
+        items {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -836,6 +898,7 @@ export const onUpdateCategoryItem = /* GraphQL */ `
       description
       content
       score
+      createdBy
       createdAt
       updatedAt
     }
@@ -851,7 +914,12 @@ export const onDeleteCategoryItem = /* GraphQL */ `
         name
         description
         numRatings
+        numCategoryItems
         imgsrc
+        createdBy
+        items {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -860,6 +928,7 @@ export const onDeleteCategoryItem = /* GraphQL */ `
       description
       content
       score
+      createdBy
       createdAt
       updatedAt
     }

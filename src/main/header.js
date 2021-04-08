@@ -58,7 +58,7 @@ function Header() {
                 <bs.Navbar.Collapse id="basic-navbar-nav">
                     <bs.Nav className="mr-auto">
                         <Link to="/" className="nav-link">Home</Link>
-                        <Link to="/" className="nav-link">About</Link>
+                        <Link to="/about" className="nav-link">About</Link>
                         <Link to="/category/70b1e9af-aa11-40d5-aca3-ab42411712bc" className="nav-link">Feedback</Link>
                         {/* <AmplifySignInButton theme={myTheme}>Sign In</AmplifySignInButton> */}
                         {/* <AmplifySignInButton >Sign In</AmplifySignInButton> */}

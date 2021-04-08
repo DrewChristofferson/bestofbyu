@@ -17,7 +17,7 @@ import img7 from '../images/detailplaceholders/seven.jpg'
 
 
 function Detail(props) {
-    const match = useRouteMatch("/category/:cid/:oid")
+    const match = useRouteMatch("/category/:cid/item/:oid")
     let history = useHistory();
     const [categoryItem, setCategoryItem] = useState();
     const [course, setCourse] = useState();
@@ -216,7 +216,7 @@ function Detail(props) {
    let getRanking =  () => {
         let objectsAll = [];
         let rankingAll = 0;
-        let rankingSchool = 0;
+        let rankingSubCategory = 0;
         let rankingDept = 0;
         let catItems = props.categoryItems;
 
@@ -231,14 +231,14 @@ function Detail(props) {
             break;
         }
     }
-    // for (let i = 0; i < objectsAll.length; i++){
-    //     if(objectsAll[i].department.school.id === (match.params.type === "courses" ? course.department.school.id : professor.department.school.id)){
-    //         rankingSchool++;
-    //         if (objectsAll[i].id === match.params.oid){
-    //             break;
-    //         }
-    //     }
-    // }
+    for (let i = 0; i < catItems.length; i++){
+        if(catItems[i].SubCategory === (categoryItem.SubCategory)){
+            rankingSubCategory++;
+            if (catItems[i].id === categoryItem.id){
+                break;
+            }
+        }
+    }
     // for (let i = 0; i < objectsAll.length; i++){
     //     if(objectsAll[i].department.id === (match.params.type === "courses" ? course.department.id : professor.department.id)){
     //         rankingDept++;
@@ -250,10 +250,10 @@ function Detail(props) {
 
     let strRankingAll =  rankingAll.toString()
     let strRankingDept =  rankingDept.toString()
-    let strRankingSchool =  rankingSchool.toString()
+    let strRankingSubCategory =  rankingSubCategory.toString()
     
         
-    return [createOrdinalNumber(strRankingDept), createOrdinalNumber(strRankingSchool), createOrdinalNumber(strRankingAll)];
+    return [createOrdinalNumber(strRankingDept), createOrdinalNumber(strRankingSubCategory), createOrdinalNumber(strRankingAll)];
 }
 
     let createOrdinalNumber = (strRanking) => {
@@ -376,9 +376,9 @@ function Detail(props) {
                     </div> */}
                     <div className={"detailChild"}>
                         
-                        <h5>{getRanking()[0]} in <Link to={`/category/${match.params.cid}`}>TODO</Link>{"\n"}</h5> 
+                        {/* <h5>{getRanking()[0]} in <Link to={`/category/${match.params.cid}`}>TODO</Link>{"\n"}</h5>  */}
         
-                        <h5>{getRanking()[1]} in <Link to={`/category/${match.params.cid}`}>TODO</Link></h5>
+                        <h5>{getRanking()[1]} in <Link to={`/category/${match.params.cid}`}>{categoryItem.SubCategory}</Link></h5>
 
                         <h5>{getRanking()[2]} in <Link to={`/category/${match.params.cid}`}>All {props.category.name}</Link></h5>
                     </div>

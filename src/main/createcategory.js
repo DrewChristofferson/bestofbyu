@@ -8,7 +8,7 @@ import { API } from 'aws-amplify'
 import { listSchools } from '../graphql/queries';
 import { createCategory as createCategoryMutation } from '../graphql/mutations';
 
-const initialFormState = { name: '', description: '', imgsrc: '', numRatings: '0'}
+const initialFormState = { name: '', description: '', imgsrc: '', numRatings: '0', subCategoryOptions: []}
 
 function CreateCategory() {
     const unsplashAccessKey = 'Vi_vrZ3sI2PbvoBYAnrYfDEbqTSa75R7_zcO0lHR7z8';
@@ -78,6 +78,15 @@ function CreateCategory() {
         createCategory();
     }
 
+    let handleSubCategoryChange = (text) => {
+        let tempArr;
+        tempArr = text.split(',')
+        tempArr.forEach((word,index) => (
+            tempArr[index] = word.trim()
+        ))
+        setFormData({ ...formData, 'subCategoryOptions': tempArr})
+    }
+
     let photoClickHandler = (id, link) => {
         console.log(`photo ${id} clicked`);
         if (id === selected){
@@ -108,6 +117,10 @@ function CreateCategory() {
                     <Form.Group controlId="exampleForm.ControlTextarea1" onChange={e => setFormData({ ...formData, 'description': e.target.value})}>
                         <Form.Label>Description</Form.Label>
                         <Form.Control as="textarea" rows={3} placeholder="Give a brief description..."    />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlTextarea1" onChange={e => handleSubCategoryChange(e.target.value)}>
+                        <Form.Label>Subcategories (enter in comma-separated list)</Form.Label>
+                        <Form.Control as="textarea" rows={3} placeholder="Subcategories help to fiter items in your category. For example, you could have subcategories Breakfast, Lunch, and Dinner for a Recipe Category."    />
                     </Form.Group>
                     <Form.Group>
                         <Form.File id="photofile" label="Upload photo" />

@@ -7,6 +7,7 @@ import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom'
 import { ratingsByUserAndContent } from '../graphql/queries';
 import { createRating as createRatingMutation } from '../graphql/mutations';
 import { updateRating as updateRatingMutation } from '../graphql/mutations';
+import { updateCategory as updateCategoryMutation } from '../graphql/mutations';
 import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
 import SchoolTables from '../university/schooltables'
 import Detail from './detail'
@@ -20,6 +21,7 @@ import AppContext from '../context/context'
 
 function PageTemplate() {
     const [category, setCategory] = useState({});
+    const [filter, setFilter] = useState();
     const [categoryItems, setCategoryItems] = useState({});
     const [professorsForCourse, setProfessorsForCourse] = useState({});
     const [userRatings, setUserRatings] = useState({});
@@ -41,6 +43,7 @@ function PageTemplate() {
         console.log(match.path);
         console.log(match.url);
         console.log(category)
+        console.log(filter)
     })
 
     useEffect(() => {
@@ -70,13 +73,23 @@ function PageTemplate() {
         }
     }
 
-    async function getData() {
+    async function getData(filterValue) {
+        let filteredItems = [];
         const apiData = await API.graphql({ query: listCategoryItems, variables: { filter: {categoryID: {eq: match.params.cid}} }});
         const categoryItemsFromAPI = apiData.data.listCategoryItems.items;
 
         await Promise.all(categoryItemsFromAPI.map(async item => {
-          return item;
+            // if(filterValue === 'All'){
+            //         filteredItems.push(item)
+            // }
+            // else{
+            //     if(filterValue === item.SubCategory){
+            //         filteredItems.push(item)
+            //     }
+            // }
+            return item;
         }))
+        
 
         setCategoryItems(apiData.data.listCategoryItems.items);
         console.log(match.params.cid)
@@ -111,6 +124,7 @@ function PageTemplate() {
         if(ratingIdFromAPI[0] === undefined){
             try {
                 await API.graphql({ query: createRatingMutation, variables: { input: { "contentID": contentID, "userID": userid, "ratingType": type } }});
+                await API.graphql({ query: updateCategoryMutation, variables: { input: { "id": category.id, "numRatings": category.numRatings + 1 } }});
                 updateScore(contentID, score, type, mutationName);
                 getRatings(userid);
             } catch (e) {
@@ -122,6 +136,7 @@ function PageTemplate() {
             type === VOTE_UP ? type = VOTE_DOWN : type = VOTE_UP;
             try {
                 await API.graphql({ query: deleteRatingMutation, variables: { input: { "id": ratingIdFromAPI[0].id } }});
+                await API.graphql({ query: updateCategoryMutation, variables: { input: { "id": category.id, "numRatings": category.numRatings - 1 } }});
                 updateScore(contentID, score, type, mutationName);
                 getRatings(userid);
             } catch (e) {
@@ -188,6 +203,11 @@ function PageTemplate() {
     let handleCreateItem = () => {
         history.push(`${match.url}/create`)
     }
+
+    let handleFilter = (val) => {
+        setFilter(val)
+        history.push(`${match.url}/${val.replaceAll(' ','-').toLowerCase()}`)
+    }
     
     
     // for (let i = 0; i < category.length; i ++) {
@@ -222,7 +242,7 @@ function PageTemplate() {
                     </div>
                     
                 </Route>
-                <Route path={`${match.url}/:oid`}>
+                <Route path={`${match.url}/item/:oid`}>
                     <div style={{marginTop: "3rem"}}>
                         <Detail categoryItems={categoryItems} category={category} createRating={createRating} getRatings={getRatings} />
                         {/* <Detail 
@@ -245,6 +265,56 @@ function PageTemplate() {
                     </div>
                     
                 </Route>
+                <Route path={`${match.url}/:filter`}>
+                <div style={{background: `url(${category.imgsrc}&w=800&dpr=2`}} className="headerContainer" >
+                        {/* <img alt="picture" src="https://brightspotcdn.byu.edu/31/bf/faa1cee3405387ff8d0d135ffab1/1810-23-0021-1200-4.jpg" /> */}
+                        <h1 id="categoryTitle">{category.name}</h1>
+                    </div>
+                    <div>
+                        <div className="categoryDetails">
+                            <div style={{textAlign: "left"}}>
+                                <h3>Description</h3>
+                                <p>Created By: {category.createdBy ? category.createdBy : 'Best of BYU User' }</p>
+                                <p>{category.description}</p>
+                            </div>
+                            <div>
+                                {
+                                    category?.subCategoryOptions ?
+                                        <bs.Dropdown >      
+                                            <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
+                                                Filter
+                                            </bs.Dropdown.Toggle>
+
+                                            <bs.Dropdown.Menu>
+                                                {console.log(category.subCategoryOptions)}
+                                                {
+                                                    
+                                                    category.subCategoryOptions.map(option => {
+                                                        return(
+                                                            <bs.Dropdown.Item onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
+                                                        )
+                                                    })
+                                                }
+                                        
+                                            </bs.Dropdown.Menu>
+                                        </bs.Dropdown>
+                                        :
+                                        <></>
+                                }
+                                
+                            </div>
+                            <div>
+                                <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
+                            </div>
+                            
+                        </div>
+                        
+                        
+                        <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} filter={filter}/>
+
+                    </div>
+                    
+                </Route>
                 
 
                 <Route path={match.path}>
@@ -256,15 +326,43 @@ function PageTemplate() {
                         <div className="categoryDetails">
                             <div style={{textAlign: "left"}}>
                                 <h3>Description</h3>
+                                <p>Created By: {category.createdBy ? category.createdBy : 'Best of BYU User' }</p>
                                 <p>{category.description}</p>
+                            </div>
+                            <div>
+                                {
+                                    category?.subCategoryOptions ?
+                                        <bs.Dropdown >      
+                                            <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
+                                                Filter
+                                            </bs.Dropdown.Toggle>
+
+                                            <bs.Dropdown.Menu>
+                                                {console.log(category.subCategoryOptions)}
+                                                {
+                                                    
+                                                    category.subCategoryOptions.map(option => {
+                                                        return(
+                                                            <bs.Dropdown.Item onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
+                                                        )
+                                                    })
+                                                }
+                                        
+                                            </bs.Dropdown.Menu>
+                                        </bs.Dropdown>
+                                        :
+                                        <></>
+                                }
+                                
                             </div>
                             <div>
                                 <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
                             </div>
+                            
                         </div>
                         
                         
-                        <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex}/>
+                        <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} type="basic"/>
 
                     </div>
                     {/* <div className="headerContainer">

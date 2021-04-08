@@ -55,14 +55,17 @@ function TableView (props) {
                 
         for (let i = 0; i < catItems.length; i++){
             catItems[i].ranking = i + 1;
-            // if(catItems[i].professor.name.toLowerCase().includes(props.searchFilter.toLowerCase())){
-                for(let j = 0; j < props.userRatings.length; j++){
-                    if (props.userRatings[j].contentID === catItems[i].id){
-                        catItems[i].userRating = props.userRatings[j].ratingType;
-                    }   
-                }
-                filteredItems.push(catItems[i])
-            // }
+            if (!props.filter || props.filter === catItems[i].SubCategory){
+                // if(catItems[i].professor.name.toLowerCase().includes(props.searchFilter.toLowerCase())){
+                    for(let j = 0; j < props.userRatings.length; j++){
+                        if (props.userRatings[j].contentID === catItems[i].id){
+                            catItems[i].userRating = props.userRatings[j].ratingType;
+                        }   
+                    }
+                    filteredItems.push(catItems[i])
+                // }
+            }
+            
         }
 
         for (let i = props.pageStartIndex; paginatedItems.length < 10; i++){
@@ -132,7 +135,11 @@ function TableView (props) {
 
 
     let handleClick = (id) => {
-        history.push(`${match.url}/${id}`);
+        history.push(`${match.url}/item/${id}`);
+    }
+
+    let handleCreateItem = () => {
+        history.push(`${match.url}/create`)
     }
 
     if(!isLoading){
@@ -179,12 +186,13 @@ function TableView (props) {
                                             </div>
                                         </div>
                                         <div className="tableItemSubtitle">
-                                            {/* {catItem.department.name} in {catItem.department.school.name} */}
+                                            {catItem.SubCategory}
     
                                         </div>
     
     
                                         <div className="tableItemDetails">
+                                            <p>Created By: {catItem.createdBy ? catItem.createdBy : 'Best of BYU User'}</p>
                                             <p>{catItem.description}</p>
                                         </div>
       
@@ -220,7 +228,10 @@ function TableView (props) {
                 // <bs.Spinner animation="border" role="status">
                 //     <span className="sr-only">Loading...</span>
                 // </bs.Spinner>
-                <p>No Data</p>
+                <div style={{marginTop: '10rem'}}>
+                    <h3>Woohoo! You're the first one here. Go ahead and create the first item.</h3>
+                    <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
+                </div>
             )
         }
     } else {
