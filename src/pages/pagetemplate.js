@@ -21,7 +21,7 @@ import AppContext from '../context/context'
 
 function PageTemplate() {
     const [category, setCategory] = useState({});
-    const [filter, setFilter] = useState('All');
+    const [filter, setFilter] = useState();
     const [categoryItems, setCategoryItems] = useState({});
     const [professorsForCourse, setProfessorsForCourse] = useState({});
     const [userRatings, setUserRatings] = useState({});
@@ -205,8 +205,8 @@ function PageTemplate() {
     }
 
     let handleFilter = (val) => {
-        setFilter(val);
-        getData(val);
+        setFilter(val)
+        history.push(`${match.url}/${val.replaceAll(' ','-').toLowerCase()}`)
     }
     
     
@@ -242,7 +242,7 @@ function PageTemplate() {
                     </div>
                     
                 </Route>
-                <Route path={`${match.url}/:oid`}>
+                <Route path={`${match.url}/item/:oid`}>
                     <div style={{marginTop: "3rem"}}>
                         <Detail categoryItems={categoryItems} category={category} createRating={createRating} getRatings={getRatings} />
                         {/* <Detail 
@@ -265,6 +265,56 @@ function PageTemplate() {
                     </div>
                     
                 </Route>
+                <Route path={`${match.url}/:filter`}>
+                <div style={{background: `url(${category.imgsrc}&w=800&dpr=2`}} className="headerContainer" >
+                        {/* <img alt="picture" src="https://brightspotcdn.byu.edu/31/bf/faa1cee3405387ff8d0d135ffab1/1810-23-0021-1200-4.jpg" /> */}
+                        <h1 id="categoryTitle">{category.name}</h1>
+                    </div>
+                    <div>
+                        <div className="categoryDetails">
+                            <div style={{textAlign: "left"}}>
+                                <h3>Description</h3>
+                                <p>Created By: {category.createdBy ? category.createdBy : 'Best of BYU User' }</p>
+                                <p>{category.description}</p>
+                            </div>
+                            <div>
+                                {
+                                    category?.subCategoryOptions ?
+                                        <bs.Dropdown >      
+                                            <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
+                                                Filter
+                                            </bs.Dropdown.Toggle>
+
+                                            <bs.Dropdown.Menu>
+                                                {console.log(category.subCategoryOptions)}
+                                                {
+                                                    
+                                                    category.subCategoryOptions.map(option => {
+                                                        return(
+                                                            <bs.Dropdown.Item onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
+                                                        )
+                                                    })
+                                                }
+                                        
+                                            </bs.Dropdown.Menu>
+                                        </bs.Dropdown>
+                                        :
+                                        <></>
+                                }
+                                
+                            </div>
+                            <div>
+                                <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
+                            </div>
+                            
+                        </div>
+                        
+                        
+                        <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} filter={filter}/>
+
+                    </div>
+                    
+                </Route>
                 
 
                 <Route path={match.path}>
@@ -280,22 +330,30 @@ function PageTemplate() {
                                 <p>{category.description}</p>
                             </div>
                             <div>
-                                <bs.Dropdown >
-                                    <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
-                                        Filter
-                                    </bs.Dropdown.Toggle>
+                                {
+                                    category?.subCategoryOptions ?
+                                        <bs.Dropdown >      
+                                            <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
+                                                Filter
+                                            </bs.Dropdown.Toggle>
 
-                                    <bs.Dropdown.Menu>
-                                        {
-                                            category.subCategoryOptions.map(option => {
-                                                return(
-                                                    <bs.Dropdown.Item onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
-                                                )
-                                            })
-                                        }
-                                  
-                                    </bs.Dropdown.Menu>
-                                </bs.Dropdown>
+                                            <bs.Dropdown.Menu>
+                                                {console.log(category.subCategoryOptions)}
+                                                {
+                                                    
+                                                    category.subCategoryOptions.map(option => {
+                                                        return(
+                                                            <bs.Dropdown.Item onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
+                                                        )
+                                                    })
+                                                }
+                                        
+                                            </bs.Dropdown.Menu>
+                                        </bs.Dropdown>
+                                        :
+                                        <></>
+                                }
+                                
                             </div>
                             <div>
                                 <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
@@ -304,7 +362,7 @@ function PageTemplate() {
                         </div>
                         
                         
-                        <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} filter={filter}/>
+                        <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} type="basic"/>
 
                     </div>
                     {/* <div className="headerContainer">

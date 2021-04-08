@@ -17,7 +17,7 @@ import img7 from '../images/detailplaceholders/seven.jpg'
 
 
 function Detail(props) {
-    const match = useRouteMatch("/category/:cid/:oid")
+    const match = useRouteMatch("/category/:cid/item/:oid")
     let history = useHistory();
     const [categoryItem, setCategoryItem] = useState();
     const [course, setCourse] = useState();
@@ -376,7 +376,7 @@ function Detail(props) {
                     </div> */}
                     <div className={"detailChild"}>
                         
-                        <h5>{getRanking()[0]} in <Link to={`/category/${match.params.cid}`}>TODO</Link>{"\n"}</h5> 
+                        {/* <h5>{getRanking()[0]} in <Link to={`/category/${match.params.cid}`}>TODO</Link>{"\n"}</h5>  */}
         
                         <h5>{getRanking()[1]} in <Link to={`/category/${match.params.cid}`}>{categoryItem.SubCategory}</Link></h5>
 

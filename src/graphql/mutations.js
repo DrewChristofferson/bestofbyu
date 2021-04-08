@@ -830,6 +830,7 @@ export const createCategory = /* GraphQL */ `
       numCategoryItems
       imgsrc
       createdBy
+      subCategoryOptions
       items {
         items {
           id
@@ -943,6 +944,7 @@ export const createCategoryItem = /* GraphQL */ `
       description
       content
       score
+      SubCategory
       createdBy
       createdAt
       updatedAt

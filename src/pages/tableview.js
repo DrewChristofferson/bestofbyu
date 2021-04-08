@@ -55,7 +55,7 @@ function TableView (props) {
                 
         for (let i = 0; i < catItems.length; i++){
             catItems[i].ranking = i + 1;
-            if (props.filter === 'All' || props.filter === catItems[i].SubCategory){
+            if (!props.filter || props.filter === catItems[i].SubCategory){
                 // if(catItems[i].professor.name.toLowerCase().includes(props.searchFilter.toLowerCase())){
                     for(let j = 0; j < props.userRatings.length; j++){
                         if (props.userRatings[j].contentID === catItems[i].id){
@@ -135,7 +135,7 @@ function TableView (props) {
 
 
     let handleClick = (id) => {
-        history.push(`${match.url}/${id}`);
+        history.push(`${match.url}/item/${id}`);
     }
 
     let handleCreateItem = () => {

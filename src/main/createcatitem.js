@@ -11,7 +11,6 @@ import { listSchools } from '../graphql/queries';
 import { createCategoryItem as createCategoryItemMutation } from '../graphql/mutations';
 import styled from 'styled-components'
 
-const initialFormState = { categoryID: '', name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: ''}
 
 const radios = [
     { name: 'From Computer', value: '1' },
@@ -30,6 +29,7 @@ const SubmitButton = styled(Button)`
 `
 
 function CreateCategoryItem(props) {
+    const initialFormState = { categoryID: props.category.id, name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: props.category.subCategoryOptions[0]}
     const unsplashAccessKey = 'Vi_vrZ3sI2PbvoBYAnrYfDEbqTSa75R7_zcO0lHR7z8';
     const [photos, setPhotos] = useState([]);
     const [searchFilter, setSearchFilter] = useState('');
@@ -43,13 +43,17 @@ function CreateCategoryItem(props) {
         // headers: { 'X-Custom-Header': 'foo' },
       });
     
+
+    
     useEffect(() => {
-        setFormData({ ...formData, 'categoryID': props.category.id})
+        console.log(props.category.id)
+        // setFormData({ ...formData, 'categoryID': props.category.id})
+        // setFormData({ ...formData, 'SubCategory': props.category.subCategoryOptions[0]})
     }, [])
 
     useEffect(() => {
         console.log(formData);
-        console.log(props.category.subCategoryOptions)
+        console.log(props.category)
     })
 
     async function createCategoryItem() {
