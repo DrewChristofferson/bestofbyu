@@ -107,7 +107,7 @@ function CreateCategory() {
             setFormData({ ...formData, 'imgsrc': ''})
         } else {
             setSelected(id);
-            setFormData({ ...formData, 'imgsrc': link[0]})
+            setFormData({ ...formData, 'imgsrc': link[1]})
         }
         console.log(formData)
     }

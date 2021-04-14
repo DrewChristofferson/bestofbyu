@@ -222,25 +222,7 @@ function PageTemplate() {
                 <Route path={`${match.url}/create`}>
                     <div style={{marginTop: "3rem"}}>
                         <CreateCatItem categoryItems={categoryItems} category={category} getRatings={getRatings} />
-                        {/* <Detail 
-                            professorsForCourse={professorsForCourse}
-                            // getProfsForCourse={getProfessorsForCourse}
-                            detailsLoading={isLoadingProfessorsForCourse}
-                            updateScore={updateScore} 
-                            getRatings={getRatings} 
-                            userRatings={userRatings} 
-                            departments={departments}
-                            createRating={createRating} 
-                            isLoading={isLoadingProfessors}
-                            nextPage={nextPage}
-                            previousPage={previousPage}
-                            pageNum={pageNum}
-                            pageStartIndex={pageStartIndex}
-                            searchFilter={searchFilter}
-                            handleChangeSearch={handleChangeSearch}
-                        /> */}
                     </div>
-                    
                 </Route>
                 <Route path={`${match.url}/item/:oid`}>
                     <div style={{marginTop: "3rem"}}>

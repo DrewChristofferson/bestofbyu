@@ -12,6 +12,7 @@ import CreateCategory from './createcategory.js'
 import BYUSchools from '../university/byuschools'
 import Footer from './footer'
 import PageTemplate from '../pages/pagetemplate'
+import CreateCatName from './CreateCatName'
 
 
 
@@ -49,9 +50,13 @@ export default class App extends React.Component {
               <Route path="/about">
                 <About />
               </Route>
-              <Route path="/create/category">
-                <CreateCategory />
+              <Route path="/create-category/name">
+                <CreateCatName />
               </Route>
+              <Route path="/create-category">
+                <CreateCatName />
+              </Route>
+              
 
               <Route path="/">
                 <Home />

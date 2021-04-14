@@ -296,7 +296,7 @@ function Home() {
                             In less than a minute you can set up a new ratings board for anything from TV Shows on Netflix to Protein Powder.
                         </div>
                         <div className="bannerCTA">
-                            <bs.Button onClick={() => history.push("/create/category")}>Create New Category</bs.Button>
+                            <bs.Button onClick={() => history.push("/create-category")}>Create New Category</bs.Button>
                             {/* <CreateCatModal getCategorys={getData}/> */}
                         </div>
                     </div>
