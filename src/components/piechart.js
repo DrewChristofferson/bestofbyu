@@ -9,8 +9,6 @@ const data = [
   { name: 'Group D', value: 200 },
 ];
 
-
-
 const COLORS = ['#28A745', '#DC3545',  '#FFBB28', '#FF8042'];
 
 const RADIAN = Math.PI / 180;

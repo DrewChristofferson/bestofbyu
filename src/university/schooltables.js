@@ -5,18 +5,12 @@ import ProfessorTable from './professortable'
 import CourseTable from './coursetable'
 import { Auth } from 'aws-amplify';
 
-
-
-
 function SchoolTables(props) {
     //------------Constants-------------------//
             //----State Contants----//
 
     const [categoryValue, setCategoryValue] = useState('professors');
     const [userid, setUserid] = useState(null);
-
-
-
     const URL_PARAM_ALL = "all";
     const URL_PARAM_COURSES = "courses";
     const URL_PARAM_PROFESSORS = "professors";
@@ -118,10 +112,8 @@ function SchoolTables(props) {
                 }
                 filteredCourses.push(courses[i])
             }
-            
         }
         for (let i = 0; i < props.pageStartIndex + 10; i++){
-            
             if(filteredCourses[i]){
                 paginatedCourses.push(filteredCourses[i])
             } else {
@@ -259,7 +251,6 @@ function SchoolTables(props) {
                         <h3>No Data for this Department</h3>
                 )
             }
-
         }
         else {
             return (
@@ -268,15 +259,12 @@ function SchoolTables(props) {
         } 
     }
 
-
-
     handleChangeToggle = (val) => {
         setCategoryValue(val);
         props.initPageNum();
         props.clearSearchFilter();
         history.push(`${match.url}/${val}`);
     }
-
 
     //-------------------Public Rendering-------------------//
 
@@ -302,12 +290,9 @@ function SchoolTables(props) {
                         <CourseTable  userid={userid} getDepartments={props.getDepartments} departments={props.departments}  colleges={props.colleges} courses={getCourses()} userRatings={props.userRatings} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue} />
                     </Route>
                 </Switch>
-    
             </>
         )
     }
-
-
 }
 
 export default SchoolTables;

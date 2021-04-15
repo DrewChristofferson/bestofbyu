@@ -1,31 +1,21 @@
 import React, { useContext, useEffect, useState} from 'react'
 import * as bs from 'react-bootstrap'
 import { Link, useRouteMatch, useHistory } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
-import { updateCategoryItem, updateCategoryItem as updateCategoryItemMutation } from '../graphql/mutations';
-import { updateProfessor as updateProfessorMutation } from '../graphql/mutations';
+import { updateCategoryItem as updateCategoryItemMutation } from '../graphql/mutations';
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
-import ClassImg from '../images/class.jpg'
-import AppContext from '../context/context'
-
 
 function TableView (props) {
     const match = useRouteMatch("/category/:cid")
-    const [profs, setProfs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [rankedItems, setRankedItems] = useState();
     const [ratings, setRatings] = useState({});
     let history = useHistory();
 
-
     const CLASS_VOTE_UP = "tableSelectedUp";
     const CLASS_VOTE_DOWN = "tableSelectedDown";
     const CLASS_NO_VOTE_DOWN = "tableNotSelectedDown";
     const CLASS_NO_VOTE_UP = "tableNotSelectedUp";
-    const URL_PARAM_COURSES = "courses";
-    const URL_PARAM_PROFESSORS = "professors"
     const VOTE_UP  = "up";
     const VOTE_DOWN = "down";
 
@@ -38,17 +28,6 @@ function TableView (props) {
         let filteredItems = [];
         let paginatedItems = [];
         let endingIndex;
-        let classes ;
-
-        // for (let i = 0; i < props.departments.length; i++) {
-        //     for(let j = 0; j < props.departments[i].courses.items.length; j ++){
-        //         if(props.departments[i].courses.items[j].classes.courseID === match.params.oid){
-        //             for (let k = 0; k < props.departments[i].courses.items[j].classes.length; k ++){ 
-        //                 classes.push(props.departments[i].courses.items[j].classes[k].professor)
-        //             }
-        //         }
-        //     }
-        // }
      
         //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
         (catItems).sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
@@ -65,11 +44,8 @@ function TableView (props) {
                     filteredItems.push(catItems[i])
                 // }
             }
-            
         }
-
-        for (let i = props.pageStartIndex; paginatedItems.length < 10; i++){
-                
+        for (let i = props.pageStartIndex; paginatedItems.length < 10; i++){  
             if(filteredItems[i]){
                 paginatedItems.push(filteredItems[i])
             } else {
@@ -84,12 +60,9 @@ function TableView (props) {
                 newRatings[item.id] = item.userRating;
             }
         })
-        console.log(newRatings);
         setRatings(newRatings);
-
         setRankedItems(paginatedItems);
         setIsLoading(false);
-
     }
 
     let handleRatingClick = (id, increment, mutation, score, item) => {
@@ -123,12 +96,7 @@ function TableView (props) {
             }
         }
         
-
-        console.log("old ratings",ratings);
         setRatings(tempRatings);
-        console.log("new ratings",ratings);
-        
-        
         props.createRating(id, increment, mutation, score);
         setIsLoading(false)
     }
@@ -149,15 +117,13 @@ function TableView (props) {
                     <div className="table">
                         {
                             rankedItems.map((catItem, index) => (
-                                <div className="ratingRow" key={index}>
-                                    
+                                <div className="ratingRow" key={index}> 
                                 <div key={index} className="tableItem" >
                                     <div className="scoreInfo">                               
                                         <div className={"ratingButtons"}>
                                             <div className={ratings[catItem.id] === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE_UP }  onClick={() => handleRatingClick( catItem.id, VOTE_UP, updateCategoryItemMutation, catItem.score, catItem)}>
                                             <AiIcons.AiFillUpCircle />
                                             </div>
-                                            
                                         </div>
                                         <div className="scoreDisplay">
                                             {catItem.score} Points
@@ -165,14 +131,16 @@ function TableView (props) {
                                         <div className={"ratingButtons"}>
                                             <div className={ratings[catItem.id] === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE_DOWN }  onClick={() => handleRatingClick(catItem.id, VOTE_DOWN, updateCategoryItemMutation, catItem.score, catItem)}>
                                             <AiIcons.AiFillDownCircle />                                              
-                                            </div>
-                                           
-                                        </div>
-                                        
+                                            </div> 
+                                        </div>   
                                     </div>
                                     <div className="tableItemImg" onClick={() => {handleClick(catItem.id)}}>
+                                    {
+                                        catItem.imgsrc ?
                                         <img className="profile" alt={catItem.name} style={{height:"100%", width: "80%"}} src={catItem.imgsrc} />
-    
+                                        :
+                                        <></>
+                                    }
                                     </div>
                                     <div className="tableItemContent" onClick={() => {handleClick(catItem.id)}}>
                                         <div className="tableItemTitle">
@@ -187,22 +155,17 @@ function TableView (props) {
                                         </div>
                                         <div className="tableItemSubtitle">
                                             {catItem.SubCategory}
-    
                                         </div>
-    
-    
                                         <div className="tableItemDetails">
                                             <p>Created By: {catItem.createdBy ? catItem.createdBy : 'Best of BYU User'}</p>
                                             <p>{catItem.description}</p>
                                         </div>
-      
                                     </div>
                                     <div className="tableItemExtra">
                                             <bs.Dropdown >
                                                 <bs.Dropdown.Toggle  className="cardEllipsis" id="dropdown-basic">
                                                     <FaIcons.FaEllipsisH />
                                                 </bs.Dropdown.Toggle>
-    
                                                 <bs.Dropdown.Menu>
                                                     <bs.Dropdown.Item href={`${match.url}/${catItem.id}`}>View Details</bs.Dropdown.Item>
                                                     <bs.Dropdown.Item href="">Save {catItem.name}</bs.Dropdown.Item>
@@ -217,18 +180,15 @@ function TableView (props) {
                                 </div>
                             ))
                         }
-                        
+                    <div style={{margin: '2rem 0'}}>
+                        <h5>Don't see what you're looking for?</h5>
+                        <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
+                    </div>    
                     </div>
-                    
                 )
-                
-            
         } else {
             return(
-                // <bs.Spinner animation="border" role="status">
-                //     <span className="sr-only">Loading...</span>
-                // </bs.Spinner>
-                <div style={{marginTop: '10rem'}}>
+                <div style={{margin: '10rem'}}>
                     <h3>Woohoo! You're the first one here. Go ahead and create the first item.</h3>
                     <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
                 </div>
@@ -240,11 +200,7 @@ function TableView (props) {
                 <span className="sr-only">Loading...</span>
             </bs.Spinner>
         )
-    }
-
-    
-    
-    
+    } 
 }
 
 export default TableView;

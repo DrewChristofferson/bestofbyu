@@ -3,15 +3,12 @@ import * as bs from 'react-bootstrap'
 import { Link, useRouteMatch, useHistory, useLocation } from 'react-router-dom'
 import { getProfessor, getCourse, listRatings, searchProfessors } from '../graphql/queries'
 import { API } from 'aws-amplify'
-import ProfessorTable from './professortable'
 import AppContext from '../context/context'
 import Table from './table'
-import DataLineChart from '../utilities/linechart'
-import DataPieChart from '../utilities/piechart'
-import CreateModalClass from '../utilities/createclassmodal'
-import CreateModalClassProf from '../utilities/createclassmodalprof'
-import Button from "react-bootstrap/Button"
-import Form from "react-bootstrap/Form"
+import DataLineChart from '../components/linechart'
+import DataPieChart from '../components/piechart'
+import CreateModalClass from '../components/createclassmodal'
+import CreateModalClassProf from '../components/createclassmodalprof'
 import { ratingsByUserAndContent, listDepartments } from '../graphql/queries';
 import { createRating as createRatingMutation } from '../graphql/mutations';
 import { updateRating as updateRatingMutation } from '../graphql/mutations';
@@ -30,8 +27,6 @@ function Detail(props) {
     let history = useHistory();
     const [professor, setProfessor] = useState();
     const [course, setCourse] = useState();
-    const [type, setType ] = useState(match.params.type);
-    const [departments, setDepartments] = useState({});
     const [professorsForCourse, setProfessorsForCourse] = useState([]);
     const [coursesForProfessor, setCoursesForProfessor] = useState([]);
     const [ratings, setRatings] = useState();
@@ -48,9 +43,6 @@ function Detail(props) {
     const VOTE_UP  = "up";
     const VOTE_DOWN = "down";
     const location = useLocation();
-
-
-
 
     useEffect(() => {
         //navigates user to the top of the page on page load
@@ -188,8 +180,7 @@ function Detail(props) {
                   'TODO: Avg Score': 6
                 }
                 
-              ];
-              
+              ]; 
               return dataElement;
         }
         else {
@@ -203,15 +194,13 @@ function Detail(props) {
                 ]
             )
         }
-        
     }
     let initPieData = () => {
         if(!isLoadingRatings){
             const dataPie = [
                 { name: "Up", value: getRatingCount(0, "getUpVotes") },
                 { name: "Down", value: getRatingCount(0, "getDownVotes") }
-              ];
-              
+              ]; 
             return dataPie;
         }
         else {
@@ -221,8 +210,7 @@ function Detail(props) {
                     { name: "Down", value: 3 }
                 ]
             )
-        }
-        
+        }  
     }
 
     async function updateScore(id, score, increment, mutationName) {
@@ -237,7 +225,6 @@ function Detail(props) {
         catch (e) {
             return e;
         }
-  
       }
 
     async function createRating(contentID, type, mutationName, score) {
@@ -283,7 +270,6 @@ function Detail(props) {
             }
         }
     }
-
 
    async function fetchData() {
        if(match.params.type === "professors") {
@@ -391,12 +377,9 @@ function Detail(props) {
             let strRankingAll =  rankingAll.toString()
             let strRankingDept =  rankingDept.toString()
             let strRankingSchool =  rankingSchool.toString()
-            
                 
             return [createOrdinalNumber(strRankingDept), createOrdinalNumber(strRankingSchool), createOrdinalNumber(strRankingAll)];
-        }
-
-        
+        }    
 }
 
     let createOrdinalNumber = (strRanking) => {
@@ -434,7 +417,6 @@ function Detail(props) {
    let fetchRatings = async() => {
        try {
         const apiData = await API.graphql({ query: listRatings, variables: {filter: { contentID: {eq: match.params.oid }  }}});
-
         const ratingsFromAPI = apiData.data.listRatings.items;
 
         await Promise.all(ratingsFromAPI.map(async rating => {
@@ -449,7 +431,6 @@ function Detail(props) {
 
 
    let getCourses = async() => {
-        let courses = [];
         let filteredCourses = [];
         let paginatedCourses = [];
         let endingIndex;
@@ -478,29 +459,15 @@ function Detail(props) {
             }
             endingIndex = i + 1;
         }
-
         return(paginatedCourses);
-
     }
 
 
 
     let getProfessors = async() => {
-        let professors = [];
         let filteredProfessors = [];
         let paginatedProfessors = [];
         let endingIndex;
-        let classes ;
-
-        // for (let i = 0; i < props.departments.length; i++) {
-        //     for(let j = 0; j < props.departments[i].courses.items.length; j ++){
-        //         if(props.departments[i].courses.items[j].classes.courseID === match.params.oid){
-        //             for (let k = 0; k < props.departments[i].courses.items[j].classes.length; k ++){ 
-        //                 classes.push(props.departments[i].courses.items[j].classes[k].professor)
-        //             }
-        //         }
-        //     }
-        // }
      
         //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
         (professorsForCourse).sort((a, b) => (a.professor.score < b.professor.score) ? 1 : (a.professor.score === b.professor.score) ? ((a.professor.name > b.professor.name) ? 1 : -1) : -1 )
@@ -517,8 +484,7 @@ function Detail(props) {
             }
         }
 
-        for (let i = props.pageStartIndex; paginatedProfessors.length < 10; i++){
-                
+        for (let i = props.pageStartIndex; paginatedProfessors.length < 10; i++){    
             if(filteredProfessors[i]){
                 paginatedProfessors.push(filteredProfessors[i])
             } else {
@@ -526,9 +492,7 @@ function Detail(props) {
             }
             endingIndex = i + 1;
         }
-
         return(paginatedProfessors);
-
     }
         
     let getGoat = () => {
@@ -538,14 +502,12 @@ function Detail(props) {
     }
 
    let returnComments = () => {
-
         if(!isLoadingComments) {
             if(comments[0]){
                 return( 
                     comments.map((comment) => ( 
                         <p style={{fontSize: "1.4rem"}}>{comment.content}</p>
-                    )
-                    )
+                    ))
                 )    
             } else {
                 return(
@@ -555,18 +517,15 @@ function Detail(props) {
         }
    }
 
-
     let getImg = (professor) => {
         if (professor.imgsrc){
             return(
                 <img className="profile" alt={professor.name} style={{height:"200px", width: "180px", marginLeft: "auto", marginRight: "0"}} src={professor.imgsrc} />
-
             )
         } else {
             return(
                 <img className="profile" alt={professor.name} style={{height:"100px", width: "100px"}} src="https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255626-stock-illustration-avatar-male-profile-gray-person.jpg" />
             )
-
         }
     }
    
@@ -578,8 +537,7 @@ function Detail(props) {
                     <bs.Spinner animation="border" role="status">
                         <span className="sr-only">Loading...</span>
                     </bs.Spinner>
-                </div>
-                
+                </div> 
             )
        } else {   
             if(!isLoadingProfessors){
@@ -609,8 +567,7 @@ function Detail(props) {
                     <bs.Spinner animation="border" role="status">
                         <span className="sr-only">Loading...</span>
                     </bs.Spinner>
-                </div>
-                
+                </div>  
             )
        } else {   
             if(!isLoadingCourses){
@@ -640,20 +597,12 @@ function Detail(props) {
                <div className={"backButton"}>
                     <bs.Button onClick={() => history.goBack()}>Go Back</bs.Button>
                </div>
-
-             
-
                 <div className={"detailContent"}>
                     <div className={"detailChildTitle"}>
                         <h2>{course.name}</h2>
                         <h3>{course.code}</h3>
                         <h5>{ course.description }</h5>
                     </div>
-                    {/* <div className={"detailChild"}>
-                        <bs.Badge className="badges" variant="danger">Hard Tests</bs.Badge>{' '}
-                        <bs.Badge className="badges" variant="danger">Fast Lectures</bs.Badge>{' '}
-                        <bs.Badge className="badges" variant="success">Funny</bs.Badge>{' '}
-                    </div> */}
                     <div className={"detailChild"}>
                         
                         <h5>{getRanking()[0] === "1st" ? getGoat() : getRanking()[0]} in <Link to={`/schools/${course.department.school.id}/${course.department.id}/${match.params.type}`}>{ course.department.name}</Link>{"\n"}</h5> 
@@ -672,13 +621,10 @@ function Detail(props) {
                         <h3>Score for {course.code}</h3><h6>(past 6 months)</h6>
                         <DataLineChart data={initChartData()}/>
                     </div>
-                    
                 </div>
-                   
 
                      <bs.Tabs defaultActiveKey="professors" id="controlled-tab-example">
-                        <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em", paddingBottom: "2em"}}>
-                             
+                        <bs.Tab eventKey="professors" title="Professors" style={{paddingTop: "3em", paddingBottom: "2em"}}> 
                              {/* <DataLineChart data={dataProfessors}/>                       */}
                              {returnProfessors()}
                              <h5>Do you know a professor who teaches {course.code}?</h5>
@@ -698,7 +644,6 @@ function Detail(props) {
                                  </bs.Form.Group>
                                  <bs.Button variant="primary">Post Comment</bs.Button>
                              </bs.Form>
-
                          </bs.Tab>
                          <bs.Tab eventKey="pictures" title="Pictures" >
                              <h3 style={{paddingTop:"2rem"}}>Pictures</h3>
@@ -714,11 +659,7 @@ function Detail(props) {
                              </div>
                          </bs.Tab>
                      </bs.Tabs>
-           </div>
-            
-               
-                    
-            
+           </div>   
        );
    }
    else if (professor && match.params.type === "professors"){

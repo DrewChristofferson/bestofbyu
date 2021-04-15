@@ -16,9 +16,6 @@ function PageNav (props) {
                 <NextPage pageNum={props.pageNum} numPages={props.numPages} nextPage={props.nextPage} myIndex={props.myIndex}/>
             </div>
         </div>
-        
-        
-
     )
 }
 

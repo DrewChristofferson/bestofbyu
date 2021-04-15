@@ -41,7 +41,6 @@ const SidebarWrap = styled.div`
 
 function NewSideBar(props) {
     const [sidebar, setSidebar] = useState(false)
-
     const showSidebar = () => setSidebar(!sidebar);
 
     return (

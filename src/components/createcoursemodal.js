@@ -18,12 +18,9 @@ function CreateCourseModal(props) {
     const [selectedDepartment, setSelectedDepartment] = useState();
     const [selectedSchool, setSelectedSchool] = useState();
     const [isLoading, setIsLoading] = useState(true);
-
-    
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     
-
     useEffect(() => {
       getData();
     }, []);
@@ -48,7 +45,6 @@ function CreateCourseModal(props) {
       }
       setSchools(apiData.data.listSchools.items);
       setIsLoading(false);
-
     }
     
     async function createCourse() {
@@ -57,7 +53,6 @@ function CreateCourseModal(props) {
     props.getDepartments();
     setFormData(initialFormState);
     }
-
       let getSchools = () => {
         if(schools){
           return(
@@ -74,7 +69,6 @@ function CreateCourseModal(props) {
         } else {
           return;
         }
-
       }
 
       let getDepartments = () => {
@@ -98,7 +92,6 @@ function CreateCourseModal(props) {
               <option disabled>No departments in this college</option>
             </Form.Control>
           }
-
         } else {
           return(
             <Form.Control as="select" defaultValue={'DEFAULT'}>
@@ -107,7 +100,6 @@ function CreateCourseModal(props) {
             </Form.Control>
           )
         }
-        
       }
 
       let handleSchoolChange = (e) => {
@@ -115,7 +107,6 @@ function CreateCourseModal(props) {
         if(schools[e.target.value].departments.items[0]){
           setFormData({ ...formData, 'departmentID': schools[e.target.value].departments.items[0].id});
         }
-        
         getDepartments();
       }
 
@@ -128,11 +119,9 @@ function CreateCourseModal(props) {
         e.preventDefault();
       }
 
-
     return (
       <div>
         <Button onClick={handleShow}>Add a Course</Button>
-  
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Add a New Course</Modal.Title>

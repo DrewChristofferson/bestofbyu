@@ -1,20 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import * as bs from 'react-bootstrap'
-import { API, container, Storage } from 'aws-amplify'
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
-import { listSchools, listDepartments, getCourse, getCategory, listCategoryItems } from '../graphql/queries';
+import { API} from 'aws-amplify'
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import { getCategory, listCategoryItems } from '../graphql/queries';
 import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom'
 import { ratingsByUserAndContent } from '../graphql/queries';
 import { createRating as createRatingMutation } from '../graphql/mutations';
 import { updateRating as updateRatingMutation } from '../graphql/mutations';
 import { updateCategory as updateCategoryMutation } from '../graphql/mutations';
 import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
-import SchoolTables from '../university/schooltables'
 import Detail from './detail'
 import TableView from './tableview'
-import CreateCatItem from '../main/createcatitem'
-
-import NewSideBarDesktop from'../main/newsidebardesktop'
+import CreateCatItem from './create/createcatitem'
 import { Auth } from 'aws-amplify';
 import AppContext from '../context/context'
 
@@ -27,31 +24,19 @@ function PageTemplate() {
     const [userRatings, setUserRatings] = useState({});
     const [userid, setUserid] = useState(null);
     const [isLoadingItems, setIsLoadingItems] = useState(true);
-    const [isLoadingProfessors, setIsLoadingProfessors] = useState(true);
-    const [isLoadingProfessorsForCourse, setIsLoadingProfessorsForCourse] = useState(true);
     const [pageStartIndex, setPageStartIndex] = useState(0);
     const [pageNum, setPageNum] = useState(1);
     const [searchFilter, setSearchFilter] = useState('');
     const VOTE_UP  = "up";
     const VOTE_DOWN = "down";
-    let colleges = []
-    const context = useContext(AppContext)
     const match = useRouteMatch("/category/:cid");
     const history = useHistory();
-
-    useEffect(() => {
-        console.log(match.path);
-        console.log(match.url);
-        console.log(category)
-        console.log(filter)
-    })
 
     useEffect(() => {
         //navigates user to the top of the page on page load
         window.scrollTo(0, 0);
         fetchData();
         getData();
-      
       }, []);
 
     useEffect(() => {
@@ -74,22 +59,12 @@ function PageTemplate() {
     }
 
     async function getData(filterValue) {
-        let filteredItems = [];
         const apiData = await API.graphql({ query: listCategoryItems, variables: { filter: {categoryID: {eq: match.params.cid}} }});
         const categoryItemsFromAPI = apiData.data.listCategoryItems.items;
 
         await Promise.all(categoryItemsFromAPI.map(async item => {
-            // if(filterValue === 'All'){
-            //         filteredItems.push(item)
-            // }
-            // else{
-            //     if(filterValue === item.SubCategory){
-            //         filteredItems.push(item)
-            //     }
-            // }
             return item;
         }))
-        
 
         setCategoryItems(apiData.data.listCategoryItems.items);
         console.log(match.params.cid)
@@ -208,16 +183,9 @@ function PageTemplate() {
         setFilter(val)
         history.push(`${match.url}/${val.replaceAll(' ','-').toLowerCase()}`)
     }
-    
-    
-    // for (let i = 0; i < category.length; i ++) {
-    //     colleges.push(category[i])
-    // }
 
     if(!isLoadingItems){
-        console.log(category.imgsrc)
-        return(
-            
+        return( 
             <Switch>
                 <Route path={`${match.url}/create`}>
                     <div style={{marginTop: "3rem"}}>
@@ -227,25 +195,7 @@ function PageTemplate() {
                 <Route path={`${match.url}/item/:oid`}>
                     <div style={{marginTop: "3rem"}}>
                         <Detail categoryItems={categoryItems} category={category} createRating={createRating} getRatings={getRatings} />
-                        {/* <Detail 
-                            professorsForCourse={professorsForCourse}
-                            // getProfsForCourse={getProfessorsForCourse}
-                            detailsLoading={isLoadingProfessorsForCourse}
-                            updateScore={updateScore} 
-                            getRatings={getRatings} 
-                            userRatings={userRatings} 
-                            departments={departments}
-                            createRating={createRating} 
-                            isLoading={isLoadingProfessors}
-                            nextPage={nextPage}
-                            previousPage={previousPage}
-                            pageNum={pageNum}
-                            pageStartIndex={pageStartIndex}
-                            searchFilter={searchFilter}
-                            handleChangeSearch={handleChangeSearch}
-                        /> */}
-                    </div>
-                    
+                    </div>         
                 </Route>
                 <Route path={`${match.url}/:filter`}>
                 <div style={{background: `url(${category.imgsrc}&w=800&dpr=2`}} className="headerContainer" >
@@ -266,39 +216,28 @@ function PageTemplate() {
                                             <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
                                                 Filter
                                             </bs.Dropdown.Toggle>
-
                                             <bs.Dropdown.Menu>
                                                 {console.log(category.subCategoryOptions)}
-                                                {
-                                                    
+                                                {   
                                                     category.subCategoryOptions.map(option => {
                                                         return(
                                                             <bs.Dropdown.Item onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
                                                         )
                                                     })
                                                 }
-                                        
                                             </bs.Dropdown.Menu>
                                         </bs.Dropdown>
                                         :
                                         <></>
-                                }
-                                
+                                }    
                             </div>
                             <div>
                                 <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
                             </div>
-                            
                         </div>
-                        
-                        
                         <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} filter={filter}/>
-
                     </div>
-                    
                 </Route>
-                
-
                 <Route path={match.path}>
                     <div style={{background: `url(${category.imgsrc}&w=800&dpr=2`}} className="headerContainer" >
                         {/* <img alt="picture" src="https://brightspotcdn.byu.edu/31/bf/faa1cee3405387ff8d0d135ffab1/1810-23-0021-1200-4.jpg" /> */}
@@ -318,7 +257,6 @@ function PageTemplate() {
                                             <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
                                                 Filter
                                             </bs.Dropdown.Toggle>
-
                                             <bs.Dropdown.Menu>
                                                 {console.log(category.subCategoryOptions)}
                                                 {
@@ -329,63 +267,27 @@ function PageTemplate() {
                                                         )
                                                     })
                                                 }
-                                        
                                             </bs.Dropdown.Menu>
                                         </bs.Dropdown>
                                         :
                                         <></>
                                 }
-                                
                             </div>
                             <div>
                                 <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
                             </div>
-                            
                         </div>
-                        
-                        
                         <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} type="basic"/>
-
-                    </div>
-                    {/* <div className="headerContainer">
-                        <h1 id="categoryTitle">BYU Academics</h1>
-                        <NewSideBarDesktop colleges={colleges} initPageNum={initPageNum}/>
-                    </div>
-
-
-                            <SchoolTables 
-                                updateScore={updateScore} 
-                                getRatings={getRatings} 
-                                userRatings={userRatings} 
-                                createRating={createRating} 
-                                departments={departments} 
-                                isLoading={isLoadingDepartments}
-                                nextPage={nextPage}
-                                previousPage={previousPage}
-                                pageNum={pageNum}
-                                pageStartIndex={pageStartIndex}
-                                searchFilter={searchFilter}
-                                handleChangeSearch={handleChangeSearch}
-                                initPageNum={initPageNum}
-                                clearSearchFilter={clearSearchFilter}
-                            /> */}
-                        
-
-                            
+                    </div>          
                 </Route>
-
-            </Switch>
-        
-        
-    )
-    } else{
+            </Switch>   
+    )} else{
         return(
             <bs.Spinner animation="border" role="status">
                 <span className="sr-only">Loading...</span>
             </bs.Spinner>
         )
-    }
-    
+    } 
 }
 
 export default withAuthenticator(PageTemplate);

@@ -4,13 +4,10 @@ import { useHistory } from 'react-router-dom'
 import Button from "react-bootstrap/Button"
 import ButtonGroup from "react-bootstrap/ButtonGroup"
 import ToggleButton from "react-bootstrap/ToggleButton"
-import Modal from "react-bootstrap/Modal"
 import Form from "react-bootstrap/Form"
 import { API } from 'aws-amplify'
-import { listSchools } from '../graphql/queries';
-import { createCategoryItem as createCategoryItemMutation } from '../graphql/mutations';
+import { createCategoryItem as createCategoryItemMutation } from '../../graphql/mutations';
 import styled from 'styled-components'
-
 
 const radios = [
     { name: 'From Computer', value: '1' },
@@ -43,19 +40,6 @@ function CreateCategoryItem(props) {
         // `fetch` options to be sent with every request
         // headers: { 'X-Custom-Header': 'foo' },
       });
-    
-
-    
-    useEffect(() => {
-        console.log(props.category.id)
-        // setFormData({ ...formData, 'categoryID': props.category.id})
-        // setFormData({ ...formData, 'SubCategory': props.category.subCategoryOptions[0]})
-    }, [])
-
-    useEffect(() => {
-        console.log(formData);
-        console.log(props.category)
-    })
 
     async function createCategoryItem() {
         if (!formData.name || !formData.description) return;
@@ -65,7 +49,6 @@ function CreateCategoryItem(props) {
           const image = await Storage.get(formData.image);
           formData.image = image;
         }
-        // props.getCategorys();
         setFormData(initialFormState);
         history.push(`/category/${props.category.id}/${response.data.createCategoryItem.id}`)
       }
@@ -90,9 +73,7 @@ function CreateCategoryItem(props) {
     }
 
     let handleChangeSearch = (val) => {
-        // console.log(val);
         setSearchFilter(val);
-        // getProfessorsFromSearch();
     }
 
     let submitHandlerPhotos = (e) => {
@@ -137,13 +118,6 @@ function CreateCategoryItem(props) {
         console.log(formData)
     }
 
-    // if(photos[0]){
-    //     photos.map(link => {
-    //         return(
-    //             <img alt="test" src={link} />
-    //         )
-    //     })  
-    // }
     return (
         <FormContainer>
             <div>
@@ -211,8 +185,7 @@ function CreateCategoryItem(props) {
                         </Form.Group>
                         :
                         <></>
-                    }
-                    
+                    } 
                 </Form>
                 {radioValue === '2' ?
                     <div>
@@ -240,15 +213,10 @@ function CreateCategoryItem(props) {
                         :
                         <></>
                     }
-                
                 <SubmitButton onClick={handleFormSubmit}>Create Category Item</SubmitButton>
             </div>
-            
         </FormContainer>
-        
-    )
-
-    
+    ) 
 }
 
 export default CreateCategoryItem;
