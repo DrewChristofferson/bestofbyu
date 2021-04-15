@@ -14,6 +14,7 @@ import TableView from './tableview'
 import CreateCatItem from './create/createcatitem'
 import { Auth } from 'aws-amplify';
 import AppContext from '../context/context'
+import CreateCatItemModal from '../components/CreateCatItemModal'
 
 
 function PageTemplate() {
@@ -232,10 +233,10 @@ function PageTemplate() {
                                 }    
                             </div>
                             <div>
-                                <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
+                                <CreateCatItemModal />
                             </div>
                         </div>
-                        <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} filter={filter}/>
+                        <TableView category={category} categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} filter={filter}/>
                     </div>
                 </Route>
                 <Route path={match.path}>
@@ -274,10 +275,10 @@ function PageTemplate() {
                                 }
                             </div>
                             <div>
-                                <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
+                                <CreateCatItemModal category={category}/>
                             </div>
                         </div>
-                        <TableView categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} type="basic"/>
+                        <TableView category={category} categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} type="basic"/>
                     </div>          
                 </Route>
             </Switch>   

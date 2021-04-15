@@ -4,6 +4,7 @@ import { Link, useRouteMatch, useHistory } from 'react-router-dom'
 import { updateCategoryItem as updateCategoryItemMutation } from '../graphql/mutations';
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
+import CreateCatItemModal from '../components/CreateCatItemModal'
 
 function TableView (props) {
     const match = useRouteMatch("/category/:cid")
@@ -21,6 +22,7 @@ function TableView (props) {
 
     useEffect(() => {
         rankItems();
+        console.log(props.category)
     }, [])
 
     let rankItems = async() => {
@@ -182,7 +184,7 @@ function TableView (props) {
                         }
                     <div style={{margin: '2rem 0'}}>
                         <h5>Don't see what you're looking for?</h5>
-                        <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
+                        <CreateCatItemModal category={props.category}/>
                     </div>    
                     </div>
                 )
@@ -190,7 +192,7 @@ function TableView (props) {
             return(
                 <div style={{margin: '10rem'}}>
                     <h3>Woohoo! You're the first one here. Go ahead and create the first item.</h3>
-                    <bs.Button onClick={handleCreateItem}>Create Item</bs.Button>
+                    <CreateCatItemModal category={props.category}/>
                 </div>
             )
         }
