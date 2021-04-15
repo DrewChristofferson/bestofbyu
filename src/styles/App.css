@@ -774,9 +774,15 @@ section {
 .testImageContainer {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .categoryDetails {
   display: flex;
   justify-content: space-between;
+}
+
+.create-modal {
+  width: 60vw;    /* Occupy the 90% of the screen width */
+  max-width: 60vw;
 }
