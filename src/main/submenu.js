@@ -73,12 +73,7 @@ function Submenu(props) {
         opened: <RiIcons.RiArrowUpSFill />,
         closed: <RiIcons.RiArrowDownSFill />
     }
-    // const wrapperRef = useRef(null);
-    // useOutsideAlerter(wrapperRef, subnav);
-
-    // let match = useRouteMatch();
     let match = useRouteMatch("/:cat/:sid/:did/:type");
-
     let showSubnav = () => setSubnav(!subnav)
 
     let getAllDept = () => {
@@ -190,10 +185,8 @@ function Submenu(props) {
                             )
                         })
                         }
-                    </DropdownContent>
-                    
+                    </DropdownContent> 
                 </div>
-                
             </div>
         )
     }

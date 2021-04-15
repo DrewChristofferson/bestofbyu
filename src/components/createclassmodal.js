@@ -7,17 +7,11 @@ import { API } from 'aws-amplify'
 import { listProfessors, listSchools } from '../graphql/queries';
 import { createClass as createClassMutation } from '../graphql/mutations';
 
-
-
-    
 function CreateClassModal(props) {
     const match = useRouteMatch("/schools/:sid/:did/:type/:oid")
-
     const initialSearchFormState = { professorID: '', courseID: match.params.oid}
     const [show, setShow] = useState(false);
     const [searchFormData, setSearchFormData] = useState(initialSearchFormState);
-    
-
     const [professors, setProfessors] = useState();
     const [myFilteredProfessors, setMyFilteredProfessors] = useState();
     const [selectedProfessor, setSelectedProfessor] = useState();
@@ -25,7 +19,6 @@ function CreateClassModal(props) {
     const [isLoading, setIsLoading] = useState(true);
 
 
-    
     const handleClose = () => {
       setShow(false);
       setSearchFilter('');
@@ -79,22 +72,17 @@ function CreateClassModal(props) {
                     filteredProfessors.push(professor);
                 }
             })
-
-
             //TODO: search doesn't reset the default professorID
             // if(filteredProfessors[0].id){
             //     setSearchFormData({ ...searchFormData, 'professorID': filteredProfessors[0].id});
             //   }
-            
           return(
             <>
               <Form.Control as="select" >
                 {/* <option value={'DEFAULT'} disabled>Choose a college</option> */}
-
                 {
                   filteredProfessors.map((professor, indx) => (
                     <option key={indx} value={indx}>{professor.name}</option>
-
                   ))
                 }
             </Form.Control>
@@ -103,11 +91,7 @@ function CreateClassModal(props) {
         } else {
           return;
         }
-
       }
-
-
- 
 
       let handleProfessorChange = (e) => {
         let filteredProfessors = [];
@@ -118,9 +102,6 @@ function CreateClassModal(props) {
               }
           })
         }
-        console.log(e.target.value);
-        console.log(filteredProfessors[e.target.value].id)
-        console.log(filteredProfessors[e.target.value].name)
         setSelectedProfessor(e.target.value);
         if(filteredProfessors[e.target.value]){
             setSearchFormData({ ...searchFormData, 'professorID': filteredProfessors[e.target.value].id});
@@ -141,13 +122,11 @@ function CreateClassModal(props) {
         if(filteredProfessors[0]){
           setSearchFormData({ ...searchFormData, 'professorID': filteredProfessors[0].id});
         }
-        // getProfessorsFromSearch();
     }
 
     let submitHandler = (e) => {
         e.preventDefault();
     }
-
 
     return (
       <div style={{paddingLeft: "1rem"}}>
@@ -161,7 +140,6 @@ function CreateClassModal(props) {
           <Modal.Body>
             <Form style={{paddingLeft: "1rem"}} onSubmit={submitHandler}>
                 <Form.Group controlId="exampleForm.ControlInput2" >
-            
                     <Form.Control type="text" placeholder="Search for a Professor" onChange={(e) => handleChangeSearch(e.currentTarget.value)}/>
                 </Form.Group>
                 <Form.Group controlId="exampleForm.ControlSelect2" onChange={handleProfessorChange}>

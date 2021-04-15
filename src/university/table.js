@@ -10,8 +10,6 @@ import * as AiIcons from 'react-icons/ai'
 import ClassImg from '../images/class.jpg'
 import { Auth } from 'aws-amplify';
 
-
-
 function Table (props) {
     const match = useRouteMatch("/schools/:sid/:did/:type")
     const [profs, setProfs] = useState([]);
@@ -21,32 +19,20 @@ function Table (props) {
     const [ratings, setRatings] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     let history = useHistory();
-    
-
-
+  
     const CLASS_VOTE_UP = "tableSelectedUp";
     const CLASS_VOTE_DOWN = "tableSelectedDown";
     const CLASS_NO_VOTE_DOWN = "tableNotSelectedDown";
     const CLASS_NO_VOTE_UP = "tableNotSelectedUp";
-    const URL_PARAM_COURSES = "courses";
-    const URL_PARAM_PROFESSORS = "professors"
     const VOTE_UP  = "up";
     const VOTE_DOWN = "down";
-    const VOTE_NONE = "none";
 
     useEffect(() => {
         initData();
-        // initCourses();
     }, [])
 
 
     let initData = () => {
-        // let professors = Promise.resolve(props.professors)
-        // professors.then((values) => {
-        //     setProfs(values);
-        // })
-        // setIsLoading(false);
-
         let dataIn;
 
         if (props.courses){
@@ -56,7 +42,6 @@ function Table (props) {
             dataIn = props.professors;
             setProfessors(props.professors);
         } else if (props.professorsDetail){
-            
             let professors = Promise.resolve(props.professorsDetail)
             professors.then((values) => {
                 let newRatings = {};
@@ -79,7 +64,6 @@ function Table (props) {
                         newRatings[item.id] = item.userRating;
                     }
                 })
-                console.log(newRatings);
                 setRatings(newRatings);
                 setDetailCourses(values);
             })
@@ -92,15 +76,10 @@ function Table (props) {
                     newRatings[item.id] = item.userRating;
                 }
             })
-            console.log(newRatings);
             setRatings(newRatings);
         }
-        
-
         setIsLoading(false)
     }
-
-  
 
     let getCardDetails = (course) => {
         if(course.isGeneral){
@@ -121,15 +100,6 @@ function Table (props) {
         for (const [key, value] of Object.entries(ratings)) {
             tempRatings[key] = value;
         }
-
-        console.log(profs);
-
-        // let tempCourses = courses;
-        // console.log(tempCourses);
-
-
-
-
 
         if (increment === VOTE_UP){
             if (tempRatings[id] === VOTE_UP){
@@ -154,13 +124,8 @@ function Table (props) {
                 tempRatings[id] = increment;
             }
         }
-        
 
-        console.log("old ratings",ratings);
         setRatings(tempRatings);
-        console.log("new ratings",ratings);
-        
-        
         props.createRating(id, increment, mutation, score);
         setIsLoading(false)
         // if(props.refreshProfessors) {
@@ -247,7 +212,6 @@ function Table (props) {
                                     <div className="tableItemDetails">
                                         <p>{course.description}</p>
                                     </div>
-  
                                 </div>
                                 <div className="tableItemExtra">
                                         <bs.Dropdown >
@@ -263,17 +227,13 @@ function Table (props) {
                                                 <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + course.name + ".")}>Report</bs.Dropdown.Item> 
                                             </bs.Dropdown.Menu>
                                         </bs.Dropdown>
-
                                     </div>
                             </div>
                             </div>
                         ))
                     }
-                    
-                </div>
-                
-            )
-            
+                </div>  
+            ) 
         } 
         else if (props.detail) {
             if (props.professorsDetail){
@@ -297,12 +257,10 @@ function Table (props) {
                                             <div className={ratings[professor.id] === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE_DOWN }  onClick={() => handleRatingClick(professor.id, VOTE_DOWN, updateProfessorMutation, professor.score, professor)}>
                                             <AiIcons.AiFillDownCircle />                                              
                                             </div>
-                                        </div>
-                                        
+                                        </div> 
                                     </div>
                                     <div className="tableItemImg" onClick={() => {handleClick(professor.id, "professors")}}>
                                         {props.getImg(professor)}
-    
                                     </div>
                                     <div className="tableItemContent" onClick={() => {handleClick(professor.id, "professors")}}>
                                         <div className="tableItemTitle">
@@ -317,24 +275,19 @@ function Table (props) {
                                         </div>
                                         <div className="tableItemSubtitle">
                                             {professor.department.name} Department in {professor.department.school.name}
-    
                                         </div>
-    
                                         <div className="tableItemDetails">
                                             {getCardDetails(professor)}
                                         </div>
-    
                                         <div className="tableItemDetails">
                                             <p>{professor.description}</p>
                                         </div>
-      
                                     </div>
                                     <div className="tableItemExtra">
                                             <bs.Dropdown >
                                                 <bs.Dropdown.Toggle  className="cardEllipsis" id="dropdown-basic">
                                                     <FaIcons.FaEllipsisH />
                                                 </bs.Dropdown.Toggle>
-    
                                                 <bs.Dropdown.Menu>
                                                     <bs.Dropdown.Item href={`${match.url}/${professor.id}`}>View Details</bs.Dropdown.Item>
                                                     <bs.Dropdown.Item href="">Save {professor.name}</bs.Dropdown.Item>
@@ -343,23 +296,19 @@ function Table (props) {
                                                     <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + professor.name + ".")}>Report</bs.Dropdown.Item> 
                                                 </bs.Dropdown.Menu>
                                             </bs.Dropdown>
-    
                                         </div>
                                 </div>
                                 </div>
                             ))
-                        }
-                        
-                    </div>
-                    
+                        } 
+                    </div>   
                 )
             } else if (props.coursesDetail){
                 return(
                     <div className="table">
                         {
                             detailCourses.map((course, index) => (
-                                <div className="ratingRow" key={index}>
-                                    
+                                <div className="ratingRow" key={index}>  
                                 <div key={index} className="tableItem" >
                                     <div className="scoreInfo">                               
                                         <div className={"ratingButtons"}>
@@ -375,11 +324,9 @@ function Table (props) {
                                             <AiIcons.AiFillDownCircle />                                              
                                             </div>
                                         </div>
-                                        
                                     </div>
                                     <div className="tableItemImg" onClick={() => {handleClick(course.id, "courses")}}>
                                         <img className="profile" alt={course.name} style={{height:"100%", width: "80%"}} src={ClassImg} />
-    
                                     </div>
                                     <div className="tableItemContent" onClick={() => {handleClick(course.id, "courses")}}>
                                         <div className="tableItemTitle">
@@ -394,24 +341,19 @@ function Table (props) {
                                         </div>
                                         <div className="tableItemSubtitle">
                                             {course.department.name} in {course.department.school.name}
-    
                                         </div>
-    
                                         <div className="tableItemDetails">
                                             {getCardDetails(course)}
                                         </div>
-    
                                         <div className="tableItemDetails">
                                             <p>{course.description}</p>
                                         </div>
-      
                                     </div>
                                     <div className="tableItemExtra">
                                             <bs.Dropdown >
                                                 <bs.Dropdown.Toggle  className="cardEllipsis" id="dropdown-basic">
                                                     <FaIcons.FaEllipsisH />
                                                 </bs.Dropdown.Toggle>
-    
                                                 <bs.Dropdown.Menu>
                                                     <bs.Dropdown.Item href={`${match.url}/${course.id}`}>View Details</bs.Dropdown.Item>
                                                     <bs.Dropdown.Item href="">Save {course.name}</bs.Dropdown.Item>
@@ -420,25 +362,20 @@ function Table (props) {
                                                     <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + course.name + ".")}>Report</bs.Dropdown.Item> 
                                                 </bs.Dropdown.Menu>
                                             </bs.Dropdown>
-    
                                         </div>
                                 </div>
                                 </div>
                             ))
                         }
-                        
-                    </div>
-                    
+                    </div> 
                 )
             }
-            
         } else if (props.professors) {
             return(
                 <div className="table">
                     {
                         props.professors.map((professor, index) => (
                             <div className="ratingRow" key={index}>
-                                
                             <div  className="tableItem" >
                                 <div className="scoreInfo">                               
                                     <div className={"ratingButtons"}>
@@ -453,12 +390,10 @@ function Table (props) {
                                         <div className={ratings[professor.id] === VOTE_DOWN ? CLASS_VOTE_DOWN : CLASS_NO_VOTE_DOWN }  onClick={() => handleRatingClick(professor.id, VOTE_DOWN, updateProfessorMutation, professor.score, professor)}>
                                         <AiIcons.AiFillDownCircle />                                              
                                         </div>
-                                    </div>
-                                    
+                                    </div> 
                                 </div>
                                 <div className="tableItemImg" onClick={() => {handleClick(professor.id)}}>
                                     {props.getImg(professor)}
-
                                 </div>
                                 <div className="tableItemContent" onClick={() => {handleClick(professor.id)}}>
                                     <div className="tableItemTitle">
@@ -473,24 +408,19 @@ function Table (props) {
                                     </div>
                                     <div className="tableItemSubtitle">
                                         {professor.department.name} Department in {professor.department.school.name}
-
                                     </div>
-
                                     <div className="tableItemDetails">
                                         {getCardDetails(professor)}
                                     </div>
-
                                     <div className="tableItemDetails">
                                         <p>{professor.description}</p>
                                     </div>
-  
                                 </div>
                                 <div className="tableItemExtra">
                                         <bs.Dropdown >
                                             <bs.Dropdown.Toggle  className="cardEllipsis" id="dropdown-basic">
                                                 <FaIcons.FaEllipsisH />
                                             </bs.Dropdown.Toggle>
-
                                             <bs.Dropdown.Menu>
                                                 <bs.Dropdown.Item href={`${match.url}/${professor.id}`}>View Details</bs.Dropdown.Item>
                                                 <bs.Dropdown.Item href="">Save {professor.name}</bs.Dropdown.Item>
@@ -499,15 +429,12 @@ function Table (props) {
                                                 <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + professor.name + ".")}>Report</bs.Dropdown.Item> 
                                             </bs.Dropdown.Menu>
                                         </bs.Dropdown>
-
                                     </div>
                             </div>
                             </div>
                         ))
                     }
-                    
-                </div>
-                
+                </div> 
             )
         }
         else {
@@ -519,9 +446,7 @@ function Table (props) {
                 <span className="sr-only">Loading...</span>
             </bs.Spinner>
         )
-    }
-    
-    
+    }  
 }
 
 export default Table;

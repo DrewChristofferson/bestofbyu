@@ -37,7 +37,6 @@ const SidebarWrap = styled.div`
 
 function NewSideBarDesktop(props) {
     // const [sidebar, setSidebar] = useState(false)
-
     // const showSidebar = () => setSidebar(!sidebar);
 
     const schools = [

@@ -6,7 +6,6 @@ import { API } from 'aws-amplify'
 import { listSchools } from '../graphql/queries';
 import { createProfessor as createProfessorMutation } from '../graphql/mutations';
 
-
 const initialFormState = { name: '', title: 'Professor', score: '0', departmentID: '' }
 
 function CreateProfModal(props) {
@@ -16,8 +15,6 @@ function CreateProfModal(props) {
     const [selectedDepartment, setSelectedDepartment] = useState();
     const [selectedSchool, setSelectedSchool] = useState();
     const [isLoading, setIsLoading] = useState(true);
-
-    
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 

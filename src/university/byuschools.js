@@ -10,12 +10,8 @@ import { updateRating as updateRatingMutation } from '../graphql/mutations';
 import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
 import SchoolTables from './schooltables'
 import Detail from './detail'
-import SchoolSideBar from './schoolsidebar'
-import NewSideBar from'../main/newsidebar'
-import NewSideBarDesktop from'../main/newsidebardesktop'
 import { Auth } from 'aws-amplify';
 import AppContext from '../context/context'
-
 
 function BYUSchools() {
     const [schools, setSchools] = useState({});
@@ -176,14 +172,12 @@ function BYUSchools() {
         setPageStartIndex(0);
     }
     
-    
     for (let i = 0; i < schools.length; i ++) {
         colleges.push(schools[i])
     }
 
     if(!isLoadingDepartments){
         return(
-
             <Switch>
                 <Route path={`${match.path}/:schId/:deptId/:type/:oid`}>
                     <div style={{marginTop: "3rem"}}>

@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react'
 import * as bs from 'react-bootstrap'
 import { Link, useRouteMatch, useHistory } from 'react-router-dom'
-import { getProfessor, getCourse, listRatings, getCategoryItem } from '../graphql/queries'
+import { listRatings, getCategoryItem } from '../graphql/queries'
 import { API } from 'aws-amplify'
 import AppContext from '../context/context'
-import DataLineChart from '../utilities/linechart'
-import DataPieChart from '../utilities/piechart'
-import CreateModalClass from '../utilities/createclassmodal'
 import img1 from '../images/detailplaceholders/one.jpg'
 import img2 from '../images/detailplaceholders/two.jpg'
 import img3 from '../images/detailplaceholders/three.jpg'
@@ -20,19 +17,12 @@ function Detail(props) {
     const match = useRouteMatch("/category/:cid/item/:oid")
     let history = useHistory();
     const [categoryItem, setCategoryItem] = useState();
-    const [course, setCourse] = useState();
-    const [professorsForCourse, setProfessorsForCourse] = useState([]);
     const [ratings, setRatings] = useState();
     const [isLoadingRatings, setIsLoadingRatings] = useState(true);
     const [comments, setComments] = useState();
-    const [isLoadingProfessors, setIsLoadingProfessors] = useState(true);
-    const [isLoadingCourse, setIsLoadingCourse] = useState(true);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
     const [name, setName] = useState("");
     const context = useContext(AppContext)
-
-
-
 
     useEffect(() => {
         //navigates user to the top of the page on page load
@@ -42,14 +32,12 @@ function Detail(props) {
         props.getRatings(context.userid)
     }, []);
 
-
-   let getMonthName = (monthNum) => {
-    let currDate = new Date();
-    currDate.setMonth(currDate.getMonth()-monthNum);
-    const previousMonth = currDate.toLocaleString('default', { month: 'long' });
-
-    return previousMonth;
- }
+    let getMonthName = (monthNum) => {
+        let currDate = new Date();
+        currDate.setMonth(currDate.getMonth()-monthNum);
+        const previousMonth = currDate.toLocaleString('default', { month: 'long' });
+        return previousMonth;
+    }
 
     let getRatingCount = (monthNum, type) => {
         const myRegex = /^(.*)-(.*)-(.*)$/
@@ -160,10 +148,8 @@ function Detail(props) {
                   name: getMonthName(0),
                   [name]: getRatingCount(0, "getUpVotes") - getRatingCount(0, "getDownVotes"),
                   'TODO: Avg Score': 6
-                }
-                
+                }  
               ];
-              
               return dataElement;
         }
         else {
@@ -176,8 +162,7 @@ function Detail(props) {
                     }
                 ]
             )
-        }
-        
+        }  
     }
     let initPieData = () => {
         if(!isLoadingRatings){
@@ -195,10 +180,8 @@ function Detail(props) {
                     { name: "Down", value: 3 }
                 ]
             )
-        }
-        
+        }  
     }
-
 
    async function fetchData() {
        let apiData;
@@ -216,51 +199,37 @@ function Detail(props) {
         } catch (e) {
             console.log('Error: ' + e)
         }
-
    }
 
    let getRanking =  () => {
-        let objectsAll = [];
         let rankingAll = 0;
         let rankingSubCategory = 0;
         let rankingDept = 0;
         let catItems = props.categoryItems;
 
-    
-      
-
         catItems.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
 
-    for (let i = 0; i < catItems.length; i++){
-        rankingAll++;
-        if (catItems[i].id === match.params.oid){
-            break;
-        }
-    }
-    for (let i = 0; i < catItems.length; i++){
-        if(catItems[i].SubCategory === (categoryItem.SubCategory)){
-            rankingSubCategory++;
-            if (catItems[i].id === categoryItem.id){
+        for (let i = 0; i < catItems.length; i++){
+            rankingAll++;
+            if (catItems[i].id === match.params.oid){
                 break;
             }
         }
-    }
-    // for (let i = 0; i < objectsAll.length; i++){
-    //     if(objectsAll[i].department.id === (match.params.type === "courses" ? course.department.id : professor.department.id)){
-    //         rankingDept++;
-    //         if (objectsAll[i].id === match.params.oid){
-    //             break;
-    //         }
-    //     }
-    // }
+        for (let i = 0; i < catItems.length; i++){
+            if(catItems[i].SubCategory === (categoryItem.SubCategory)){
+                rankingSubCategory++;
+                if (catItems[i].id === categoryItem.id){
+                    break;
+                }
+            }
+        }
 
-    let strRankingAll =  rankingAll.toString()
-    let strRankingDept =  rankingDept.toString()
-    let strRankingSubCategory =  rankingSubCategory.toString()
-    
-        
-    return [createOrdinalNumber(strRankingDept), createOrdinalNumber(strRankingSubCategory), createOrdinalNumber(strRankingAll)];
-}
+        let strRankingAll =  rankingAll.toString()
+        let strRankingDept =  rankingDept.toString()
+        let strRankingSubCategory =  rankingSubCategory.toString()
+            
+        return [createOrdinalNumber(strRankingDept), createOrdinalNumber(strRankingSubCategory), createOrdinalNumber(strRankingAll)];
+    }
 
     let createOrdinalNumber = (strRanking) => {
         let lastDigit = strRanking[strRanking.length - 1];
@@ -294,59 +263,51 @@ function Detail(props) {
         }
     }
 
-   let fetchRatings = async() => {
-       try {
-        const apiData = await API.graphql({ query: listRatings, variables: {filter: { contentID: {eq: match.params.oid }  }}});
+    let fetchRatings = async() => {
+        try {
+            const apiData = await API.graphql({ query: listRatings, variables: {filter: { contentID: {eq: match.params.oid }  }}});
+            const ratingsFromAPI = apiData.data.listRatings.items;
 
-        const ratingsFromAPI = apiData.data.listRatings.items;
-
-        await Promise.all(ratingsFromAPI.map(async rating => {
-          return rating;
-        }))
-        setRatings(apiData.data.listRatings.items)
-        setIsLoadingRatings(false);
-       } catch (e) {
-           console.log(e);
-       }
-   }
-
-
-        
-
-   let returnComments = () => {
-
-        if(!isLoadingComments) {
-            if(comments[0]){
-                return( 
-                    comments.map((comment) => ( 
-                        <p style={{fontSize: "1.4rem"}}>{comment.content}</p>
-                    )
-                    )
-                )    
-            } else {
-                return(
-                    <p>No comments for {categoryItem.name}.</p>
-                )
-            }
+            await Promise.all(ratingsFromAPI.map(async rating => {
+            return rating;
+            }))
+            setRatings(apiData.data.listRatings.items)
+            setIsLoadingRatings(false);
+        } catch (e) {
+            console.log(e);
         }
-   }
+    } 
+
+    let returnComments = () => {
+
+            if(!isLoadingComments) {
+                if(comments[0]){
+                    return( 
+                        comments.map((comment) => ( 
+                            <p style={{fontSize: "1.4rem"}}>{comment.content}</p>
+                        )
+                        )
+                    )    
+                } else {
+                    return(
+                        <p>No comments for {categoryItem.name}.</p>
+                    )
+                }
+            }
+    }
 
 
     let getImg = (professor) => {
         if (professor.imgsrc){
             return(
                 <img className="profile" alt={professor.name} style={{height:"200px", width: "180px", marginLeft: "auto", marginRight: "0"}} src={professor.imgsrc} />
-
             )
         } else {
             return(
                 <img className="profile" alt={professor.name} style={{height:"100px", width: "100px"}} src="https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255626-stock-illustration-avatar-male-profile-gray-person.jpg" />
             )
-
         }
     }
-   
-   
 
    if(!categoryItem){
        return(
@@ -360,9 +321,6 @@ function Detail(props) {
                <div className={"backButton"}>
                     <bs.Button onClick={() => history.goBack()}>Go Back</bs.Button>
                </div>
-
-             
-
                 <div className={"detailContent"}>
                     <div>
                         {categoryItem.imgsrc ? 
@@ -383,17 +341,8 @@ function Detail(props) {
                         <p>{ categoryItem.description }</p>
                         
                     </div>
-                    {/* <div className={"detailChild"}>
-                        <bs.Badge className="badges" variant="danger">Hard Tests</bs.Badge>{' '}
-                        <bs.Badge className="badges" variant="danger">Fast Lectures</bs.Badge>{' '}
-                        <bs.Badge className="badges" variant="success">Funny</bs.Badge>{' '}
-                    </div> */}
                     <div className={"detailChild"}>
-                        
-                        {/* <h5>{getRanking()[0]} in <Link to={`/category/${match.params.cid}`}>TODO</Link>{"\n"}</h5>  */}
-        
                         <h5>{getRanking()[1]} in <Link to={`/category/${match.params.cid}`}>{categoryItem.SubCategory}</Link></h5>
-
                         <h5>{getRanking()[2]} in <Link to={`/category/${match.params.cid}`}>All {props.category.name}</Link></h5>
                     </div>
                 </div>
@@ -407,49 +356,41 @@ function Detail(props) {
                         <DataLineChart data={initChartData()}/>
                     </div>
                     
-                </div> */}
-                   
-
-                     <bs.Tabs defaultActiveKey="about" id="controlled-tab-example">
-                     
-                         <bs.Tab eventKey="about" title="About">
-                             <h3 style={{paddingTop:"2rem"}}>Description</h3>
-                             <p>Write an unbiased description of {categoryItem.name}. </p>
-                             <bs.Button variant="info">Edit Description</bs.Button>
-                         </bs.Tab>
-                         <bs.Tab eventKey="discussion" title="Discussion">
-                             <h3 style={{paddingTop:"2rem"}}>Comments</h3>
-                             <p>No comments yet for {categoryItem.name}</p>
-                             <bs.Form style={{paddingLeft: "1rem"}}>
-                                 <bs.Form.Group controlId="exampleForm.ControlInput" >
-                                     <bs.Form.Control type="text" placeholder="Post a new comment..." onChange={(e) => console.log("new comment",e.target.value)}/>
-                                 </bs.Form.Group>
-                                 <bs.Button variant="primary">Post Comment</bs.Button>
-                             </bs.Form>
-
-                         </bs.Tab>
-                         <bs.Tab eventKey="pictures" title="Pictures" >
-                             <h3 style={{paddingTop:"2rem"}}>Pictures</h3>
-                             <div className={"imgContent"}>
-                                 <img src={img1} height="200em" width="200em" alt="not found" className={"imgChild"}/>
-                                 <img src={img2} height="200em" width="200em" alt="not found" className={"imgChild"}/>
-                                 <img src={img3} height="200em" width="200em" alt="not found" className={"imgChild"}/>
-                                 <img src={img4} height="200em" width="200em" alt="not found" className={"imgChild"}/>
-                                 <img src={img5} height="200em" width="200em" alt="not found" className={"imgChild"}/>
-                                 <img src={img6} height="200em" width="200em" alt="not found" className={"imgChild"}/>
-                                 <img src={img7} height="200em" width="200em" alt="not found" className={"imgChild"}/>
-
-                             </div>
-                         </bs.Tab>
-                     </bs.Tabs>
-           </div>
-            
-               
-                    
-            
+                </div> */} 
+                <div style={{margin: '0 6rem'}}>
+                    <bs.Tabs defaultActiveKey="about" id="controlled-tab-example">
+                        <bs.Tab eventKey="about" title="About">
+                            <h3 style={{paddingTop:"2rem"}}>Description</h3>
+                            <p>Write an unbiased description of {categoryItem.name}. </p>
+                            <bs.Button variant="info">Edit Description</bs.Button>
+                        </bs.Tab>
+                        <bs.Tab eventKey="discussion" title="Discussion">
+                            <h3 style={{paddingTop:"2rem"}}>Comments</h3>
+                            <p>No comments yet for {categoryItem.name}</p>
+                            <bs.Form style={{paddingLeft: "1rem"}}>
+                                <bs.Form.Group controlId="exampleForm.ControlInput" >
+                                    <bs.Form.Control type="text" placeholder="Post a new comment..." onChange={(e) => console.log("new comment",e.target.value)}/>
+                                </bs.Form.Group>
+                                <bs.Button variant="primary">Post Comment</bs.Button>
+                            </bs.Form>
+                        </bs.Tab>
+                        <bs.Tab eventKey="pictures" title="Pictures" >
+                            <h3 style={{paddingTop:"2rem"}}>Pictures</h3>
+                            <div className={"imgContent"}>
+                                <img src={img1} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                <img src={img2} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                <img src={img3} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                <img src={img4} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                <img src={img5} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                <img src={img6} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                                <img src={img7} height="200em" width="200em" alt="not found" className={"imgChild"}/>
+                            </div>
+                        </bs.Tab>
+                    </bs.Tabs>
+                </div>
+           </div>   
        );
    }
-
 }
 
 export default Detail;

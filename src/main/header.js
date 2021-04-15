@@ -4,8 +4,6 @@ import * as bs from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { AmplifySignOut, AmplifySignInButton } from '@aws-amplify/ui-react'
 
-
-
 function Header() {
     const [userEmail, setUserEmail] = useState(null);
     useEffect(() => {
@@ -22,7 +20,6 @@ function Header() {
         createNavDropdown();
     });
 
-
     let createNavDropdown = () => {
         console.log(userEmail)
         if(userEmail){
@@ -38,12 +35,11 @@ function Header() {
             </bs.Nav>
             )
         } else {
-            //change size
+            //TODO: change size
             return (
                 <AmplifySignInButton>Sign In</AmplifySignInButton> 
             );
         }
-
     }
 
     return (
@@ -59,7 +55,7 @@ function Header() {
                     <bs.Nav className="mr-auto">
                         <Link to="/" className="nav-link">Home</Link>
                         <Link to="/about" className="nav-link">About</Link>
-                        <Link to="/category/70b1e9af-aa11-40d5-aca3-ab42411712bc" className="nav-link">Feedback</Link>
+                        <Link to="/category/3341a7ca-350f-4454-b84b-49ca9430940f" className="nav-link">Feedback</Link>
                         {/* <AmplifySignInButton theme={myTheme}>Sign In</AmplifySignInButton> */}
                         {/* <AmplifySignInButton >Sign In</AmplifySignInButton> */}
                         

@@ -8,8 +8,7 @@ function NextPage (props) {
         return <FontAwesomeIcon  style={{cursor: "pointer"}} icon={faChevronCircleRight} onClick={() => props.nextPage(props.myIndex)}/>;
     } else {
         return null;
-    }
-    
+    }   
 }
 
 export default NextPage;

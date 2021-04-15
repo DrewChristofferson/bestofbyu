@@ -1,8 +1,5 @@
 import React from 'react'
 import * as bs from 'react-bootstrap'
-import CreateModal from './createprofmodal'
-import PreviousPage from './previousPage'
-import NextPage from './nextPage'
 import { useRouteMatch } from 'react-router-dom'
 import CreateProfModal from './createprofmodal'
 import CreateCourseModal from './createcoursemodal'
@@ -44,8 +41,7 @@ function TableFooter (props) {
                     {props.totalItemsCount > 0 ?
                         `Showing Results 1 -  ${props.myIndex} of ${props.totalItemsCount}`
                         : null
-                    }
-                    
+                    }   
                 </div>
                 <div className="footerButton" onClick={() => window.scrollTo(0, 0)}>
                 {props.totalItemsCount > 0 ?
@@ -61,8 +57,7 @@ function TableFooter (props) {
 
             </div>
         </div>   
-    )
-    
+    )   
 }
 
 export default TableFooter;

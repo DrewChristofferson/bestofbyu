@@ -8,7 +8,6 @@ function PreviousPage (props) {
     } else {
         return null;
     }
-    
 }
 
 export default PreviousPage;
