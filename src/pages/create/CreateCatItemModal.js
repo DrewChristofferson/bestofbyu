@@ -1,12 +1,12 @@
 import Button from "react-bootstrap/Button"
 import Modal from "react-bootstrap/Modal"
 import React, { useState, useEffect } from "react"
-import { useHistory } from 'react-router-dom'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import Form from "react-bootstrap/Form"
 import ButtonGroup from "react-bootstrap/ButtonGroup"
 import ToggleButton from "react-bootstrap/ToggleButton"
 import { API } from 'aws-amplify'
-import { createCategoryItem as createCategoryItemMutation } from '../graphql/mutations';
+import { createCategoryItem as createCategoryItemMutation } from '../../graphql/mutations';
 import { createApi } from 'unsplash-js';
 import styled from 'styled-components'
 
@@ -26,7 +26,8 @@ const SubmitButton = styled(Button)`
 const initialFormState = { name: '', description: '', numRatings: '0'}
 
 function CreateCatItemModal(props) {
-    const initialFormState = { categoryID: props.category ? props.category.id : '', name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: props.category?.subCategoryOptions ? props.category.subCategoryOptions[0] : '', customFields: []}
+    const match = useRouteMatch("/category/:cid")
+    const initialFormState = { categoryID: match.params.cid, name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: props.category?.subCategoryOptions ? props.category.subCategoryOptions[0] : '', customFields: []}
     const unsplashAccessKey = 'Vi_vrZ3sI2PbvoBYAnrYfDEbqTSa75R7_zcO0lHR7z8';
     const [photos, setPhotos] = useState([]);
     const [show, setShow] = useState(false);
@@ -58,7 +59,7 @@ function CreateCatItemModal(props) {
           formData.image = image;
         }
         setFormData(initialFormState);
-        history.push(`/category/${props.category.id}/${response.data.createCategoryItem.id}`)
+        history.push(`/category/${props.category.id}/item/${response.data.createCategoryItem.id}`)
       }
 
     const getPhotos = () => {
@@ -171,7 +172,7 @@ function CreateCatItemModal(props) {
                         {
                             props.category?.customFields?.length ?
                                 <div>        
-                                    <h2>Custom Fields</h2>
+                                    <h4>Custom Fields</h4>
                                     <Form.Group controlId="exampleForm.ControlDropdown2" >
                                         {
                                             props.category.customFields.map((category, index) => {
@@ -190,56 +191,6 @@ function CreateCatItemModal(props) {
                         }
                         
                         </Form>
-                        {/* <p>Upload an Image</p>
-                        <ButtonGroup toggle style={{marginBottom: '20px'}}>
-                            {radios.map((radio, idx) => (
-                            <ToggleButton
-                                key={idx}
-                                type="radio"
-                                variant="secondary"
-                                name="radio"
-                                value={radio.value}
-                                checked={radioValue === radio.value}
-                                onChange={(e) => setRadioValue(e.currentTarget.value)}
-                            >
-                                {radio.name}
-                            </ToggleButton>
-                            ))}
-                        </ButtonGroup>
-                        {radioValue === '1' ?
-                            <Form.Group>
-                                <Form.File id="photofile" />
-                            </Form.Group>
-                            :
-                            <></>
-                        } 
-                    </Form>
-                    {radioValue === '2' ?
-                        <div>
-                            <div>
-                                <form>
-                                    <input type="text" placeholder="search" onChange={(e) => handleChangeSearch(e.currentTarget.value)}/>
-                                    <button onClick={submitHandlerPhotos}>Search Pictures</button>
-                                </form>
-                            </div>
-                            <div className="testImageContainer">
-                                {
-                                    photos ?
-                                    photos.map((link, index) => {
-                                        return(
-                                            <div id={index} >
-                                                <img alt="test" src={link[1]} onClick={() => photoClickHandler(index, link)} className={index === selected ? "testImageClicked" : "testImage"}/>
-                                            </div>
-                                        )
-                                    }) 
-                                    :
-                                    <></>
-                                }
-                            </div>
-                        </div>
-                            :
-                            <></>
-                        } */}
                         <div>
                             <div>
                                 <form>

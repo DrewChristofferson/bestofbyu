@@ -1,11 +1,12 @@
 import React from 'react'
 import * as bs from 'react-bootstrap'
-import { useRouteMatch } from 'react-router-dom'
+import { useRouteMatch, useHistory } from 'react-router-dom'
 import CreateProfModal from './createprofmodal'
 import CreateCourseModal from './createcoursemodal'
 
 function TableFooter (props) {
     let match = useRouteMatch("/schools/:sid/:did/:type");
+    let history = useHistory();
 
     let returnButton = () => {
         if(match.params.type === "professors"){
