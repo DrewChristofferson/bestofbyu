@@ -68,7 +68,7 @@ function Footer  () {
                     </IconContext.Provider>
                 </IconsContainer>
                 <CopyrightText>
-                    &copy; {new Date().getFullYear()} Copyright: Best of BYU
+                    &copy; {new Date().getFullYear()} Copyright: Vizor
                 </CopyrightText>
                 <PoliciesContainer>
                     <FooterLink to="/terms">Terms</FooterLink> 

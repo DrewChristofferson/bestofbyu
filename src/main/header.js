@@ -47,7 +47,7 @@ function Header() {
                 <Link to="/">
                     <bs.Navbar.Brand> 
                         {/* <img alt="logo" src={cougarslogo} height="80px" className="mx-2"/>  */}
-                        Best of BYU
+                        VIZOR
                     </bs.Navbar.Brand>
                 </Link>
                 <bs.Navbar.Toggle aria-controls="basic-navbar-nav" />

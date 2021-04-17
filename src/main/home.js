@@ -9,7 +9,8 @@ import { listCategorys } from '../graphql/queries'
 import { API } from 'aws-amplify'
 
 let divStyle={
-    backgroundImage: "url(https://images.unsplash.com/photo-1495903546524-cdb71d0aed7d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTV8fHVwfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60)",
+    // backgroundImage: "url(https://images.unsplash.com/photo-1495903546524-cdb71d0aed7d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTV8fHVwfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60)",
+    backgroundImage: 'linear-gradient(#1990ff, white)',
     paddingBottom: "8rem",
     backgroundPosition: "center center"
 }
@@ -17,10 +18,10 @@ let divStyle={
 const categoryData = [
     {
         id: "classes",
-        name: "Classes",
+        name: "BYU Classes",
         description: "The top classes in your major or by GE requirement.",
         numRatings: 1480,
-        createdBy: "Best of BYU",
+        createdBy: "VIZOR",
         link: "/schools/all/all/courses",
         imgsrc: classroom,
         createdAt: '2021-03-14T',
@@ -32,10 +33,10 @@ const categoryData = [
     },
     {
         id: "professors",
-        name: "Professors",
+        name: "BYU Professors",
         description: "Top professors by department and class.",
         numRatings: 1158,
-        createdBy: "Best of BYU",
+        createdBy: "VIZOR",
         link: "/schools/all/all/professors",
         imgsrc: professor,
         createdAt: '2021-03-14T',
@@ -138,9 +139,9 @@ function Home() {
             <div className="py-0">
                 <bs.Jumbotron fluid style={divStyle} >
                     <bs.Container style={{my: "5rem"}} className="py-0">
-                        <h1 className="title">Best of BYU</h1>
+                        <h1 className="title">VIZOR</h1>
                         <h4 className="subtitle">
-                            Crowd-sourced Ratings by Category
+                            Democratize Public Opinion
                         </h4>
                         <bs.Form onSubmit={submitHandler}>
                             <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
@@ -284,9 +285,9 @@ function Home() {
             <div className="py-0">
                 <bs.Jumbotron fluid style={divStyle} >
                     <bs.Container style={{my: "5rem"}} className="py-0">
-                        <h1 className="title">Best of BYU</h1>
+                        <h1 className="title">VIZOR</h1>
                         <h4 className="subtitle">
-                            Crowd-sourced Ratings by Category
+                            Democratize Public Opinion
                         </h4>
                         <bs.Form onSubmit={submitHandler}>
                             <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">

@@ -11,10 +11,9 @@ import { updateCategory as updateCategoryMutation } from '../graphql/mutations';
 import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
 import Detail from './detail'
 import TableView from './tableview'
-import CreateCatItem from './create/createcatitem'
 import { Auth } from 'aws-amplify';
 import AppContext from '../context/context'
-import CreateCatItemModal from '../components/CreateCatItemModal'
+import CreateCatItemModal from './create/CreateCatItemModal'
 
 
 function PageTemplate() {
@@ -188,11 +187,6 @@ function PageTemplate() {
     if(!isLoadingItems){
         return( 
             <Switch>
-                <Route path={`${match.url}/create`}>
-                    <div style={{marginTop: "3rem"}}>
-                        <CreateCatItem categoryItems={categoryItems} category={category} getRatings={getRatings} />
-                    </div>
-                </Route>
                 <Route path={`${match.url}/item/:oid`}>
                     <div style={{marginTop: "3rem"}}>
                         <Detail categoryItems={categoryItems} category={category} createRating={createRating} getRatings={getRatings} />

@@ -4,7 +4,7 @@ import { Link, useRouteMatch, useHistory } from 'react-router-dom'
 import { updateCategoryItem as updateCategoryItemMutation } from '../graphql/mutations';
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
-import CreateCatItemModal from '../components/CreateCatItemModal'
+import CreateCatItemModal from './create/CreateCatItemModal'
 
 function TableView (props) {
     const match = useRouteMatch("/category/:cid")

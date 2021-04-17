@@ -23,7 +23,7 @@ export default class App extends React.Component {
           <div className="page-wrapper">
             <bs.Container fluid className="p-0 d-flex flex-column">
               <bs.Row className="flex-grow-0 flex-shrink-0 shadow-sm">
-                  <bs.Col className="px-8 py-2" style={{ backgroundColor: "#2077B0" }}>
+                  <bs.Col className="px-8 py-2" style={{ backgroundColor: "black" }}>
                       <Header />
                   </bs.Col>
               </bs.Row>
