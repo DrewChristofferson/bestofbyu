@@ -141,7 +141,7 @@ function Home() {
                     <bs.Container style={{my: "5rem"}} className="py-0">
                         <h1 className="title">VIZOR</h1>
                         <h4 className="subtitle">
-                            Democratize Public Opinion
+                            Democratize Public Preference
                         </h4>
                         <bs.Form onSubmit={submitHandler}>
                             <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
@@ -174,7 +174,7 @@ function Home() {
                         <div className="categoryPreview">
                             {
                                 categorys.map(category => {
-                                    if(category.createdAt.split('T')[0] === '2021-04-07'){
+                                    if(category.createdAt.split('T')[0] === '2021-04-20'){
                                         return(
                                             <div key={category.id}>
                                                 <bs.Card key={category.id} style={{ width: '12rem', color: "black" }} className="categoryItemPreview">

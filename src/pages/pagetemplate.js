@@ -227,7 +227,7 @@ function PageTemplate() {
                                 }    
                             </div>
                             <div>
-                                <CreateCatItemModal />
+                                <CreateCatItemModal category={category} getData={getData}/>
                             </div>
                         </div>
                         <TableView category={category} categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} filter={filter}/>
@@ -269,7 +269,7 @@ function PageTemplate() {
                                 }
                             </div>
                             <div>
-                                <CreateCatItemModal category={category}/>
+                                <CreateCatItemModal category={category} getData={getData}/>
                             </div>
                         </div>
                         <TableView category={category} categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} type="basic"/>
