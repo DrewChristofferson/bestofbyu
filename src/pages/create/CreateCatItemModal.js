@@ -46,20 +46,27 @@ function CreateCatItemModal(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    useEffect(() => {
+        console.log(props)
+    })
+
     let submitHandler = (e) => {
       e.preventDefault();
     }
 
     async function createCategoryItem() {
         if (!formData.name || !formData.description) return;
+
         let response = await API.graphql({ query: createCategoryItemMutation, variables: { input: formData } });
-        console.log(response);
         if (formData.image) {
-          const image = await Storage.get(formData.image);
-          formData.image = image;
-        }
+            const image = await Storage.get(formData.image);
+            formData.image = image;
+            }
+
+        // props.getData();
         setFormData(initialFormState);
         history.push(`/category/${props.category.id}/item/${response.data.createCategoryItem.id}`)
+        // history.push(`/category/${props.category.id}`) 
       }
 
     const getPhotos = () => {
