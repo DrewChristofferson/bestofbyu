@@ -1,43 +1,39 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import AppContext from '../context/context'
 import { Auth } from 'aws-amplify';
 import * as bs from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { AmplifySignOut, AmplifySignInButton } from '@aws-amplify/ui-react'
 
 function Header() {
-    const [userEmail, setUserEmail] = useState(null);
-    useEffect(() => {
-        Auth.currentAuthenticatedUser({
-            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-        }).then (user => {
-            setUserEmail(user.attributes.email)
-            console.log(user.attributes.email)
-        })
-        .catch(err => console.log(err));
-    }, []);
+    const context = useContext(AppContext)
 
     useEffect(() => {
-        createNavDropdown();
-    });
+        // console.log(context.user)
+        console.log(context?.user?.attributes?.email)
+    })
 
     let createNavDropdown = () => {
-        console.log(userEmail)
-        if(userEmail){
+        console.log(context?.user?.attributes?.email)
+        if(context?.user?.attributes?.email){
             return(
                 <bs.Nav>
-                <bs.NavDropdown title={userEmail} id="basic-nav-dropdown">
+                <bs.NavDropdown title={context?.user?.attributes?.email} id="basic-nav-dropdown">
                     <bs.NavDropdown.Item href="#action/3.1">Settings</bs.NavDropdown.Item>
                     <bs.NavDropdown.Item href="#action/3.2">Account</bs.NavDropdown.Item>
                     <bs.NavDropdown.Item href="#action/3.3">Support</bs.NavDropdown.Item>
                     <bs.NavDropdown.Divider />
-                    <bs.NavDropdown.Item href="#action/3.4">< AmplifySignOut /> </bs.NavDropdown.Item>
+                    <bs.NavDropdown.Item onClick={() => Auth.signOut()}>Sign Out</bs.NavDropdown.Item>
+                    {/* <button onClick={() => Auth.signOut()}>Sign Out</button> */}
+                    {/* <bs.NavDropdown.Item href="#action/3.4">< AmplifySignOut /> </bs.NavDropdown.Item> */}
                 </bs.NavDropdown>
             </bs.Nav>
             )
         } else {
             //TODO: change size
             return (
-                <AmplifySignInButton>Sign In</AmplifySignInButton> 
+                <button onClick={() => Auth.federatedSignIn({ provider: 'Google'})}>Sign In</button>
+                // <AmplifySignInButton>Sign In</AmplifySignInButton> 
             );
         }
     }

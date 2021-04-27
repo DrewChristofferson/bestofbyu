@@ -342,7 +342,7 @@ function Detail(props) {
                         
                     </div>
                     <div className={"detailChild"}>
-                        <h5>{getRanking()[1]} in <Link to={`/category/${match.params.cid}`}>{categoryItem.SubCategory}</Link></h5>
+                        <h5>{getRanking()[1]} in <Link to={`/category/${match.params.cid}/${categoryItem.SubCategory.replaceAll(' ','-').toLowerCase()}`}>{categoryItem.SubCategory}</Link></h5>
                         <h5>{getRanking()[2]} in <Link to={`/category/${match.params.cid}`}>All {props.category.name}</Link></h5>
                     </div>
                 </div>

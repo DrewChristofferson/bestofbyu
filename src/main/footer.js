@@ -15,13 +15,13 @@ const FooterContainer = styled.div`
 `
 
 const CopyrightContainer = styled.div`
-    padding: 20px 0 10px;
+    padding: 30px 0 20px;
     color: #565656;
     display: flex;
     justify-content: space-around;
     align-items: flex-end;
     width: 100%;
-    font-size: 11px;
+    font-size: 13px;
 `
 
 const CopyrightText = styled.p`
@@ -46,22 +46,22 @@ function Footer  () {
         <FooterContainer>
             <CopyrightContainer>
                 <IconsContainer>
-                    <IconContext.Provider value={{ color: 'black', size: '16px', style: { margin: '0 10px' } }}>
+                    <IconContext.Provider value={{ color: 'black', size: '20px', style: { margin: '0 10px' } }}>
                         <div>
                             <AiFillFacebook />
                         </div>
                     </IconContext.Provider>
-                    <IconContext.Provider value={{ color: 'black', size: '16px', style: { margin: '0 10px' } }}>
+                    <IconContext.Provider value={{ color: 'black', size: '20px', style: { margin: '0 10px' } }}>
                         <div>
                             <AiFillInstagram />
                         </div>
                     </IconContext.Provider>
-                    <IconContext.Provider value={{ color: 'black', size: '16px', style: { margin: '0 10px' } }}>
+                    <IconContext.Provider value={{ color: 'black', size: '20px', style: { margin: '0 10px' } }}>
                         <div>
                             <AiOutlineTwitter />
                         </div>
                     </IconContext.Provider>
-                    <IconContext.Provider value={{ color: 'black', size: '16px', style: { margin: '0 10px' } }}>
+                    <IconContext.Provider value={{ color: 'black', size: '20px', style: { margin: '0 10px' } }}>
                         <div>
                             <AiFillYoutube />
                         </div>

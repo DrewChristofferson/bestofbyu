@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState} from 'react'
+import AppContext from '../context/context'
 import * as bs from 'react-bootstrap'
 import { Link, useRouteMatch, useHistory } from 'react-router-dom'
 import { updateCategoryItem as updateCategoryItemMutation } from '../graphql/mutations';
 import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
 import CreateCatItemModal from './create/CreateCatItemModal'
+import { Auth } from 'aws-amplify'
 
 function TableView (props) {
     const match = useRouteMatch("/category/:cid")
@@ -12,6 +14,7 @@ function TableView (props) {
     const [rankedItems, setRankedItems] = useState();
     const [ratings, setRatings] = useState({});
     let history = useHistory();
+    const context = useContext(AppContext)
 
     const CLASS_VOTE_UP = "tableSelectedUp";
     const CLASS_VOTE_DOWN = "tableSelectedDown";
@@ -21,8 +24,9 @@ function TableView (props) {
     const VOTE_DOWN = "down";
 
     useEffect(() => {
-        rankItems();
+        // rankItems();
         console.log(props.category)
+        console.log(props.categoryItems)
     }, [])
 
     let rankItems = async() => {
@@ -68,39 +72,46 @@ function TableView (props) {
     }
 
     let handleRatingClick = (id, increment, mutation, score, item) => {
-        setIsLoading(true);
-        let tempRatings = {};
-        for (const [key, value] of Object.entries(ratings)) {
-            tempRatings[key] = value;
-        }
-
-        if (increment === VOTE_UP){
-            if (tempRatings[id] === VOTE_UP){
-                item.score -= 1;
-                delete tempRatings[id];
-            } else if (tempRatings[id] === VOTE_DOWN) {
-                item.score += 2;
-                tempRatings[id] = increment;
-            } else if (!tempRatings[id]) {
-                item.score += 1;
-                tempRatings[id] = increment;
+        if (context.user){
+            setIsLoading(true);
+            let tempRatings = {};
+            for (const [key, value] of Object.entries(ratings)) {
+                tempRatings[key] = value;
             }
-        } else if (increment === VOTE_DOWN) {
-            if (tempRatings[id] === VOTE_UP){
-                item.score -= 2;
-                tempRatings[id] = increment;
-            } else if (tempRatings[id] === VOTE_DOWN) {
-                item.score += 1;
-                delete tempRatings[id];
-            } else if (!tempRatings[id]) {
-                item.score -= 1;
-                tempRatings[id] = increment;
-            }
+    
+            if (increment === VOTE_UP){
+                if (tempRatings[id] === VOTE_UP){
+                    item.score -= 1;
+                    delete tempRatings[id];
+                } else if (tempRatings[id] === VOTE_DOWN) {
+                    item.score += 2;
+                    tempRatings[id] = increment;
+                } else if (!tempRatings[id]) {
+                    item.score += 1;
+                    tempRatings[id] = increment;
+                }
+            } else if (increment === VOTE_DOWN) {
+                if (tempRatings[id] === VOTE_UP){
+                    item.score -= 2;
+                    tempRatings[id] = increment;
+                } else if (tempRatings[id] === VOTE_DOWN) {
+                    item.score += 1;
+                    delete tempRatings[id];
+                } else if (!tempRatings[id]) {
+                    item.score -= 1;
+                    tempRatings[id] = increment;
+                }
+        } 
+            setRatings(tempRatings);
+            props.createRating(id, increment, mutation, score);
+            setIsLoading(false)
+        
+        }else{
+            console.log(context.user)
+            Auth.federatedSignIn({ provider: 'Google'});
         }
         
-        setRatings(tempRatings);
-        props.createRating(id, increment, mutation, score);
-        setIsLoading(false)
+        
     }
 
 
@@ -112,13 +123,13 @@ function TableView (props) {
         history.push(`${match.url}/create`)
     }
 
-    if(!isLoading){
-        if(rankedItems[0]){
+    if(!props.isLoading){
+        if(props.categoryItems[0]){
             console.log(props.categoryItems)
                 return(
                     <div className="table">
                         {
-                            rankedItems.map((catItem, index) => (
+                            props.categoryItems.map((catItem, index) => (
                                 <div className="ratingRow" key={index}> 
                                 <div key={index} className="tableItem" >
                                     <div className="scoreInfo">                               

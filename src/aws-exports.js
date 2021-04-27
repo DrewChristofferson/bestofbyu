@@ -7,11 +7,24 @@ const awsmobile = {
     "aws_appsync_region": "us-west-2",
     "aws_appsync_authenticationType": "API_KEY",
     "aws_appsync_apiKey": "da2-xww4h5npjjdfzbrv7p3dqgi56q",
-    "aws_cognito_identity_pool_id": "us-west-2:e4107a4c-a658-40ca-b202-750a115c23b1",
+    "aws_cognito_identity_pool_id": "us-west-2:1b58eedc-fe32-45a5-88b6-97ab0892af1c",
     "aws_cognito_region": "us-west-2",
-    "aws_user_pools_id": "us-west-2_2N1d0EG45",
-    "aws_user_pools_web_client_id": "6mjf5r01i4oksl5njb7fv318jo",
-    "oauth": {},
+    "aws_user_pools_id": "us-west-2_ABrdfcIsw",
+    "aws_user_pools_web_client_id": "168f6lt960ifj7seen1mj3nm4j",
+    "oauth": {
+        "domain": "bestofbyucea3c8aa-cea3c8aa-dev.auth.us-west-2.amazoncognito.com",
+        "scope": [
+            "phone",
+            "email",
+            "openid",
+            "profile",
+            "aws.cognito.signin.user.admin"
+        ],
+        "redirectSignIn": "http://localhost:3000/",
+        "redirectSignOut": "http://localhost:3000/",
+        "responseType": "code"
+    },
+    "federationTarget": "COGNITO_USER_POOLS",
     "aws_user_files_s3_bucket": "reactdemobucketdrew233905-staging",
     "aws_user_files_s3_bucket_region": "us-east-1"
 };
