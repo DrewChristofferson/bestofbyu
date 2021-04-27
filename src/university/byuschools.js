@@ -266,4 +266,5 @@ function BYUSchools() {
     
 }
 
-export default withAuthenticator(BYUSchools);
+// export default withAuthenticator(BYUSchools);
+export default BYUSchools;

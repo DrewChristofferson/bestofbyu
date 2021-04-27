@@ -23,14 +23,13 @@ const SubmitButton = styled(Button)`
     margin-top: 20px;
 `
 
-const initialFormState = { name: '', description: '', numRatings: '0'}
-
 function CreateCatItemModal(props) {
     const match = useRouteMatch("/category/:cid")
-    const initialFormState = { categoryID: match.params.cid, name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: props.category?.subCategoryOptions ? props.category.subCategoryOptions[0] : '', customFields: []}
+    const initialFormState = { id: '', categoryID: match.params.cid, name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: props.category?.subCategoryOptions ? props.category.subCategoryOptions[0] : '', customFields: []}
     const unsplashAccessKey = 'Vi_vrZ3sI2PbvoBYAnrYfDEbqTSa75R7_zcO0lHR7z8';
     const [photos, setPhotos] = useState([]);
     const [show, setShow] = useState(false);
+    const [isValidItem, setIsValidItem] = useState(true);
     const [customFields, setCustomFields] = useState([]);
     const [searchFilter, setSearchFilter] = useState('');
     const [selected, setSelected] = useState();
@@ -47,7 +46,7 @@ function CreateCatItemModal(props) {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        console.log(props)
+        console.log(formData)
     })
 
     let submitHandler = (e) => {
@@ -55,18 +54,24 @@ function CreateCatItemModal(props) {
     }
 
     async function createCategoryItem() {
-        if (!formData.name || !formData.description) return;
+        if (!formData.name || !formData.description){
+            setIsValidItem(false);
+        } else {
+            let newID = formData.name.replaceAll(' ','-').toLowerCase();
+            // setFormData({ ...formData, 'id': newID})
 
-        let response = await API.graphql({ query: createCategoryItemMutation, variables: { input: formData } });
-        if (formData.image) {
-            const image = await Storage.get(formData.image);
-            formData.image = image;
-            }
-
-        // props.getData();
-        setFormData(initialFormState);
-        history.push(`/category/${props.category.id}/item/${response.data.createCategoryItem.id}`)
-        // history.push(`/category/${props.category.id}`) 
+            let response = await API.graphql({ query: createCategoryItemMutation, variables: { input: formData } });
+            if (formData.image) {
+                const image = await Storage.get(formData.image);
+                formData.image = image;
+                }
+    
+            // props.getData();
+            setFormData(initialFormState);
+            handleClose();
+            history.push(`/category/${props.category.id}/item/${response.data.createCategoryItem.id}`)
+            // history.push(`/category/${props.category.id}`) 
+        }
       }
 
     const getPhotos = () => {
@@ -124,6 +129,10 @@ function CreateCatItemModal(props) {
         getPhotos();
     }
 
+    const updateName = (e) => {
+        e.preventDefault();
+        setFormData({...formData, 'name': e.target.value, 'id': e.target.value.replaceAll(' ','-').toLowerCase()});
+    }
 
     let handleFormSubmit = (e) => {
         e.preventDefault();
@@ -143,10 +152,16 @@ function CreateCatItemModal(props) {
           <Modal.Body >
             <FormContainer>
                 <div>
+                    {
+                        isValidItem ?
+                        <></>
+                        :
+                        <p style={{color: 'red'}}>Name and Description are required.</p>
+                    }
                     <Form onSubmit={submitHandler}>
-                        <Form.Group controlId="exampleForm.ControlInput1" onChange={e => setFormData({ ...formData, 'name': e.target.value})}>
+                        <Form.Group controlId="exampleForm.ControlInput1" onChange={e => updateName(e)}>
                             <Form.Label>Item Name</Form.Label>
-                            <Form.Control type="text" />
+                            <Form.Control type="text" value={formData.name}/>
                         </Form.Group>
                         <Form.Group controlId="exampleForm.ControlTextarea1" onChange={e => setFormData({ ...formData, 'description': e.target.value})}>
                             <Form.Label>Description</Form.Label>
@@ -166,7 +181,7 @@ function CreateCatItemModal(props) {
                                         {
                                             props.category.subCategoryOptions.map((category, index) => {
                                                 return(
-                                                    <option value={category}>{category}</option>
+                                                    <option value={category} key={`subcategory${index}`}>{category}</option>
                                                 )
                                             })
                                         }
@@ -184,10 +199,10 @@ function CreateCatItemModal(props) {
                                         {
                                             props.category.customFields.map((category, index) => {
                                                 return(
-                                                    <>
-                                                        <Form.Label>{category}</Form.Label>
-                                                        <Form.Control type="text"  onChange={e => handleCustomFieldsChange(e.target.value, category)}/>
-                                                    </>
+                                                    <div key={`customfield${index}`}>
+                                                        <Form.Label >{category}</Form.Label>
+                                                        <Form.Control type="text" onChange={e => handleCustomFieldsChange(e.target.value, category)}/>
+                                                    </div>
                                                 )
                                             })
                                         }
@@ -211,7 +226,7 @@ function CreateCatItemModal(props) {
                                     photos ?
                                     photos.map((link, index) => {
                                         return(
-                                            <div id={index} >
+                                            <div id={index} key={`photo${index}`}>
                                                 <img alt="test" src={link[1]} onClick={() => photoClickHandler(index, link)} className={index === selected ? "testImageClicked" : "testImage"}/>
                                             </div>
                                         )
@@ -228,7 +243,7 @@ function CreateCatItemModal(props) {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={() => { createCategoryItem(); handleClose(); }}>
+            <Button variant="primary" onClick={() => createCategoryItem()}>
               Add Item
             </Button>
           </Modal.Footer>

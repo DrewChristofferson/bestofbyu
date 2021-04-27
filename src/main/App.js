@@ -13,9 +13,14 @@ import BYUSchools from '../university/byuschools'
 import Footer from './footer'
 import PageTemplate from '../pages/pagetemplate'
 import CreateCategory from '../pages/create/CreateCategory'
+import { Auth } from 'aws-amplify'
+
+async function checkUser() {
+  const user = await Auth.currentAuthenticatedUser()
+  console.log('user: ', user)
+}
 
 export default class App extends React.Component {
-
   render() {
     return (
       <Router>
@@ -29,6 +34,8 @@ export default class App extends React.Component {
               </bs.Row>
             </bs.Container>
             <div className="content-wrapper">
+              {/* <button onClick={() => Auth.federatedSignIn({ provider: 'Google'})}>Sign in with Google</button>
+              <button onClick={checkUser}>Check user</button> */}
               <center>
                   <Switch>
                   <Route path="/schools">

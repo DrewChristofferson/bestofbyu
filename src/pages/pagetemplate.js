@@ -18,7 +18,7 @@ import CreateCatItemModal from './create/CreateCatItemModal'
 
 function PageTemplate() {
     const [category, setCategory] = useState({});
-    const [filter, setFilter] = useState();
+    // const [filter, setFilter] = useState();
     const [categoryItems, setCategoryItems] = useState({});
     const [professorsForCourse, setProfessorsForCourse] = useState({});
     const [userRatings, setUserRatings] = useState({});
@@ -27,10 +27,15 @@ function PageTemplate() {
     const [pageStartIndex, setPageStartIndex] = useState(0);
     const [pageNum, setPageNum] = useState(1);
     const [searchFilter, setSearchFilter] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [rankedItems, setRankedItems] = useState();
+    const [ratings, setRatings] = useState({});
     const VOTE_UP  = "up";
     const VOTE_DOWN = "down";
     const match = useRouteMatch("/category/:cid");
+    const matchFilter = useRouteMatch("/category/:cid/:filter");
     const history = useHistory();
+    const context = useContext(AppContext);
 
     useEffect(() => {
         //navigates user to the top of the page on page load
@@ -40,13 +45,8 @@ function PageTemplate() {
       }, []);
 
     useEffect(() => {
-        Auth.currentAuthenticatedUser({
-            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-        }).then (user => {
-            setUserid(user.username);
-            getRatings(user.username);
-        }).catch(err => console.log(err));
-    }, []);
+        console.log(categoryItems)
+    });
 
     async function fetchData() {
         try{ 
@@ -61,15 +61,18 @@ function PageTemplate() {
     async function getData(filterValue) {
         const apiData = await API.graphql({ query: listCategoryItems, variables: { filter: {categoryID: {eq: match.params.cid}} }});
         const categoryItemsFromAPI = apiData.data.listCategoryItems.items;
+        let ranked;
 
         await Promise.all(categoryItemsFromAPI.map(async item => {
             return item;
-        }))
-
-        setCategoryItems(apiData.data.listCategoryItems.items);
-        console.log(match.params.cid)
-        console.log(apiData.data.listCategoryItems.items);
-        setIsLoadingItems(false);
+        })).then(function(categoryItemsFromAPI) {
+            if (matchFilter?.params?.filter){
+                rankItems(categoryItemsFromAPI, matchFilter.params.filter);
+            }else{
+                rankItems(categoryItemsFromAPI);
+            }
+            setCategoryItems(categoryItemsFromAPI);
+        }).then(() => setIsLoadingItems(false)).then(() => setIsLoading(false))
     }
 
     async function updateScore(id, score, increment, mutationName) {
@@ -180,11 +183,120 @@ function PageTemplate() {
     }
 
     let handleFilter = (val) => {
-        setFilter(val)
+        let tempItems = [];
+        // setFilter(val)
         history.push(`${match.url}/${val.replaceAll(' ','-').toLowerCase()}`)
+        console.log(categoryItems)
+        // for (const item of categoryItems) {
+        //     console.log(item.SubCategory.replaceAll(' ','-').toLowerCase(), val.replaceAll(' ','-').toLowerCase())
+        //     if (item.SubCategory.replaceAll(' ','-').toLowerCase() === val.replaceAll(' ','-').toLowerCase()) {
+        //         tempItems.push(item);
+        //     }
+        // }
+        rankItems(categoryItems, val.replaceAll(' ','-').toLowerCase())
+        console.log("tempitems: ", tempItems)
+        // setCategoryItems(tempItems);
     }
 
-    if(!isLoadingItems){
+    let rankItems = async(items, filter) => {
+        let catItems = [];
+        let filteredItems = [];
+        let paginatedItems = [];
+        let endingIndex;
+
+        if (filter){
+            for (const item of items) {
+                if (item.SubCategory.replaceAll(' ','-').toLowerCase() === filter) {
+                    catItems.push(item);
+                }
+            }
+        } else {
+            for (const item of items) {
+                catItems.push(item);
+            }
+        }
+     
+        //sorting function details found at https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
+        (catItems).sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
+                
+        for (let i = 0; i < catItems.length; i++){
+            catItems[i].ranking = i + 1;
+            if (!filter || filter === catItems[i].SubCategory.replaceAll(' ','-').toLowerCase()){
+                // if(catItems[i].professor.name.toLowerCase().includes(props.searchFilter.toLowerCase())){
+                    for(let j = 0; j < userRatings.length; j++){
+                        if (userRatings[j].contentID === catItems[i].id){
+                            catItems[i].userRating = userRatings[j].ratingType;
+                        }   
+                    }
+                    filteredItems.push(catItems[i])
+                // }
+            }
+        }
+        for (let i = pageStartIndex; paginatedItems.length < 10; i++){  
+            if(filteredItems[i]){
+                paginatedItems.push(filteredItems[i])
+            } else {
+                break;
+            }
+            endingIndex = i + 1;
+        }
+
+        let newRatings ={};
+        catItems.forEach(item => {
+            if(item.userRating){
+                newRatings[item.id] = item.userRating;
+            }
+        })
+        setRatings(newRatings);
+        setRankedItems(paginatedItems);
+        setIsLoading(false);
+        // return paginatedItems;
+    }
+
+    let handleRatingClick = (id, increment, mutation, score, item) => {
+        if (context.user){
+            setIsLoading(true);
+            let tempRatings = {};
+            for (const [key, value] of Object.entries(ratings)) {
+                tempRatings[key] = value;
+            }
+    
+            if (increment === VOTE_UP){
+                if (tempRatings[id] === VOTE_UP){
+                    item.score -= 1;
+                    delete tempRatings[id];
+                } else if (tempRatings[id] === VOTE_DOWN) {
+                    item.score += 2;
+                    tempRatings[id] = increment;
+                } else if (!tempRatings[id]) {
+                    item.score += 1;
+                    tempRatings[id] = increment;
+                }
+            } else if (increment === VOTE_DOWN) {
+                if (tempRatings[id] === VOTE_UP){
+                    item.score -= 2;
+                    tempRatings[id] = increment;
+                } else if (tempRatings[id] === VOTE_DOWN) {
+                    item.score += 1;
+                    delete tempRatings[id];
+                } else if (!tempRatings[id]) {
+                    item.score -= 1;
+                    tempRatings[id] = increment;
+                }
+        } 
+            setRatings(tempRatings);
+            createRating(id, increment, mutation, score);
+            setIsLoading(false)
+        
+        }else{
+            console.log(context.user)
+            Auth.federatedSignIn({ provider: 'Google'});
+        }
+        
+        
+    }
+
+    if(!isLoadingItems && !isLoading){
         return( 
             <Switch>
                 <Route path={`${match.url}/item/:oid`}>
@@ -214,9 +326,9 @@ function PageTemplate() {
                                             <bs.Dropdown.Menu>
                                                 {console.log(category.subCategoryOptions)}
                                                 {   
-                                                    category.subCategoryOptions.map(option => {
+                                                    category.subCategoryOptions.map((option, index) => {
                                                         return(
-                                                            <bs.Dropdown.Item onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
+                                                            <bs.Dropdown.Item key={index} onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
                                                         )
                                                     })
                                                 }
@@ -230,7 +342,7 @@ function PageTemplate() {
                                 <CreateCatItemModal category={category} getData={getData}/>
                             </div>
                         </div>
-                        <TableView category={category} categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} filter={filter}/>
+                        <TableView category={category} categoryItems={rankedItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} handleRatingClick={handleRatingClick} ratings={ratings} isLoading={isLoading}/>
                     </div>
                 </Route>
                 <Route path={match.path}>
@@ -256,9 +368,9 @@ function PageTemplate() {
                                                 {console.log(category.subCategoryOptions)}
                                                 {
                                                     
-                                                    category.subCategoryOptions.map(option => {
+                                                    category.subCategoryOptions.map((option, index) => {
                                                         return(
-                                                            <bs.Dropdown.Item onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
+                                                            <bs.Dropdown.Item key={index} onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
                                                         )
                                                     })
                                                 }
@@ -272,7 +384,7 @@ function PageTemplate() {
                                 <CreateCatItemModal category={category} getData={getData}/>
                             </div>
                         </div>
-                        <TableView category={category} categoryItems={categoryItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} type="basic"/>
+                        <TableView category={category} categoryItems={rankedItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} handleRatingClick={handleRatingClick} ratings={ratings} isLoading={isLoading} type="basic"/>
                     </div>          
                 </Route>
             </Switch>   
@@ -285,4 +397,5 @@ function PageTemplate() {
     } 
 }
 
-export default withAuthenticator(PageTemplate);
+// export default withAuthenticator(PageTemplate);
+export default PageTemplate;

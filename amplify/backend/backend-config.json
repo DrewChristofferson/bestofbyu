@@ -24,7 +24,7 @@
       "dependsOn": [],
       "customAuth": false
     },
-    "bestofbyuf2310619": {
+    "bestofbyucea3c8aa": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

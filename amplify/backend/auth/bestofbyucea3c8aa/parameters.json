@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "bestofbyuf2310619_identitypool_f2310619",
+    "identityPoolName": "bestofbyucea3c8aa_identitypool_cea3c8aa",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "bestoff2310619",
-    "userPoolName": "bestofbyuf2310619_userpool_f2310619",
+    "resourceNameTruncated": "bestofcea3c8aa",
+    "userPoolName": "bestofbyucea3c8aa_userpool_cea3c8aa",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "bestoff2310619_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "bestofcea3c8aa_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "f2310619",
-    "resourceName": "bestofbyuf2310619",
+    "sharedId": "cea3c8aa",
+    "resourceName": "bestofbyucea3c8aa",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -45,10 +45,17 @@
             "Arn"
         ]
     },
-    "useDefault": "default",
+    "useDefault": "defaultSocial",
+    "hostedUI": true,
     "usernameAttributes": [
         "email"
     ],
+    "hostedUIDomainName": "bestofbyucea3c8aa-cea3c8aa",
+    "authProvidersUserPool": [
+        "Google"
+    ],
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\"],\"LogoutURLs\":[\"http://localhost:3000/\"]}",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,

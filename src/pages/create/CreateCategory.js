@@ -6,9 +6,10 @@ import Button from "react-bootstrap/Button"
 import ProgressBar from "react-bootstrap/ProgressBar"
 import Form from "react-bootstrap/Form"
 import { API } from 'aws-amplify'
+import { listCategorys } from '../../graphql/queries'
 import { createCategory as createCategoryMutation } from '../../graphql/mutations';
 
-const initialFormState = { name: '', description: '', imgsrc: '', numRatings: '0', subCategoryOptions: [], customFields: []}
+const initialFormState = { id: '', name: '', description: '', imgsrc: '', numRatings: '0', subCategoryOptions: [], customFields: []}
 
 const Container = styled.div`
     display: flex;
@@ -156,6 +157,7 @@ function CreateCatName() {
     const unsplashAccessKey = 'Vi_vrZ3sI2PbvoBYAnrYfDEbqTSa75R7_zcO0lHR7z8';
     const [photos, setPhotos] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
+    const [categorys, setCategorys] = useState({});
     const [progressValue, setProgressValue] = useState(0);
     const [subCategoryInputs, setSubCategoryInputs] = useState(['input-0']);
     const [customFieldInputs, setCustomFieldInputs] = useState(['inputCustom-0']);
@@ -163,6 +165,8 @@ function CreateCatName() {
     const [searchFilter, setSearchFilter] = useState('');
     const [selected, setSelected] = useState();
     const [formData, setFormData] = useState(initialFormState);
+    const [isNameError, setIsNameError] = useState(false);
+    const [isInvalidCategory, setIsInvalidCategory] = useState(false);
     const history = useHistory();
     let match = useRouteMatch();
     let matchParams = useRouteMatch("/create-category/:page");
@@ -177,6 +181,8 @@ function CreateCatName() {
     })
 
     useEffect(() => {
+        getCategorys();
+
         switch(matchParams?.params?.page) {
             case 'description':
                 setProgressValue(progressValues.description);
@@ -194,8 +200,23 @@ function CreateCatName() {
                 setProgressValue(progressValues.name);
         }
     }, [])
+
+    async function getCategorys() {
+
+        const apiData = await API.graphql({ query: listCategorys });
+        const categorysFromAPI = apiData.data.listCategorys.items;
+
+        await Promise.all(categorysFromAPI.map(async category => {
+          return category;
+        }))
+        setCategorys(apiData.data.listCategorys.items);
+    }
+
     async function createCategory() {
-        if (!formData.name || !formData.description) return;
+        if (!formData.name || !formData.description) {
+            setIsInvalidCategory(true);
+            return;
+        };
         let response = await API.graphql({ query: createCategoryMutation, variables: { input: formData } });
         console.log(response);
         if (formData.image) {
@@ -203,6 +224,7 @@ function CreateCatName() {
           formData.image = image;
         }
         setFormData(initialFormState);
+        progressFull();
         history.push(`/category/${response.data.createCategory.id}`)
       }
 
@@ -243,12 +265,12 @@ function CreateCatName() {
         createCategory();
     }
 
-    let handleSubCategoryChange = (inputRow, text) => {
+    let handleSubCategoryChange = (inputRow, e) => {
         let tempArr = [];
         if (subCategories.length) {
             for (let i = 0; i < subCategories.length + 1; i++) {
                 if(inputRow === `input-${i}`){
-                    tempArr[i] = text;
+                    tempArr[i] = e.target.value;
                 } else{
                     if (i < subCategories.length){
                         tempArr.push(subCategories[i]);
@@ -256,9 +278,9 @@ function CreateCatName() {
                 }
             }
         } else {
-            tempArr.push(text);
+            tempArr.push(e.target.value);
         }
-        
+
         setSubCategories(tempArr);
         setFormData({ ...formData, 'subCategoryOptions': tempArr})
     }
@@ -358,6 +380,29 @@ function CreateCatName() {
         setProgressValue(progressValues.done);
     }
 
+    const handleNameChange = (value) => {
+        // setFormData({ ...formData, 'id': value.replaceAll(' ','-').toLowerCase()});
+        setFormData({ ...formData, 'name': value});
+        if(isNameError){
+            setIsNameError(false);
+        }
+    }
+
+    const validateName = () => {
+        let isValid = true;
+        let newID = formData.name.replaceAll(' ','-').toLowerCase()
+        setFormData({ ...formData, 'id': newID});
+        for (const cat of categorys) {
+            if(newID === cat.id){
+                setIsNameError(true);
+                isValid = false;
+            }
+        } 
+        if(isValid){
+            navigateNext(`${match.url}/description`)
+        }   
+    }
+
     return (
         <>
         <Container> 
@@ -400,7 +445,7 @@ function CreateCatName() {
                                     formData.customFields.map((field, index) => {
                                         return(
                                             field.length ?
-                                            <li>{field}</li>
+                                            <li key={index}>{field}</li>
                                             :
                                             <></>
                                         )
@@ -421,7 +466,7 @@ function CreateCatName() {
                                 {
                                     formData.subCategoryOptions.map((subcat, index) => {
                                         return(
-                                            <li>{subcat}</li>
+                                            <li key={index}>{subcat}</li>
                                         )
                                     })
                                 }
@@ -448,7 +493,12 @@ function CreateCatName() {
                     <StyledForm onSubmit={submitHandler}> 
                         <Form.Group controlId="exampleForm.ControlTextarea1" >
                             {/* <Form.Label>Description</Form.Label> */}
-                            <Form.Control as="textarea" rows={3} value={formData.description}   onChange={e => setFormData({ ...formData, 'description': e.target.value})}  />
+                            <Form.Control 
+                                as="textarea" 
+                                rows={3} 
+                                value={formData.description}   
+                                onChange={e => setFormData({ ...formData, 'description': e.target.value})}  
+                            />
                         </Form.Group>
                     </StyledForm>
                     <ButtonsContainer>
@@ -468,28 +518,45 @@ function CreateCatName() {
                             Breakfast, Lunch, Dinner, and Other subcategories for recipes.
                         </InstructionsExplanation>
                     </Instructions>
-                    <Form.Group controlId="exampleForm.ControlInput2" style={{width: '50%'}}>
+                    
                         {/* <Form.Label>Subcategories (enter in comma-separated list)</Form.Label> */}
                         {
                             subCategoryInputs.map((input, index) => {
                                 
                                 return(
-                                    subCategoryInputs.length - 1 === index ?
-                                    <InputWrapper>
-                                        <PositionedFromField type="text" key={input} value={subCategories[index]} onChange={(e) => handleSubCategoryChange(input, e.target.value)}/>
-                                        <AddRowButton>
-                                            <Button onClick={() => addInputRow('subcategories')}>+</Button>
-                                        </AddRowButton>
-                                    </InputWrapper>
-                                    :
-                                    <InputWrapper>
-                                        <PositionedFromField type="text" key={input} value={subCategories[index]} onChange={(e) => handleSubCategoryChange(input, e.target.value)}/>
-                                        <div></div>
-                                    </InputWrapper>
+                                    <Form.Group controlId={`subcat${index}`} style={{width: '80%'}}>
+                                        {
+                                            subCategoryInputs.length - 1 === index ?
+                                            <InputWrapper key={index}>
+                                                <PositionedFromField 
+                                                    type="text" 
+                                                    key={input} 
+                                                    value={subCategories[index]} 
+                                                    onKeyDown={event => event.key === 'Enter' ? addInputRow('subcategories') : null} 
+                                                    onChange={(e) => handleSubCategoryChange(input, e)}
+                                                />
+                                                <AddRowButton>
+                                                    <Button onClick={() => addInputRow('subcategories')}>+</Button>
+                                                </AddRowButton>
+                                            </InputWrapper>
+                                 
+                                            :
+                                            <InputWrapper>
+                                                <PositionedFromField 
+                                                    type="text" 
+                                                    key={input} 
+                                                    value={subCategories[index]} 
+                                                    onKeyDown={event => event.key === 'Enter' ? addInputRow('subcategories') : null} 
+                                                    onChange={(e) => handleSubCategoryChange(input, e)}
+                                                />
+                                            </InputWrapper>
+                                           }
+                                    
+                                           </Form.Group>
                                 )    
                             })
                         } 
-                    </Form.Group>
+                    
                     <ButtonsContainer>
                         <Button variant="secondary" onClick={() => navigateBack(`${match.url}/description`)}>Back</Button>
                         <Button onClick={() => navigateNext(`${match.url}/custom-fields`)}>Next</Button>
@@ -506,27 +573,40 @@ function CreateCatName() {
                                 cost and preparation time would be custom properties for a recipes category.
                             </InstructionsExplanation>
                         </Instructions>
-                        <Form.Group controlId="exampleForm.ControlInput3" style={{width: '50%'}}>
                         {/* <Form.Label>Custom Fields</Form.Label> */}
                         {
                             customFieldInputs.map((input, index) => {
                                 return(
-                                    customFieldInputs.length - 1 === index ?
-                                    <InputWrapper>
-                                        <PositionedFromField type="text" key={input} value={customFields[index]} onChange={(e) => handleCustomFieldChange(input, e.target.value)}/>
-                                        <AddRowButton>
-                                            <Button onClick={() => addInputRow('custom-fields')}>+</Button>
-                                        </AddRowButton>
-                                    </InputWrapper>
-                                    :
-                                    <InputWrapper>
-                                        <PositionedFromField type="text" key={input} value={customFields[index]} onChange={(e) => handleCustomFieldChange(input, e.target.value)}/>
-                                        <div></div>
-                                    </InputWrapper>
+                                    <Form.Group controlId={`custom${index}`} style={{width: '80%'}}>
+                                    {
+                                        customFieldInputs.length - 1 === index ?
+                                        <InputWrapper key={index}>
+                                            <PositionedFromField 
+                                            type="text" 
+                                            key={input} 
+                                            lue={customFields[index]} 
+                                            onKeyDown={event => event.key === 'Enter' ? addInputRow('custom-fields') : null} 
+                                            onChange={(e) => handleCustomFieldChange(input, e.target.value)}/>
+                                            <AddRowButton>
+                                                <Button onClick={() => addInputRow('custom-fields')}>+</Button>
+                                            </AddRowButton>
+                                        </InputWrapper>
+                                        :
+                                        <InputWrapper>
+                                            <PositionedFromField 
+                                                type="text" 
+                                                key={input} 
+                                                value={customFields[index]} 
+                                                onKeyDown={event => event.key === 'Enter' ? addInputRow('custom-fields') : null} 
+                                                onChange={(e) => handleCustomFieldChange(input, e.target.value)}/>
+                                            <div></div>
+                                        </InputWrapper>
+                                    }
+                                    
+                                    </Form.Group>
                                 )   
                             })
                         }  
-                    </Form.Group>
                     <ButtonsContainer>
                         <Button variant="secondary" onClick={() => navigateBack(`${match.url}/subcategory`)}>Back</Button>
                         <Button onClick={() => navigateNext(`${match.url}/image`)}>Next</Button>
@@ -550,7 +630,7 @@ function CreateCatName() {
                             photos[0] ?
                             photos.map((link, index) => {
                                 return(
-                                    <div id={index} >
+                                    <div id={index} key={index}>
                                         <img alt="test" src={link[1]} onClick={() => photoClickHandler(index, link)} className={selected && index === selected[0] ? "testImageClicked" : "testImage"}/>
                                     </div>
                                 )
@@ -559,9 +639,15 @@ function CreateCatName() {
                             <div>No photos found</div>
                         }
                     </div>
+                    {
+                        isInvalidCategory ?
+                        <p style={{color: 'red'}}>Your category must have a name and description</p>
+                        :
+                        <></>
+                    }
                     <ButtonsContainer>
                         <Button variant="secondary" onClick={() => navigateBack(`${match.url}/custom-fields`)}>Back</Button>
-                        <Button onClick={() => {createCategory(); progressFull()}}>Create Category</Button>
+                        <Button onClick={createCategory}>Create Category</Button>
                     </ButtonsContainer>
                 </Route>
                 <Route path={match.url}>
@@ -577,11 +663,17 @@ function CreateCatName() {
                     <StyledForm onSubmit={submitHandler}>
                         <Form.Group controlId="exampleForm.ControlInput1" >
                             {/* <Form.Label>Category Name</Form.Label> */}
-                            <Form.Control type="text"  value={formData.name} onChange={e => setFormData({ ...formData, 'name': e.target.value})}/>
+                            <Form.Control type="text"  value={formData.name} onChange={(e) => handleNameChange(e.currentTarget.value)}/>
+                            {
+                                isNameError ?
+                                <p style={{color: 'red'}}>The category {formData.name} already exists.</p>
+                                :
+                                <></>
+                            }
                         </Form.Group>
                     </StyledForm>
                     <ButtonRight>
-                        <Button onClick={() => navigateNext(`${match.url}/description`)}>Next</Button>
+                        <Button onClick={validateName}>Next</Button>
                     </ButtonRight> 
                 </Route>
             </Switch>
