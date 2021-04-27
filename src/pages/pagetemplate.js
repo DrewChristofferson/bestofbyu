@@ -14,11 +14,23 @@ import TableView from './tableview'
 import { Auth } from 'aws-amplify';
 import AppContext from '../context/context'
 import CreateCatItemModal from './create/CreateCatItemModal'
+import { RiArrowDownSFill } from 'react-icons/ri';
+import styled from 'styled-components'
 
+const FilterButton = styled.div`
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+`
+
+const HeaderButtonsContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+`
 
 function PageTemplate() {
     const [category, setCategory] = useState({});
-    // const [filter, setFilter] = useState();
+    const [currentFilter, setCurrentFilter] = useState('All');
     const [categoryItems, setCategoryItems] = useState({});
     const [professorsForCourse, setProfessorsForCourse] = useState({});
     const [userRatings, setUserRatings] = useState({});
@@ -52,6 +64,7 @@ function PageTemplate() {
         try{ 
         const apiData = await API.graphql({ query: getCategory, variables: {id: match.params.cid} });
         setCategory(apiData.data.getCategory)
+        setCurrentFilter('All Items')
         console.log(apiData.data.getCategory)
         } catch (e) {
             return e;
@@ -185,17 +198,14 @@ function PageTemplate() {
     let handleFilter = (val) => {
         let tempItems = [];
         // setFilter(val)
-        history.push(`${match.url}/${val.replaceAll(' ','-').toLowerCase()}`)
-        console.log(categoryItems)
-        // for (const item of categoryItems) {
-        //     console.log(item.SubCategory.replaceAll(' ','-').toLowerCase(), val.replaceAll(' ','-').toLowerCase())
-        //     if (item.SubCategory.replaceAll(' ','-').toLowerCase() === val.replaceAll(' ','-').toLowerCase()) {
-        //         tempItems.push(item);
-        //     }
-        // }
-        rankItems(categoryItems, val.replaceAll(' ','-').toLowerCase())
-        console.log("tempitems: ", tempItems)
-        // setCategoryItems(tempItems);
+        setCurrentFilter(val);
+        if(val === 'All Items'){
+            history.push(match.url)
+            rankItems(categoryItems)
+        } else {
+            history.push(`${match.url}/${val.replaceAll(' ','-').toLowerCase()}`)
+            rankItems(categoryItems, val.replaceAll(' ','-').toLowerCase())
+        }
     }
 
     let rankItems = async(items, filter) => {
@@ -304,85 +314,51 @@ function PageTemplate() {
                         <Detail categoryItems={categoryItems} category={category} createRating={createRating} getRatings={getRatings} />
                     </div>         
                 </Route>
-                <Route path={`${match.url}/:filter`}>
-                <div style={{background: `url(${category.imgsrc}&w=800&dpr=2`}} className="headerContainer" >
-                        {/* <img alt="picture" src="https://brightspotcdn.byu.edu/31/bf/faa1cee3405387ff8d0d135ffab1/1810-23-0021-1200-4.jpg" /> */}
-                        <h1 id="categoryTitle">{category.name}</h1>
-                    </div>
-                    <div>
-                        <div className="categoryDetails">
-                            <div style={{textAlign: "left"}}>
-                                <h3>Description</h3>
-                                <p>Created By: {category.createdBy ? category.createdBy : 'Best of BYU User' }</p>
-                                <p>{category.description}</p>
-                            </div>
-                            <div>
-                                {
-                                    category?.subCategoryOptions ?
-                                        <bs.Dropdown >      
-                                            <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
-                                                Filter
-                                            </bs.Dropdown.Toggle>
-                                            <bs.Dropdown.Menu>
-                                                {console.log(category.subCategoryOptions)}
-                                                {   
-                                                    category.subCategoryOptions.map((option, index) => {
-                                                        return(
-                                                            <bs.Dropdown.Item key={index} onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
-                                                        )
-                                                    })
-                                                }
-                                            </bs.Dropdown.Menu>
-                                        </bs.Dropdown>
-                                        :
-                                        <></>
-                                }    
-                            </div>
-                            <div>
-                                <CreateCatItemModal category={category} getData={getData}/>
-                            </div>
-                        </div>
-                        <TableView category={category} categoryItems={rankedItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} handleRatingClick={handleRatingClick} ratings={ratings} isLoading={isLoading}/>
-                    </div>
-                </Route>
+               
                 <Route path={match.path}>
                     <div style={{background: `url(${category.imgsrc}&w=800&dpr=2`}} className="headerContainer" >
                         {/* <img alt="picture" src="https://brightspotcdn.byu.edu/31/bf/faa1cee3405387ff8d0d135ffab1/1810-23-0021-1200-4.jpg" /> */}
-                        <h1 id="categoryTitle">{category.name}</h1>
+                        <h1 id="categoryTitle">{category.name} {currentFilter !== 'All Items' ? `(${currentFilter})` : null}</h1>
                     </div>
                     <div>
                         <div className="categoryDetails">
                             <div style={{textAlign: "left"}}>
                                 <h3>Description</h3>
-                                <p>Created By: {category.createdBy ? category.createdBy : 'Best of BYU User' }</p>
                                 <p>{category.description}</p>
+                                <p>Created By: {category.createdBy ? category.createdBy : 'Best of BYU User' }</p>
                             </div>
-                            <div>
-                                {
-                                    category?.subCategoryOptions ?
-                                        <bs.Dropdown >      
-                                            <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
-                                                Filter
-                                            </bs.Dropdown.Toggle>
-                                            <bs.Dropdown.Menu>
-                                                {console.log(category.subCategoryOptions)}
-                                                {
-                                                    
-                                                    category.subCategoryOptions.map((option, index) => {
-                                                        return(
-                                                            <bs.Dropdown.Item key={index} onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
-                                                        )
-                                                    })
-                                                }
-                                            </bs.Dropdown.Menu>
-                                        </bs.Dropdown>
-                                        :
-                                        <></>
-                                }
-                            </div>
-                            <div>
-                                <CreateCatItemModal category={category} getData={getData}/>
-                            </div>
+                            <HeaderButtonsContainer>
+                                <div style={{marginRight: '1rem'}}>
+                                    {
+                                        category?.subCategoryOptions ?
+                                            <bs.Dropdown >      
+                                                <bs.Dropdown.Toggle style={{width: '200px'}} variant="info" id="dropdown-basic">
+                                                    <FilterButton>
+                                                        {currentFilter}
+                                                        <RiArrowDownSFill />
+                                                    </FilterButton>
+                                                </bs.Dropdown.Toggle>
+                                                <bs.Dropdown.Menu>
+                                                    <bs.Dropdown.Item key='all' onClick={(e) => handleFilter(e.target.text)}>{`All Items`}</bs.Dropdown.Item>
+                                                    {
+                                                        
+                                                        category.subCategoryOptions.map((option, index) => {
+                                                            return(
+                                                                <bs.Dropdown.Item key={index} onClick={(e) => handleFilter(e.target.text)}>{option}</bs.Dropdown.Item>
+                                                            )
+                                                        })
+                                                    }
+                                                </bs.Dropdown.Menu>
+                                            </bs.Dropdown>
+                                            :
+                                            <></>
+                                    }
+                                </div>
+                                <div>
+                                    <CreateCatItemModal category={category} getData={getData}/>
+                                </div>
+                            </HeaderButtonsContainer>
+                            
                         </div>
                         <TableView category={category} categoryItems={rankedItems} createRating={createRating} userRatings={userRatings} pageStartIndex={pageStartIndex} handleRatingClick={handleRatingClick} ratings={ratings} isLoading={isLoading} type="basic"/>
                     </div>          

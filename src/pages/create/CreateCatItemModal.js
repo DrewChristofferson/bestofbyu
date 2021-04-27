@@ -1,6 +1,6 @@
 import Button from "react-bootstrap/Button"
 import Modal from "react-bootstrap/Modal"
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import Form from "react-bootstrap/Form"
 import ButtonGroup from "react-bootstrap/ButtonGroup"
@@ -9,6 +9,7 @@ import { API } from 'aws-amplify'
 import { createCategoryItem as createCategoryItemMutation } from '../../graphql/mutations';
 import { createApi } from 'unsplash-js';
 import styled from 'styled-components'
+import AppContext from '../../context/context'
 
 const radios = [
     { name: 'From Computer', value: '1' },
@@ -25,7 +26,7 @@ const SubmitButton = styled(Button)`
 
 function CreateCatItemModal(props) {
     const match = useRouteMatch("/category/:cid")
-    const initialFormState = { id: '', categoryID: match.params.cid, name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: props.category?.subCategoryOptions ? props.category.subCategoryOptions[0] : '', customFields: []}
+    const initialFormState = { id: '', categoryID: match.params.cid, name: '', description: '', imgsrc: '', content: '', score: '0', SubCategory: props.category?.subCategoryOptions ? props.category.subCategoryOptions[0] : '', customFields: [], createdBy: ''}
     const unsplashAccessKey = 'Vi_vrZ3sI2PbvoBYAnrYfDEbqTSa75R7_zcO0lHR7z8';
     const [photos, setPhotos] = useState([]);
     const [show, setShow] = useState(false);
@@ -35,6 +36,7 @@ function CreateCatItemModal(props) {
     const [selected, setSelected] = useState();
     const [formData, setFormData] = useState(initialFormState);
     const [radioValue, setRadioValue] = useState('1');
+    const context = useContext(AppContext);
     const history = useHistory();
     const unsplash = createApi({
         accessKey: unsplashAccessKey,
@@ -48,6 +50,11 @@ function CreateCatItemModal(props) {
     useEffect(() => {
         console.log(formData)
     })
+
+    useEffect(() => {
+        console.log(context)
+        setFormData({ ...formData, 'createdBy': context?.user?.attributes?.email})
+    }, [])
 
     let submitHandler = (e) => {
       e.preventDefault();
