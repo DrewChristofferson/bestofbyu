@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import styled from 'styled-components'
 import { createApi } from 'unsplash-js';
 import { useHistory, Switch, Route, useRouteMatch } from 'react-router-dom'
@@ -8,8 +8,9 @@ import Form from "react-bootstrap/Form"
 import { API } from 'aws-amplify'
 import { listCategorys } from '../../graphql/queries'
 import { createCategory as createCategoryMutation } from '../../graphql/mutations';
+import AppContext from '../../context/context'
 
-const initialFormState = { id: '', name: '', description: '', imgsrc: '', numRatings: '0', subCategoryOptions: [], customFields: []}
+const initialFormState = { id: '', name: '', description: '', imgsrc: '', numRatings: '0', subCategoryOptions: [], customFields: [], createdBy: ''}
 
 const Container = styled.div`
     display: flex;
@@ -167,6 +168,7 @@ function CreateCatName() {
     const [formData, setFormData] = useState(initialFormState);
     const [isNameError, setIsNameError] = useState(false);
     const [isInvalidCategory, setIsInvalidCategory] = useState(false);
+    const context = useContext(AppContext)
     const history = useHistory();
     let match = useRouteMatch();
     let matchParams = useRouteMatch("/create-category/:page");
@@ -182,6 +184,8 @@ function CreateCatName() {
 
     useEffect(() => {
         getCategorys();
+        console.log(context)
+        setFormData({ ...formData, 'createdBy': context?.user?.attributes?.email});
 
         switch(matchParams?.params?.page) {
             case 'description':

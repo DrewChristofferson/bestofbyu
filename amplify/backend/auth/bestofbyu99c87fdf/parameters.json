@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "bestofbyucea3c8aa_identitypool_cea3c8aa",
+    "identityPoolName": "bestofbyu99c87fdf_identitypool_99c87fdf",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "bestofcea3c8aa",
-    "userPoolName": "bestofbyucea3c8aa_userpool_cea3c8aa",
+    "resourceNameTruncated": "bestof99c87fdf",
+    "userPoolName": "bestofbyu99c87fdf_userpool_99c87fdf",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "bestofcea3c8aa_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "bestof99c87fdf_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "cea3c8aa",
-    "resourceName": "bestofbyucea3c8aa",
+    "sharedId": "99c87fdf",
+    "resourceName": "bestofbyu99c87fdf",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -50,7 +50,7 @@
     "usernameAttributes": [
         "email"
     ],
-    "hostedUIDomainName": "bestofbyucea3c8aa-cea3c8aa",
+    "hostedUIDomainName": "vizor-authdomain",
     "authProvidersUserPool": [
         "Google"
     ],

@@ -10,7 +10,7 @@ function Header() {
 
     useEffect(() => {
         // console.log(context.user)
-        console.log(context?.user?.attributes?.email)
+        console.log(context?.user?.attributes)
     })
 
     let createNavDropdown = () => {
