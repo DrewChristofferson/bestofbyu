@@ -47,7 +47,7 @@ type Course @model
   id: ID!
   name: String!
   code: String!
-  numCredits: Int
+  numCredits: Float
   departmentID: ID!
   department: Department @connection(fields: ["departmentID"])
   imgsrc: String

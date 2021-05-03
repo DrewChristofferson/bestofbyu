@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import * as bs from 'react-bootstrap'
 import { API, container, Storage } from 'aws-amplify'
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
-import { listSchools, listDepartments, getCourse } from '../graphql/queries';
+import { listSchools, listDepartments, listCourses, listProfessors } from '../graphql/queries';
 import { Switch, Route, useRouteMatch } from 'react-router-dom'
 import { ratingsByUserAndContent } from '../graphql/queries';
 import { createRating as createRatingMutation } from '../graphql/mutations';
@@ -16,11 +16,14 @@ import AppContext from '../context/context'
 function BYUSchools() {
     const [schools, setSchools] = useState({});
     const [departments, setDepartments] = useState({});
+    const [courses, setCourses] = useState({});
+    const [professors, setProfessors] = useState({});
     const [professorsForCourse, setProfessorsForCourse] = useState({});
     const [userRatings, setUserRatings] = useState({});
     const [userid, setUserid] = useState(null);
     const [isLoadingDepartments, setIsLoadingDepartments] = useState(true);
     const [isLoadingProfessors, setIsLoadingProfessors] = useState(true);
+    const [isLoadingCourses, setIsLoadingCourses] = useState(true);
     const [isLoadingProfessorsForCourse, setIsLoadingProfessorsForCourse] = useState(true);
     const [pageStartIndex, setPageStartIndex] = useState(0);
     const [pageNum, setPageNum] = useState(1);
@@ -35,6 +38,8 @@ function BYUSchools() {
     useEffect(() => {
         //navigates user to the top of the page on page load
         window.scrollTo(0, 0);
+        getDataCourses();
+        getDataProfessors();
         fetchData();
         getData();
       
@@ -60,7 +65,7 @@ function BYUSchools() {
     }
 
     async function getData() {
-        const apiData = await API.graphql({ query: listDepartments });
+        const apiData = await API.graphql({ query: listDepartments, variables: {limit: 4000} });
         const departmentsFromAPI = apiData.data.listDepartments.items;
 
         await Promise.all(departmentsFromAPI.map(async department => {
@@ -69,6 +74,41 @@ function BYUSchools() {
 
         setDepartments(apiData.data.listDepartments.items);
         setIsLoadingDepartments(false);
+    }
+
+    async function getDataCourses() {
+        const apiData = await API.graphql({ query: listCourses, variables: {limit: 5000} });
+        const coursesFromAPI = apiData.data.listCourses.items;
+
+        await Promise.all(coursesFromAPI.map(async course => {
+          return course;
+        }))
+
+        console.log(apiData.data.listCourses);
+
+        const apiData2 = await API.graphql({ query: listCourses, variables: {limit: 5000, nextToken: apiData.data.listCourses.nextToken} });
+        const coursesFromAPI2 = apiData.data.listCourses.items;
+
+        await Promise.all(coursesFromAPI2.map(async course => {
+          return course;
+        }))
+        console.log(apiData2.data.listCourses);
+        console.log([...apiData.data.listCourses.items, ...apiData2.data.listCourses.items]);
+
+        setCourses([...apiData.data.listCourses.items, ...apiData2.data.listCourses.items]);
+        setIsLoadingCourses(false);
+    }
+    async function getDataProfessors() {
+        const apiData = await API.graphql({ query: listProfessors, variables: {limit: 4000} });
+        const professorssFromAPI = apiData.data.listProfessors.items;
+
+        await Promise.all(professorssFromAPI.map(async professor => {
+          return professor;
+        }))
+
+        console.log(apiData.data.listProfessors.items);
+        setProfessors(apiData.data.listProfessors.items);
+        setIsLoadingProfessors(false);
     }
 
     async function updateScore(id, score, increment, mutationName) {
@@ -176,7 +216,7 @@ function BYUSchools() {
         colleges.push(schools[i])
     }
 
-    if(!isLoadingDepartments){
+    if(!isLoadingDepartments && !isLoadingProfessors && !isLoadingCourses){
         return(
             <Switch>
                 <Route path={`${match.path}/:schId/:deptId/:type/:oid`}>
@@ -190,6 +230,8 @@ function BYUSchools() {
                             getRatings={getRatings} 
                             userRatings={userRatings} 
                             departments={departments}
+                            courses={courses}
+                            professors={professors}
                             createRating={createRating} 
                             isLoading={isLoadingProfessors}
                             nextPage={nextPage}
@@ -231,6 +273,8 @@ function BYUSchools() {
                                 createRating={createRating} 
                                 getDepartments={getData}
                                 departments={departments} 
+                                courses={courses}
+                                professors={professors}
                                 colleges={colleges}
                                 isLoading={isLoadingDepartments}
                                 nextPage={nextPage}

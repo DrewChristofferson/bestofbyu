@@ -3,8 +3,32 @@ import { Link, useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
 import * as FaIcons from 'react-icons/fa'
 import * as RiIcons from 'react-icons/ri';
+import DropOnClose from './DropOnClose'
 
 // https://www.youtube.com/watch?v=mN3P_rv8ad4 Sidebar tutorial
+
+const SidebarHeader = styled.div`
+    display: flex;
+    color: black;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin: 0 10px 10px 0;
+    position: relative;
+    height: 40px;
+    text-decoration: none;
+    font-size: 14px;
+    background: #8ab4ce;
+
+
+    &:hover {
+
+        border-bottom: 4px solid black;
+        cursor: pointer;
+        color: black;
+        text-decoration: none;
+    }
+`;
 
 const SidebarLink = styled(Link)`
     display: flex;
@@ -40,6 +64,8 @@ const DropdownContent = styled.div`
     left: 0;
     background-color: #f1f1f1;
     min-width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 `
@@ -78,7 +104,7 @@ function Submenu(props) {
 
     let getAllDept = () => {
         console.log(props.item)
-        if(subnav && !props.ge){
+        if(!props.ge){
             return(
                 <DropdownLink key="all" to={`/${match.params.cat}/${props.item.id}/all/${match.params.type}`} onClick={showSubnav}>
                     {/* <FaIcons.FaBook /> */}
@@ -86,7 +112,7 @@ function Submenu(props) {
                 </DropdownLink>
             )
             
-        } else if (subnav && props.ge){
+        } else if (props.ge){
             return(
                 <DropdownLink key="all" to={`/${match.params.cat}/${props.item.id}/all/${match.params.type}`} onClick={showSubnav}>
                     {/* <FaIcons.FaBook /> */}
@@ -99,7 +125,7 @@ function Submenu(props) {
 
     if (props.allColleges) {
         return(
-            <SidebarLink to={`/${match.params.cat}/all/all/${match.params.type}`} >
+            <SidebarLink to={`/schools/all/all/${match.params.type}`}>
                 <div>
                     {/* <FaIcons.FaBook /> */}
                     <SidebarLabel>All Colleges</SidebarLabel>
@@ -110,14 +136,14 @@ function Submenu(props) {
     } else if (props.ge) {
         return (
             <div style={{position: "relative", display: "inline-block"}}>
-                {/* <SidebarLink to={`${match.url}/all/all/${match.params.type}`} >
+                {/* <SidebarLink to={`/${match.url}/all/all/${match.params.type}`} >
                     <div>
                         <FaIcons.FaBook />
                         <SidebarLabel>Show All</SidebarLabel>
                         
                     </div>
                 </SidebarLink> */}
-                <SidebarLink to={`/${match.params.cat}/${props.item.id}/all/${match.params.type}`} onClick={showSubnav}>
+                <SidebarHeader onClick={showSubnav}>
                     <div>
                         {/* <FaIcons.FaBook /> */}
                         <SidebarLabel>General Education</SidebarLabel>
@@ -130,20 +156,35 @@ function Submenu(props) {
                             ? dropdownIcon.closed
                             : null}
                     </div>
-                </SidebarLink>
+                </SidebarHeader>
                 <div >
-                    <DropdownContent >
-                        {getAllDept()} 
-                        {subnav && props.item.requirements.map((requirement, index) => {
-                            return(
-                                <DropdownLink key={index} to={`/${match.params.cat}/${props.item.id}/${requirement.id}/${match.params.type}`} onClick={showSubnav}>
-                                    {/* <FaIcons.FaBook /> */}
-                                    <SidebarLabel>{requirement.reqName}</SidebarLabel>
-                                </DropdownLink>
-                            )
-                        })
-                        }
-                    </DropdownContent>
+                    {
+                        subnav && (
+                            <DropOnClose onClose={() => {
+                                setSubnav(false)
+                              }}>
+                                <DropdownContent onClose={() => {
+                                    setSubnav(false)
+                                }}>
+                                    {getAllDept()} 
+                                    {props.item.requirements.map((requirement, index) => {
+                                        return(
+                                            <DropdownLink 
+                                                key={index} 
+                                                to={`/${match.params.cat}/${props.item.id}/${requirement.id}/${match.params.type}`} 
+                                                onClick={showSubnav}
+                                            >
+                                                {/* <FaIcons.FaBook /> */}
+                                                <SidebarLabel>{requirement.reqName}</SidebarLabel>
+                                            </DropdownLink>
+                                        )
+                                    })
+                                    }
+                                </DropdownContent>
+                            </DropOnClose>
+                        )
+                    }
+                    
                     
                 </div>
                 
@@ -159,7 +200,7 @@ function Submenu(props) {
                         
                     </div>
                 </SidebarLink> */}
-                <SidebarLink to={`/${match.params.cat}/${props.item.id}/all/${match.params.type}`} onClick={showSubnav}>
+                <SidebarHeader onClick={showSubnav}>
                     <div>
                         {/* <FaIcons.FaBook /> */}
                         <SidebarLabel>{props.item.name}</SidebarLabel>
@@ -172,20 +213,28 @@ function Submenu(props) {
                             ? dropdownIcon.closed
                             : null}
                     </div>
-                </SidebarLink>
+                </SidebarHeader>
                 <div >
-                    <DropdownContent >
-                        {getAllDept()} 
-                        {subnav && props.item.departments.items.map((department, index) => {
-                            return(
-                                <DropdownLink key={index} to={`/${match.params.cat}/${props.item.id}/${department.id}/${match.params.type}`} onClick={showSubnav}>
-                                    {/* <FaIcons.FaBook /> */}
-                                    <SidebarLabel>{department.name}</SidebarLabel>
-                                </DropdownLink>
-                            )
-                        })
-                        }
-                    </DropdownContent> 
+                    {
+                        subnav && (
+                            <DropOnClose onClose={() => {
+                                setSubnav(false)
+                              }}>
+                                <DropdownContent >
+                                    {getAllDept()} 
+                                    {props.item.departments.items.map((department, index) => {
+                                        return(
+                                            <DropdownLink key={index} to={`/${match.params.cat}/${props.item.id}/${department.id}/${match.params.type}`} onClick={showSubnav}>
+                                                {/* <FaIcons.FaBook /> */}
+                                                <SidebarLabel>{department.name}</SidebarLabel>
+                                            </DropdownLink>
+                                        )
+                                    })
+                                    }
+                                </DropdownContent> 
+                            </DropOnClose>
+                        )
+                    }
                 </div>
             </div>
         )

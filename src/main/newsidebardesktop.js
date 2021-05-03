@@ -127,38 +127,14 @@ function NewSideBarDesktop(props) {
     return (
         <div>
             <SidebarNav >
-                {/* <SidebarWrap> */}
                 <SubMenu allColleges={true} key="all" />
                 <SubMenu ge={true} key="ge" item={generalEd}/>
 
                     {
                 props.colleges.map((college, index) => (
-                    <SubMenu item={college} key={index} />
-                    
-                    // <bs.Card key={college.id}>
-                    //     <bs.Card.Header>
-                    //     <bs.Accordion.Toggle as={bs.Button} variant="link" eventKey={college.id}>
-                    //         {/* <Link to={`${match.url}/${college.id}/all/${matchvars.params.type}`} onClick={() => {props.initPageNum()}}>{college.name}</Link> */}
-                    //         <SidebarLink linkUrl={`${match.url}/${college.id}/all/${matchvars.params.type}`} compareClassUrl={`${match.url}/${college.id}/all`} selectedLink={selected} handleClick={handleClick} textContent={college.name}/>
-                    //     </bs.Accordion.Toggle>
-                    //     </bs.Card.Header>
-                    //     <bs.Accordion.Collapse eventKey={college.id}>
-                    //     <bs.Card.Body>
-                    //         {
-                    //             college.departments.items.map(department => (
-                                    
-                    //                 // <div key={department.id}><Link to={`${match.url}/${college.id}/${department.id}/${matchvars.params.type}`} onClick={() => {props.initPageNum()}}>{department.name}</Link></div>
-                    //                 <div key={department.id}><SidebarLink linkUrl={`${match.url}/${college.id}/${department.id}/${matchvars.params.type}`} compareClassUrl={`${match.url}/${college.id}/${department.id}`} selectedSubLink={selectedSubLink} handleClick={handleClick} textContent={department.name}/></div>
-                    //             ))
-                    //         }
-                    //     </bs.Card.Body>
-                    //     </bs.Accordion.Collapse>
-                    // </bs.Card>
-                
+                    <SubMenu item={college} key={index} />                
                 ))
             }
-                    {/* <SubMenu item="General Education" subNav="yep"/> */}
-                {/* </SidebarWrap> */}
             </SidebarNav>
         </div>
     )
