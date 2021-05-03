@@ -27,6 +27,7 @@ function SchoolTables(props) {
 
     //------------Private Methods--------------//
     let getCourses;
+    let getNewCourses;
     let getProfessors;
     let getTitle;
     let handleChangeToggle;
@@ -44,7 +45,14 @@ function SchoolTables(props) {
 
 
     useEffect(() => {
-        
+        let count = 0;
+        for (const course of props.courses){
+            if(!course.department?.name){
+                count++;
+                console.log("no dept", course);
+            }  
+        }
+        console.log(count)
         handleChangeToggle(cat.params.cat);
     }, []);
 
@@ -123,6 +131,68 @@ function SchoolTables(props) {
         }
         return [paginatedCourses, filteredCourses.length, endingIndex];
     }
+
+
+    getNewCourses =  () => {
+        let courses = [];
+        let filteredCourses = [];
+        let paginatedCourses = [];
+        let endingIndex;
+
+        if (match.params.sid === URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){ //get all courses 
+            for (let i = 0; i < props.courses.length; i++) {
+                courses.push(props.courses[i]);
+            }
+        } else if(match.params.sid === "ge" && match.params.did === URL_PARAM_ALL){ //get courses from the department in the url
+            for (let i = 0; i < props.courses.length; i++) {
+                if (props.courses[i].isGeneral === true){
+                    courses.push(props.courses[i]);
+                }   
+            }
+        } else if(match.params.sid === "ge" && match.params.did !== URL_PARAM_ALL){ //get courses from the department in the url
+            for (let i = 0; i < props.courses.length; i++) {
+                if (props.courses[i].isGeneral === true && props.courses[i].generalReqID === match.params.did){
+                        courses.push(props.courses[i]);
+                    }                  
+            }
+        } else if(match.params.sid !== URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){ //get courses from the department in the url
+            for (let i = 0; i < props.courses.length; i++) {
+                if(props.courses[i].department?.schoolID === match.params.sid) {
+                    courses.push(props.courses[i]);
+                }
+            }
+        }  else if (match.params.sid !== URL_PARAM_ALL && match.params.did !== URL_PARAM_ALL){ //get courses from the department in the url
+            for (let i = 0; i < props.courses.length; i++) {
+                if(props.courses[i].department?.id === match.params.did) {
+                    courses.push(props.courses[i]);
+                }
+            }
+        } else {
+            return null;
+        }
+        courses.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
+
+        for (let i = 0; i < courses.length; i++){
+            courses[i].ranking = i + 1;
+            if(courses[i].name.toLowerCase().includes(props.searchFilter.toLowerCase())){
+                for(let j = 0; j < props.userRatings.length; j++){
+                    if (props.userRatings[j].contentID === courses[i].id){
+                        courses[i].userRating = props.userRatings[j].ratingType;
+                    }   
+                }
+                filteredCourses.push(courses[i])
+            }
+        }
+        for (let i = 0; i < props.pageStartIndex + 10; i++){
+            if(filteredCourses[i]){
+                paginatedCourses.push(filteredCourses[i])
+            } else {
+                break;
+            }
+            endingIndex = i + 1;
+        }
+        return [paginatedCourses, filteredCourses.length, endingIndex];
+    }
  
     getProfessors =  () => {
         let professors = []
@@ -131,25 +201,19 @@ function SchoolTables(props) {
         let endingIndex;
 
         if (match.params.sid === URL_PARAM_ALL && match.params.did === URL_PARAM_ALL){
-            for (let i = 0; i < props.departments.length; i++) {
-                for(let j = 0; j < props.departments[i].professors.items.length; j ++){
-                    professors.push(props.departments[i].professors.items[j]);
-                }
+            for (let i = 0; i < props.professors.length; i++) {
+                professors.push(props.professors[i]);
             }
         } else if (match.params.sid !== URL_PARAM_ALL && match.params.did === URL_PARAM_ALL) {
-            for (let i = 0; i < props.departments.length; i++) {
-                if(props.departments[i].school.id === match.params.sid) {
-                    for(let j = 0; j < props.departments[i].professors.items.length; j ++){
-                            professors.push(props.departments[i].professors.items[j]);
-                    }
+            for (let i = 0; i < props.professors.length; i++) {
+                if(props.professors[i].department?.school?.id === match.params.sid) {
+                    professors.push(props.professors[i]);
                 }
             }
         } else if (match.params.sid !== URL_PARAM_ALL && match.params.did !== URL_PARAM_ALL) {
-            for (let i = 0; i < props.departments.length; i++) {
-                if(props.departments[i].id === match.params.did) {
-                    for(let j = 0; j < props.departments[i].professors.items.length; j ++){
-                            professors.push(props.departments[i].professors.items[j]);
-                    }
+            for (let i = 0; i < props.professors.length; i++) {
+                if(props.professors[i].department?.id === match.params.did) {
+                    professors.push(props.professors[i]);
                 }
             }
         } else {
@@ -239,7 +303,7 @@ function SchoolTables(props) {
                     name = props.departments[i].professors.items;
                 }
             }
-            if (name[0]){
+            if (name && name[0]){
                 return (  
                     <div>
                         <h1>{name[0].department.name}</h1>  
@@ -287,7 +351,7 @@ function SchoolTables(props) {
                         <ProfessorTable  userid={userid} getDepartments={props.getDepartments} departments={props.departments} colleges={props.colleges} professors={getProfessors()} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue} />
                     </Route>
                     <Route path={`${match.path}/${URL_PARAM_COURSES}`}>
-                        <CourseTable  userid={userid} getDepartments={props.getDepartments} departments={props.departments}  colleges={props.colleges} courses={getCourses()} userRatings={props.userRatings} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue} />
+                        <CourseTable  userid={userid} getDepartments={props.getDepartments} departments={props.departments}  colleges={props.colleges} courses={getNewCourses()} userRatings={props.userRatings} updateScore={props.updateScore} getRatings={props.getRatings}  createRating={props.createRating} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum} handleChangeSearch={props.handleChangeSearch} handleChangeToggle={handleChangeToggle} CATEGORIES={CATEGORIES} categoryValue={categoryValue} />
                     </Route>
                 </Switch>
             </>

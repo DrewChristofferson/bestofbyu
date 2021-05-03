@@ -1,19 +1,35 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import * as bs from 'react-bootstrap'
 import { Link, useRouteMatch, useHistory } from 'react-router-dom'
 import classroom from '../images/classroom.jpg'
 import boardgame from '../images/boardgame.jpg'
 import professor from '../images/professor.jpg'
+import background from '../images/barnbackground.jpg'
 import * as BsIcons from 'react-icons/bs'
 import { listCategorys } from '../graphql/queries'
 import { API } from 'aws-amplify'
+import styled from 'styled-components'
+import AppContext from '../context/context'
 
-let divStyle={
-    // backgroundImage: "url(https://images.unsplash.com/photo-1495903546524-cdb71d0aed7d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTV8fHVwfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60)",
-    backgroundImage: 'linear-gradient(#1990ff, white)',
-    paddingBottom: "8rem",
-    backgroundPosition: "center center"
-}
+const JumboTron = styled(bs.Jumbotron)` 
+    background-image: url(https://images.unsplash.com/photo-1495903546524-cdb71d0aed7d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTV8fHVwfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=60);
+    background-position: 30% 90%;
+    background-repeat: no-repeat;
+    padding-bottom: 8rem;
+`
+
+const AboutSection = styled.div` 
+    padding: 30px 100px;
+    background-color: #333333;
+    color: white;
+    border-radius: 15px;
+    font-size: 16px;
+    line-height: 1.8em;
+`
+const AboutTitle = styled.span` 
+    font-size: 20px;
+    line-height: 2em;
+`
 
 const categoryData = [
     {
@@ -53,6 +69,7 @@ function Home() {
     const [isLoadingCategorys, setIsLoadingCategorys] = useState(true);
     const [searchSuggestions, setSearchSuggestions] = useState();
     let history = useHistory();
+    const context = useContext(AppContext);
 
     useState(() => {
         getData();
@@ -137,11 +154,11 @@ function Home() {
         return(
             <>
             <div className="py-0">
-                <bs.Jumbotron fluid style={divStyle} >
+                <JumboTron fluid >
                     <bs.Container style={{my: "5rem"}} className="py-0">
                         <h1 className="title">VIZOR</h1>
                         <h4 className="subtitle">
-                            Democratize Public Preference
+                            Find top recommendations in categories you are passionate about.
                         </h4>
                         <bs.Form onSubmit={submitHandler}>
                             <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
@@ -161,14 +178,27 @@ function Home() {
                         </div>
                         {/* !hardcoded! */}
                         <p className="trending">
-                            Now Trending: 
+                            Trending Categories: 
                             <span className="trending-item" onClick={() => handleClick(categorys[0].id)}> {categorys[0].name}</span>
                             , <span className="trending-item" onClick={() => handleClick(categorys[1].id)}> {categorys[1].name}</span>
                             , <span className="trending-item" onClick={() => handleClick(categorys[2].id)}> {categorys[2].name}</span>
                         </p>
                     </bs.Container>
-                </bs.Jumbotron>
+                </JumboTron>
                 <div id="main-container">
+                    {
+                        context?.user ?
+                        <></>
+                        :
+                        <AboutSection>
+                            <AboutTitle>Hi there and welcome to Vizor 👋 </AboutTitle> <br />
+                            This is a new platform where you can browse categories and see what the world recommends.
+                            You can easily 🔼 or 🔽 vote each item to add your opinion. 
+                            If you're feeling adventurous, you can add new items or even create your own custom category.
+                            It's your personal advisor for whatever you are passionate about! 😎
+                        </AboutSection>
+                    }
+                    
                     <div className="categorySection">
                         <h1>Recently Added</h1>
                         <div className="categoryPreview">
@@ -283,11 +313,11 @@ function Home() {
     else{
         return(
             <div className="py-0">
-                <bs.Jumbotron fluid style={divStyle} >
+                <JumboTron fluid>
                     <bs.Container style={{my: "5rem"}} className="py-0">
                         <h1 className="title">VIZOR</h1>
                         <h4 className="subtitle">
-                            Democratize Public Opinion
+                            Find top recommendations in categories you are passionate about.
                         </h4>
                         <bs.Form onSubmit={submitHandler}>
                             <bs.Row style={{marginTop: "2rem"}} className="justify-content-md-center">
@@ -302,7 +332,7 @@ function Home() {
                             </bs.Row>
                         </bs.Form>
                     </bs.Container>
-                </bs.Jumbotron>
+                </JumboTron>
                 <div>
                     Loading Data
                 </div>                            

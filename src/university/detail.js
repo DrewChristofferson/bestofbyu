@@ -334,12 +334,9 @@ function Detail(props) {
 
         if (props.departments[0]) {
             if (match.params.type === "courses") {
-                for (let i = 0; i < props.departments.length; i++) {
-                    for(let j = 0; j < props.departments[i].courses.items.length; j ++){
-                        objectsAll.push(props.departments[i].courses.items[j]);
-                    }
+                for (let i = 0; i < props.courses.length; i++) {
+                    objectsAll.push(props.courses[i]);
                 }
-        
             } else if (match.params.type === "professors"){
                 for (let i = 0; i < props.departments.length; i++) {
                     for(let j = 0; j < props.departments[i].professors.items.length; j ++){
@@ -358,7 +355,7 @@ function Detail(props) {
                 }
             }
             for (let i = 0; i < objectsAll.length; i++){
-                if(objectsAll[i].department.school.id === (match.params.type === "courses" ? course.department.school.id : professor.department.school.id)){
+                if(objectsAll[i].department?.school?.id === (match.params.type === "courses" ? course.department?.school?.id : professor.department?.school?.id)){
                     rankingSchool++;
                     if (objectsAll[i].id === match.params.oid){
                         break;
@@ -366,7 +363,7 @@ function Detail(props) {
                 }
             }
             for (let i = 0; i < objectsAll.length; i++){
-                if(objectsAll[i].department.id === (match.params.type === "courses" ? course.department.id : professor.department.id)){
+                if(objectsAll[i].department?.id === (match.params.type === "courses" ? course.department?.id : professor.department?.id)){
                     rankingDept++;
                     if (objectsAll[i].id === match.params.oid){
                         break;

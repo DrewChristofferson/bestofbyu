@@ -25,7 +25,7 @@ section {
 }
 
 .content-wrapper {
-  margin-bottom: 10rem;
+  margin-bottom: 2rem;
 }
 
 .page-header,
@@ -77,7 +77,7 @@ section {
   align-items: flex-start;
   align-content: center;
   padding-left: 1em;
-  margin-bottom: 10em;
+  margin-bottom: 4em;
 }
 
 .bannerTitle {
@@ -674,7 +674,7 @@ section {
 }
 
 .categorySection {
-  margin: 6em 0 4em 0;
+  margin: 3em 0 0 0;
   text-align: left;
 }
 

@@ -9,6 +9,12 @@ import * as FaIcons from 'react-icons/fa'
 import * as AiIcons from 'react-icons/ai'
 import ClassImg from '../images/class.jpg'
 import { Auth } from 'aws-amplify';
+import styled from 'styled-components';
+
+const BadgeContainer = styled(bs.Badge)`
+    display: inline-block;
+    vertical-align: top;
+`
 
 function Table (props) {
     const match = useRouteMatch("/schools/:sid/:did/:type")
@@ -197,11 +203,17 @@ function Table (props) {
                                                     : `#${course.ranking}`}
                                         </div>
                                         <div className={"tableItemTitleHeading"}>
-                                            {course.name} ({course.code})
+                                            {course.name} ({course.code}){' '}
+                                            {
+                                                course.isGeneral ?
+                                                    <BadgeContainer variant="success">GE</BadgeContainer>
+                                                :
+                                                <></>
+                                            }
                                         </div>
                                     </div>
                                     <div className="tableItemSubtitle">
-                                        {course.department.name} in {course.department.school.name}
+                                        {course.department?.name} in {course.department?.school?.name}
 
                                     </div>
 
@@ -209,9 +221,9 @@ function Table (props) {
                                         {getCardDetails(course)}
                                     </div>
 
-                                    <div className="tableItemDetails">
+                                    {/* <div className="tableItemDetails">
                                         <p>{course.description}</p>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="tableItemExtra">
                                         <bs.Dropdown >
@@ -407,7 +419,7 @@ function Table (props) {
                                         </div>
                                     </div>
                                     <div className="tableItemSubtitle">
-                                        {professor.department.name} Department in {professor.department.school.name}
+                                        {professor.department?.name} Department in {professor.department?.school?.name}
                                     </div>
                                     <div className="tableItemDetails">
                                         {getCardDetails(professor)}

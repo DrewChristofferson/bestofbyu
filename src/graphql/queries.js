@@ -177,50 +177,6 @@ export const listDepartments = /* GraphQL */ `
           }
           nextToken
         }
-        courses {
-          items {
-            id
-            name
-            numCredits
-            score
-            code
-            description
-            isGeneral
-            generalReqID
-            classes {
-              items {
-                id
-                professorID
-                courseID
-                createdAt
-                updatedAt
-                professor {
-                  id
-                  name
-                  title
-                  score
-                  department {
-                    id
-                    name
-                    school {
-                      id
-                      name
-                    }
-                  }
-                }
-              }
-              nextToken
-            }
-            department {
-              id
-              name
-              school {
-                id
-                name
-              }
-            }
-          }
-        }
         createdAt
         updatedAt
       }
@@ -310,7 +266,10 @@ export const listProfessors = /* GraphQL */ `
         department {
           id
           name
-          schoolID
+          school {
+            id
+            name
+          }
           createdAt
           updatedAt
         }
@@ -387,6 +346,10 @@ export const listCourses = /* GraphQL */ `
           id
           name
           schoolID
+          school {
+            id
+            name
+          }
           createdAt
           updatedAt
         }
