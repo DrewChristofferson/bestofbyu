@@ -346,7 +346,7 @@ function Detail(props) {
     
             } else return null;
     
-            objectsAll.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
+            objectsAll.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((match.params.type === "courses" ? (a.code > b.code) : (a.name > b.name)) ? 1 : -1) : -1 )
     
             for (let i = 0; i < objectsAll.length; i++){
                 rankingAll++;

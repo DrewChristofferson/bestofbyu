@@ -10,6 +10,9 @@ import * as AiIcons from 'react-icons/ai'
 import ClassImg from '../images/class.jpg'
 import { Auth } from 'aws-amplify';
 import styled from 'styled-components';
+import objGE from '../geobject'
+import ReactTooltip from "react-tooltip";
+import UpdateGEModal from '../components/UpdateGEModal'
 
 const BadgeContainer = styled(bs.Badge)`
     display: inline-block;
@@ -24,6 +27,8 @@ function Table (props) {
     const [courses, setCourses] = useState([]);
     const [ratings, setRatings] = useState({});
     const [isLoading, setIsLoading] = useState(true);
+    const [showGEModal, setShowGEModal] = useState(false);
+    const [geModalCourse, setGeModalCourse] = useState({});
     let history = useHistory();
   
     const CLASS_VOTE_UP = "tableSelectedUp";
@@ -32,6 +37,15 @@ function Table (props) {
     const CLASS_NO_VOTE_UP = "tableNotSelectedUp";
     const VOTE_UP  = "up";
     const VOTE_DOWN = "down";
+
+    const handleClose = () => {
+        setShowGEModal(false);
+        setGeModalCourse({});
+    }
+    const handleShow = (course) => {
+        setGeModalCourse(course);
+        setShowGEModal(true);
+    }
 
     useEffect(() => {
         initData();
@@ -87,20 +101,40 @@ function Table (props) {
         setIsLoading(false)
     }
 
-    let getCardDetails = (course) => {
-        if(course.isGeneral){
-            return(
-                <p>{course.numCredits} Credits &middot; May fulfill {course.generalReqID} GE</p>  
-            )
-        } else {
-            return(
-                <p>{course.numCredits} Credits &middot; Not a GE</p>
-            )
-        }
+    const getGEDetails = (course) => {
+        return(
+            <p> May fulfill {' '}
+                {
+                    course.generalReqID.map((genreq,idx) => {
+                        if(course.generalReqID.length === idx + 1){
+                            return(
+                                <span>{objGE[genreq]} </span>
+                            )
+                        }
+                        else if(course.generalReqID.length === idx + 2){
+                            return(
+                                <span>{objGE[genreq]} or </span>
+                            )
+                        }
+                        else if(course.generalReqID.length > (idx + 2)){
+                            return(
+                                <span>{objGE[genreq]}, </span>
+                            )
+                        }
+                        else{
+                            return(
+                                <span>{objGE[genreq]} </span>
+                            )
+                        }
+                    })
+                } 
+                GE
+            </p>  
+        )
     }
 
 
-    let handleRatingClick = (id, increment, mutation, score, item) => {
+    const handleRatingClick = (id, increment, mutation, score, item) => {
         setIsLoading(true);
         let tempRatings = {};
         for (const [key, value] of Object.entries(ratings)) {
@@ -164,17 +198,30 @@ function Table (props) {
             }
         }
       }
+    
+    const updateGE = (course) => {
+        handleShow(course);
+    }
 
     if(!isLoading){
         if (props.courses) { 
             console.log(props.courses)
             return(
                 <div className="table">
+                    <UpdateGEModal 
+                        course={geModalCourse} 
+                        objGE={objGE} 
+                        showGEModal={showGEModal} 
+                        handleShow={handleShow} 
+                        handleClose={handleClose}
+                    />
                     {
                         props.courses.map((course, index) => (
+                            
                             <div className="ratingRow" key={index}>
                                 
                             <div key={index} className="tableItem" >
+
                                 <div className="scoreInfo">                               
                                     <div className={"ratingButtons"}>
                                         <div className={ratings[course.id] === VOTE_UP ? CLASS_VOTE_UP : CLASS_NO_VOTE_UP }  onClick={() => handleRatingClick( course.id, VOTE_UP, updateCourseMutation, course.score, course)}>
@@ -191,10 +238,10 @@ function Table (props) {
                                     </div>
                                     
                                 </div>
-                                <div className="tableItemImg" onClick={() => {handleClick(course.id)}}>
+                                {/* <div className="tableItemImg" onClick={() => {handleClick(course.id)}}>
                                     <img className="profile" alt={course.name} style={{height:"100%", width: "80%"}} src={ClassImg} />
 
-                                </div>
+                                </div> */}
                                 <div className="tableItemContent" onClick={() => {handleClick(course.id)}}>
                                     <div className="tableItemTitle">
                                         <div className={"tableItemTitleRanking"}>
@@ -206,7 +253,13 @@ function Table (props) {
                                             {course.name} ({course.code}){' '}
                                             {
                                                 course.isGeneral ?
-                                                    <BadgeContainer variant="success">GE</BadgeContainer>
+                                                <>
+                                                    <ReactTooltip id={`getip${course.id}`} place="bottom" effect="solid">
+                                                        {getGEDetails(course)}
+                                                    </ReactTooltip>
+                                                    <BadgeContainer variant="success" data-tip data-for={`getip${course.id}`}>GE</BadgeContainer>
+                                                </>
+                                                    
                                                 :
                                                 <></>
                                             }
@@ -218,7 +271,7 @@ function Table (props) {
                                     </div>
 
                                     <div className="tableItemDetails">
-                                        {getCardDetails(course)}
+                                        {course.numCredits} Credits
                                     </div>
 
                                     {/* <div className="tableItemDetails">
@@ -234,6 +287,7 @@ function Table (props) {
                                             <bs.Dropdown.Menu>
                                                 <bs.Dropdown.Item href={`${match.url}/${course.id}`}>View Details</bs.Dropdown.Item>
                                                 <bs.Dropdown.Item href="">Save {course.name}</bs.Dropdown.Item>
+                                                <bs.Dropdown.Item onClick={() => updateGE(course)}>Mark as GE</bs.Dropdown.Item>
                                                 <bs.Dropdown.Item onClick={() => alert("Thank you uploading a photo.")}>Upload Photo</bs.Dropdown.Item>
                                                 <bs.Dropdown.Item onClick={() => alert("Thank you for marking " + course.name + " as a duplicate.")}>Mark Duplicate</bs.Dropdown.Item>
                                                 <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + course.name + ".")}>Report</bs.Dropdown.Item> 
@@ -288,9 +342,9 @@ function Table (props) {
                                         <div className="tableItemSubtitle">
                                             {professor.department.name} Department in {professor.department.school.name}
                                         </div>
-                                        <div className="tableItemDetails">
+                                        {/* <div className="tableItemDetails">
                                             {getCardDetails(professor)}
-                                        </div>
+                                        </div> */}
                                         <div className="tableItemDetails">
                                             <p>{professor.description}</p>
                                         </div>
@@ -355,7 +409,7 @@ function Table (props) {
                                             {course.department.name} in {course.department.school.name}
                                         </div>
                                         <div className="tableItemDetails">
-                                            {getCardDetails(course)}
+                                            {course.numCredits} Credits
                                         </div>
                                         <div className="tableItemDetails">
                                             <p>{course.description}</p>
@@ -369,6 +423,7 @@ function Table (props) {
                                                 <bs.Dropdown.Menu>
                                                     <bs.Dropdown.Item href={`${match.url}/${course.id}`}>View Details</bs.Dropdown.Item>
                                                     <bs.Dropdown.Item href="">Save {course.name}</bs.Dropdown.Item>
+                                                    <bs.Dropdown.Item onClick={() => updateGE(course,objGE)}>Mark as GE</bs.Dropdown.Item>
                                                     <bs.Dropdown.Item onClick={() => alert("Thank you uploading a photo.")}>Upload Photo</bs.Dropdown.Item>
                                                     <bs.Dropdown.Item onClick={() => alert("Thank you for marking " + course.name + " as a duplicate.")}>Mark Duplicate</bs.Dropdown.Item>
                                                     <bs.Dropdown.Item onClick={() => alert("Thank you for reporting this. Our moderators will review " + course.name + ".")}>Report</bs.Dropdown.Item> 
@@ -422,7 +477,7 @@ function Table (props) {
                                         {professor.department?.name} Department in {professor.department?.school?.name}
                                     </div>
                                     <div className="tableItemDetails">
-                                        {getCardDetails(professor)}
+                                        {professor.title}
                                     </div>
                                     <div className="tableItemDetails">
                                         <p>{professor.description}</p>

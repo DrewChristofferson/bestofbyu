@@ -108,11 +108,11 @@ function SchoolTables(props) {
         } else {
             return null;
         }
-        courses.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
+        courses.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.code > b.code) ? 1 : -1) : -1 )
 
         for (let i = 0; i < courses.length; i++){
             courses[i].ranking = i + 1;
-            if(courses[i].name.toLowerCase().includes(props.searchFilter.toLowerCase())){
+            if(courses[i].name.toLowerCase().includes(props.searchFilter.toLowerCase()) || courses[i].code.toLowerCase().includes(props.searchFilter.toLowerCase())){
                 for(let j = 0; j < props.userRatings.length; j++){
                     if (props.userRatings[j].contentID === courses[i].id){
                         courses[i].userRating = props.userRatings[j].ratingType;
@@ -151,7 +151,7 @@ function SchoolTables(props) {
             }
         } else if(match.params.sid === "ge" && match.params.did !== URL_PARAM_ALL){ //get courses from the department in the url
             for (let i = 0; i < props.courses.length; i++) {
-                if (props.courses[i].isGeneral === true && props.courses[i].generalReqID === match.params.did){
+                if (props.courses[i].isGeneral === true && props.courses[i].generalReqID.includes(match.params.did)){
                         courses.push(props.courses[i]);
                     }                  
             }
@@ -170,11 +170,11 @@ function SchoolTables(props) {
         } else {
             return null;
         }
-        courses.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name > b.name) ? 1 : -1) : -1 )
+        courses.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.code > b.code) ? 1 : -1) : -1 )
 
         for (let i = 0; i < courses.length; i++){
             courses[i].ranking = i + 1;
-            if(courses[i].name.toLowerCase().includes(props.searchFilter.toLowerCase())){
+            if(courses[i].name.toLowerCase().includes(props.searchFilter.toLowerCase()) || courses[i].code.toLowerCase().includes(props.searchFilter.toLowerCase())){
                 for(let j = 0; j < props.userRatings.length; j++){
                     if (props.userRatings[j].contentID === courses[i].id){
                         courses[i].userRating = props.userRatings[j].ratingType;
