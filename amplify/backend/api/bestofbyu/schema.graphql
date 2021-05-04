@@ -54,7 +54,7 @@ type Course @model
   description: String
   score: Int!
   isGeneral: Boolean!
-  generalReqID: String
+  generalReqID: [String]
   classes: [Class] @connection(keyName: "byCourse", fields: ["id"])
 }
 
@@ -113,3 +113,6 @@ type CategoryItem @model
   createdBy: String
   customFields: [customFieldTuple]
 }
+
+
+

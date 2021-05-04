@@ -60,8 +60,8 @@ function ProfessorTable(props) {
 
     return(
         <div>
-            {getHeader()}
             <NewSideBarDesktop colleges={props.colleges} initPageNum={props.initPageNum}/>     
+            {getHeader()}
             <Table professors={professors} getImg={getImg} createRating={props.createRating} getRatings={props.getRatings}/>
             {getFooter()}
         </div>   

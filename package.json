@@ -20,6 +20,7 @@
     "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
+    "react-tooltip": "^4.2.18",
     "recharts": "^2.0.8",
     "sass": "^1.32.7",
     "styled-components": "^5.2.3",

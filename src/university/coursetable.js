@@ -36,8 +36,9 @@ function CourseTable(props) {
 
     return(
         <div>
-            {getHeader()}
+            
             <NewSideBarDesktop colleges={props.colleges} initPageNum={props.initPageNum}/>
+            {getHeader()}
             <Table courses={courses} totalItemsCount={totalItemsCount} departments={props.departments} createRating={props.createRating} getRatings={props.getRatings} userRatings={props.userRatings}/>
             <TableFooter getDepartments={props.getDepartments} totalItemsCount={totalItemsCount} numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
         </div>   
