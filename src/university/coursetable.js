@@ -6,6 +6,13 @@ import SearchBar from '../components/searchbar'
 import CategoryToggle from '../components/categorytoggle'
 import Table from './table'
 import NewSideBarDesktop from'../main/newsidebardesktop'
+import styled from 'styled-components'
+
+const LoadingContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+`
 
 function CourseTable(props) {
     const match = useRouteMatch("/schools/:sid/:did/:type")
@@ -25,7 +32,20 @@ function CourseTable(props) {
                         <SearchBar handleChangeSearch={props.handleChangeSearch} />
                     </div>
                     <div className="tableHeaderResults">
-                        Found {totalItemsCount} {match.params.type}
+                        <LoadingContainer>
+                            Found {totalItemsCount} {match.params.type}
+                            {
+                                props.isFinishedLoading ?
+                                <></>
+                                :
+                                
+                                    <bs.Spinner animation="grow" size="sm" role="status">
+                                        <span className="sr-only">Loading...</span>
+                                    </bs.Spinner>
+                                
+                            }
+                        </LoadingContainer>
+                        
                     </div>
                 </div>
             )
@@ -36,11 +56,10 @@ function CourseTable(props) {
 
     return(
         <div>
-            
             <NewSideBarDesktop colleges={props.colleges} initPageNum={props.initPageNum}/>
             {getHeader()}
-            <Table courses={courses} totalItemsCount={totalItemsCount} departments={props.departments} createRating={props.createRating} getRatings={props.getRatings} userRatings={props.userRatings}/>
-            <TableFooter getDepartments={props.getDepartments} totalItemsCount={totalItemsCount} numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
+            <Table courses={courses} totalItemsCount={totalItemsCount} createRating={props.createRating} getRatings={props.getRatings} userRatings={props.userRatings}/>
+            <TableFooter totalItemsCount={totalItemsCount} numPages={numPages} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
         </div>   
     )
 }

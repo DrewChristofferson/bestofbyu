@@ -19,9 +19,12 @@ type Department @model
 
 type Professor @model @searchable
   @key(name: "byDepartment", fields: ["departmentID", "name"]) 
+  @key(name: "professorsByScore", fields: ["type", "score"], queryField: "professorsByScore")
+  @key(name: "professorsByDeptID", fields: ["type", "departmentID"], queryField: "professorsByDeptID")
 {
   id: ID!
   name: String!
+  type: String!
   title: String!
   departmentID: ID!
   department: Department @connection(fields: ["departmentID"])
@@ -43,9 +46,12 @@ type Class @model(queries: null)
 
 type Course @model 
   @key(name: "byDepartmentCourse", fields: ["departmentID", "name"]) 
+  @key(name: "coursesByScore", fields: ["type", "score"], queryField: "coursesByScore")
+  @key(name: "coursesByDeptID", fields: ["type", "departmentID"], queryField: "coursesByDeptID")
 {
   id: ID!
   name: String!
+  type: String!
   code: String!
   numCredits: Float
   departmentID: ID!

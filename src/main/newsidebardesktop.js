@@ -24,12 +24,18 @@ const NavIcon = styled(Link)`
 `
 
 const SidebarNav = styled.nav`
-    margin: 4em 0;
     width: 100%;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
 
+`
+const Content = styled.div`
+    margin: 4em 0;
+`
+
+const FilterSubtitle = styled.p`
+    font-style: italic;
 `
 
 const SidebarWrap = styled.div`
@@ -37,96 +43,14 @@ const SidebarWrap = styled.div`
 `
 
 function NewSideBarDesktop(props) {
-    // const [sidebar, setSidebar] = useState(false)
-    // const showSidebar = () => setSidebar(!sidebar);
-
-    const schools = [
-        {
-            "name": "All Colleges"
-        }
-    ]
-
-    // const generalEd = 
-    //     {
-    //         "id": "ge",
-    //         "requirements": [ 
-    //             {
-    //                 "id": "ge1",
-    //                 "reqName": "Social Science"
-
-    //             },
-    //             {
-    //                 "id": "ge2",
-    //                 "reqName": "Physical Science"
-
-    //             },
-    //             {
-    //                 "id": "ge3",
-    //                 "reqName": "Biological Science"
-
-    //             },
-    //             {
-    //                 "id": "ge4",
-    //                 "reqName": "Letters"
-
-    //             },
-    //             {
-    //                 "id": "ge5",
-    //                 "reqName": "Arts"
-
-    //             },
-    //             {
-    //                 "id": "ge6",
-    //                 "reqName": "Civilization 1"
-
-    //             },
-    //             {
-    //                 "id": "ge7",
-    //                 "reqName": "Civilization 2"
-
-    //             },
-    //             {
-    //                 "id": "ge8",
-    //                 "reqName": "Languages of Learning"
-
-    //             },
-    //             {
-    //                 "id": "ge9",
-    //                 "reqName": "Quantitative Reasoning"
-
-    //             },
-    //             {
-    //                 "id": "ge10",
-    //                 "reqName": "Adv Written & Oral Communication"
-
-    //             },
-    //             {
-    //                 "id": "ge11",
-    //                 "reqName": "First-Year Writing"
-
-    //             },
-    //             {
-    //                 "id": "ge12",
-    //                 "reqName": "Global and Cultural Awareneness"
-
-    //             },
-    //             {
-    //                 "id": "ge13",
-    //                 "reqName": "American Heritage"
-
-    //             },
-    //             {
-    //                 "id": "ge14",
-    //                 "reqName": "Religion"
-
-    //             }
-                
-    //         ]
-    //     }
-    
 
     return (
         <div>
+            <Content>
+
+            
+            <FilterSubtitle>Filter by College, Department, or GE</FilterSubtitle>
+
             <SidebarNav >
                 <SubMenu allColleges={true} key="all" />
                 <SubMenu ge={true} key="ge" item={generalEd}/>
@@ -137,6 +61,7 @@ function NewSideBarDesktop(props) {
                 ))
             }
             </SidebarNav>
+            </Content>
         </div>
     )
 }

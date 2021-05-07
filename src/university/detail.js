@@ -9,7 +9,7 @@ import DataLineChart from '../components/linechart'
 import DataPieChart from '../components/piechart'
 import CreateModalClass from '../components/createclassmodal'
 import CreateModalClassProf from '../components/createclassmodalprof'
-import { ratingsByUserAndContent, listDepartments } from '../graphql/queries';
+import { ratingsByUserAndContent } from '../graphql/queries';
 import { createRating as createRatingMutation } from '../graphql/mutations';
 import { updateRating as updateRatingMutation } from '../graphql/mutations';
 import { deleteRating as deleteRatingMutation } from '../graphql/mutations';
@@ -37,7 +37,6 @@ function Detail(props) {
     const [isLoadingCourse, setIsLoadingCourse] = useState(true);
     const [isLoadingCourses, setIsLoadingCourses] = useState(true);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
-    const [isLoadingDepartments, setIsLoadingDepartments] = useState(true);
     const [name, setName] = useState("");
     const context = useContext(AppContext)
     const VOTE_UP  = "up";
@@ -332,51 +331,48 @@ function Detail(props) {
         let rankingSchool = 0;
         let rankingDept = 0;
 
-        if (props.departments[0]) {
-            if (match.params.type === "courses") {
-                for (let i = 0; i < props.courses.length; i++) {
-                    objectsAll.push(props.courses[i]);
-                }
-            } else if (match.params.type === "professors"){
-                for (let i = 0; i < props.departments.length; i++) {
-                    for(let j = 0; j < props.departments[i].professors.items.length; j ++){
-                        objectsAll.push(props.departments[i].professors.items[j]);
-                    }
-                }
-    
-            } else return null;
-    
-            objectsAll.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((match.params.type === "courses" ? (a.code > b.code) : (a.name > b.name)) ? 1 : -1) : -1 )
-    
-            for (let i = 0; i < objectsAll.length; i++){
-                rankingAll++;
+        if (match.params.type === "courses") {
+            for (let i = 0; i < props.courses.length; i++) {
+                objectsAll.push(props.courses[i]);
+            }
+        } else if (match.params.type === "professors"){
+            for (let i = 0; i < props.professors.length; i++) {
+                objectsAll.push(props.professors[i]);
+            }
+
+        } else return null;
+
+        objectsAll.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((match.params.type === "courses" ? (a.code > b.code) : (a.name > b.name)) ? 1 : -1) : -1 )
+
+        for (let i = 0; i < objectsAll.length; i++){
+            rankingAll++;
+            if (objectsAll[i].id === match.params.oid){
+                break;
+            }
+        }
+        for (let i = 0; i < objectsAll.length; i++){
+            if(objectsAll[i].department?.school?.id === (match.params.type === "courses" ? course.department?.school?.id : professor.department?.school?.id)){
+                rankingSchool++;
                 if (objectsAll[i].id === match.params.oid){
                     break;
                 }
             }
-            for (let i = 0; i < objectsAll.length; i++){
-                if(objectsAll[i].department?.school?.id === (match.params.type === "courses" ? course.department?.school?.id : professor.department?.school?.id)){
-                    rankingSchool++;
-                    if (objectsAll[i].id === match.params.oid){
-                        break;
-                    }
+        }
+        for (let i = 0; i < objectsAll.length; i++){
+            if(objectsAll[i].department?.id === (match.params.type === "courses" ? course.department?.id : professor.department?.id)){
+                rankingDept++;
+                if (objectsAll[i].id === match.params.oid){
+                    break;
                 }
             }
-            for (let i = 0; i < objectsAll.length; i++){
-                if(objectsAll[i].department?.id === (match.params.type === "courses" ? course.department?.id : professor.department?.id)){
-                    rankingDept++;
-                    if (objectsAll[i].id === match.params.oid){
-                        break;
-                    }
-                }
-            }
-        
-            let strRankingAll =  rankingAll.toString()
-            let strRankingDept =  rankingDept.toString()
-            let strRankingSchool =  rankingSchool.toString()
-                
-            return [createOrdinalNumber(strRankingDept), createOrdinalNumber(strRankingSchool), createOrdinalNumber(strRankingAll)];
-        }    
+        }
+    
+        let strRankingAll =  rankingAll.toString()
+        let strRankingDept =  rankingDept.toString()
+        let strRankingSchool =  rankingSchool.toString()
+            
+        return [createOrdinalNumber(strRankingDept), createOrdinalNumber(strRankingSchool), createOrdinalNumber(strRankingAll)];
+           
 }
 
     let createOrdinalNumber = (strRanking) => {
@@ -541,7 +537,6 @@ function Detail(props) {
                 return(
                     <bs.Container style={{paddingTop: "2rem"}} fluid>
                         <Table 
-                            getDepartments={props.getDepartments}
                             professorsDetail={getProfessors()}
                             refreshProfessors={fetchData}
                             getRatings={props.getRatings}
@@ -571,7 +566,6 @@ function Detail(props) {
                 return(
                     <bs.Container style={{paddingTop: "2rem"}} fluid>
                         <Table 
-                            getDepartments={props.getDepartments}
                             coursesDetail={getCourses()}
                             refreshProfessors={fetchData}
                             getRatings={props.getRatings}

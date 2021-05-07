@@ -265,10 +265,16 @@ function Table (props) {
                                             }
                                         </div>
                                     </div>
-                                    <div className="tableItemSubtitle">
-                                        {course.department?.name} in {course.department?.school?.name}
-
-                                    </div>
+                                    {
+                                        course.department?.name ?
+                                            <div className="tableItemSubtitle">
+                                                {course.department?.name} in {course.department?.school?.name}
+                                            </div>
+                                            :
+                                            <div className="tableItemSubtitle">
+                                                {course.departmentID}
+                                            </div>
+                                    }
 
                                     <div className="tableItemDetails">
                                         {course.numCredits} Credits

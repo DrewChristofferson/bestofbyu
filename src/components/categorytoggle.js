@@ -1,9 +1,14 @@
 import React from 'react'
 import * as bs from 'react-bootstrap'
+import styled from 'styled-components'
+
+const StyledButton = styled(bs.ButtonGroup)`
+    z-index: 0;
+`
 
 function CategoryToggle (props) {
     return(
-        <bs.ButtonGroup toggle>
+        <StyledButton toggle>
             {(props.CATEGORIES).map((category, index) => (
             <bs.ToggleButton
                 key={index}
@@ -17,7 +22,7 @@ function CategoryToggle (props) {
                 {category.name}
             </bs.ToggleButton>
             ))}
-        </bs.ButtonGroup>
+        </StyledButton>
     )
 }
 

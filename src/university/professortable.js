@@ -1,4 +1,5 @@
 import React from 'react'
+import * as bs from 'react-bootstrap'
 import { useRouteMatch } from 'react-router-dom'
 import TableFooter from '../components/tablefooter'
 import BooksImg from '../images/books.jpg'
@@ -40,6 +41,14 @@ function ProfessorTable(props) {
                     </div>
                     <div className="tableHeaderResults">
                         Found {totalItemsCount} {match.params.type}
+                        {
+                            props.isFinishedLoading ?
+                            <></>
+                            :
+                            <bs.Spinner animation="grow" size="sm" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </bs.Spinner>
+                        }
                     </div>
                 </div>
             )
@@ -51,7 +60,7 @@ function ProfessorTable(props) {
     let getFooter = () => {
         if (!props.detail){
             return(
-                    <TableFooter numPages={numPages} totalItemsCount={totalItemsCount} getDepartments={props.getDepartments} departments={props.departments} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
+                    <TableFooter numPages={numPages} totalItemsCount={totalItemsCount} myIndex={myIndex} nextPage={props.nextPage} previousPage={props.previousPage} pageNum={props.pageNum}/>
             )
         } else {
             return null;

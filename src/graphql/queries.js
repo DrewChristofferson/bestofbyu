@@ -43,24 +43,6 @@ export const listSchools = /* GraphQL */ `
           items {
             id
             name
-            professors {
-              items { 
-                id
-                name
-                title
-                score
-              }
-              nextToken
-            }
-            courses {
-              items {
-                id
-                name
-                createdAt
-                updatedAt
-              }
-              nextToken
-            }
           }
         }
         createdAt
@@ -84,34 +66,6 @@ export const getDepartment = /* GraphQL */ `
         }
         createdAt
         updatedAt
-      }
-      professors {
-        items {
-          id
-          name
-          title
-          departmentID
-          imgsrc
-          score
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      courses {
-        items {
-          id
-          name
-          code
-          numCredits
-          departmentID
-          imgsrc
-          description
-          score
-          createdAt
-          updatedAt
-        }
-        nextToken
       }
       createdAt
       updatedAt
@@ -356,6 +310,7 @@ export const listCourses = /* GraphQL */ `
         imgsrc
         description
         score
+        type
         isGeneral
         generalReqID
         classes {
@@ -613,6 +568,232 @@ export const ratingsByUserAndContent = /* GraphQL */ `
         userID
         contentID
         ratingType
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const coursesByScore = /* GraphQL */ `
+  query CoursesByScore(
+    $type: String
+    $score: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelCourseFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    coursesByScore(
+      type: $type
+      score: $score
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        code
+        numCredits
+        departmentID
+        department {
+          id
+          name
+          schoolID
+          school {
+            id
+            name
+          }
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        description
+        score
+        type
+        isGeneral
+        generalReqID
+        classes {
+          items {
+            id
+            professorID
+            courseID
+            createdAt
+            updatedAt
+            professor {
+              id
+              name
+              title
+              score
+              department {
+                name
+              }
+            }
+          }
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const coursesByDeptID = /* GraphQL */ `
+  query CoursesByDeptID(
+    $type: String
+    $departmentID: ModelIDKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelCourseFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    coursesByDeptID(
+      type: $type
+      departmentID: $departmentID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        code
+        numCredits
+        departmentID
+        department {
+          id
+          name
+          schoolID
+          school {
+            id
+            name
+          }
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        description
+        score
+        type
+        isGeneral
+        generalReqID
+        classes {
+          items {
+            id
+            professorID
+            courseID
+            createdAt
+            updatedAt
+            professor {
+              id
+              name
+              title
+              score
+              department {
+                name
+              }
+            }
+          }
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const professorsByScore = /* GraphQL */ `
+  query ProfessorsByScore(
+    $type: String
+    $score: ModelIntKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelProfessorFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    professorsByScore(
+      type: $type
+      score: $score
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        title
+        departmentID
+        department {
+          id
+          name
+          school {
+            id
+            name
+          }
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        score
+        comments {
+          nextToken
+        }
+        classes {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const professorsByDeptID = /* GraphQL */ `
+  query ProfessorsByDeptID(
+    $type: String
+    $departmentID: ModelIDKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelProfessorFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    professorsByDeptID(
+      type: $type
+      departmentID: $departmentID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        title
+        departmentID
+        department {
+          id
+          name
+          school {
+            id
+            name
+          }
+          createdAt
+          updatedAt
+        }
+        imgsrc
+        score
+        comments {
+          nextToken
+        }
+        classes {
+          nextToken
+        }
         createdAt
         updatedAt
       }

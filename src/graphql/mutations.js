@@ -641,6 +641,7 @@ export const updateCourse = /* GraphQL */ `
       code
       numCredits
       departmentID
+      type
       department {
         id
         name

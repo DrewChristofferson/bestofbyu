@@ -13,6 +13,7 @@ import BYUSchools from '../university/byuschools'
 import Footer from './footer'
 import PageTemplate from '../pages/pagetemplate'
 import CreateCategory from '../pages/create/CreateCategory'
+import Survey from '../pages/survey/Survey'
 import { Auth } from 'aws-amplify'
 
 async function checkUser() {
@@ -47,6 +48,11 @@ export default class App extends React.Component {
                     <div id="main-container">
                       <PageTemplate />    
                     </div>               
+                    </Route>
+                    <Route path="/survey">
+                      <div style={{marginTop: "3rem"}}>
+                        <Survey />
+                      </div>
                     </Route>
                     <Route path="/home">
                       <Home />
