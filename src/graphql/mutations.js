@@ -666,6 +666,11 @@ export const updateCourse = /* GraphQL */ `
       score
       isGeneral
       generalReqID
+      difficultyOne
+      difficultyTwo
+      difficultyThree
+      difficultyFour
+      difficultyFive
       classes {
         items {
           id

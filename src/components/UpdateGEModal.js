@@ -50,7 +50,6 @@ function UpdateGEModal(props) {
                         } 
                 } 
             });
-            console.log(apiData)
             setFormData(initialFormState);
             // setSchools(apiData.data.listSchools.items)
             } catch (e) {
@@ -59,17 +58,12 @@ function UpdateGEModal(props) {
     }
 
     const handleToggle = (e, boxes) => {
-        console.log(e, boxes)
-        console.log([...selectedCheckboxes][0])
         let id = e.target.id
         if (boxes.has(id)) {
             boxes.delete(id);
           } else {
             boxes.add(id);
           }
-          console.log(props.course.id)
-        console.log([...selectedCheckboxes])
-        console.log([...selectedCheckboxes][0])
         // setFormData({ ...formData, 'generalReqID': e.target.value})
         // setIsChecked(!isChecked);
     }
@@ -84,12 +78,9 @@ function UpdateGEModal(props) {
           </Modal.Header>
           <Modal.Body>
             <Form onSubmit={submitHandler}>
-                {
-                    console.log(props.objGE)
-                }
+
                 {
                     Object.entries(props.objGE).map(([key, value]) => {
-                        console.log(key, value)
                         return(
                             <Form.Group controlId={key}>
                                 <Form.Check type="checkbox" label={value} onChange={(e) => handleToggle(e, selectedCheckboxes)} />

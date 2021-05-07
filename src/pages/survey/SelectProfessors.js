@@ -5,12 +5,14 @@ import { professorsByDeptID} from '../../graphql/queries';
 import { API } from 'aws-amplify';
 import {BiHappy} from 'react-icons/bi'
 import {BiSad} from 'react-icons/bi'
+import DifficultyRater from './DifficultyRater'
 
 
 function SelectProfessors() {
     const [professors, setProfessors] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [selected, setSelected] = useState({});
+    const [difRatings, setDifRatings] = useState({});
     const match = useRouteMatch("/survey/major/:sid/:did")
     const history = useHistory();
 
@@ -60,6 +62,10 @@ function SelectProfessors() {
         setSelected(tempRatings)
     }
 
+    const updateDifRatings = (newRatings) => {
+        setDifRatings(newRatings)
+    }
+
     const handleClick = () => {
         history.push(`/survey/major/finish`)
     }
@@ -79,6 +85,7 @@ function SelectProfessors() {
                             <p>{professor.name}</p> 
                             <BiHappy onClick={() => clickHappy(professor.id)} size={50} style={selected[professor.id] === 'up' ? { color: 'green', cursor: 'pointer'} : { color: 'black', cursor: 'pointer'}}/>
                             <BiSad onClick={() => clickSad(professor.id)} size={50} style={selected[professor.id] === 'down' ? { color: 'red', cursor: 'pointer'} : { color: 'black', cursor: 'pointer'}}/>
+                            <DifficultyRater selected={selected} difRatings={difRatings} updateDifRatings={updateDifRatings} id={professor.id} />
                         </div>
                     )
                 })

@@ -5,11 +5,13 @@ import { coursesByDeptID} from '../../graphql/queries';
 import { API } from 'aws-amplify';
 import {BiHappy} from 'react-icons/bi'
 import {BiSad} from 'react-icons/bi'
+import DifficultyRater from './DifficultyRater'
 
 function SelectCourses() {
     const [courses, setCourses] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [selected, setSelected] = useState({});
+    const [difRatings, setDifRatings] = useState({});
     const match = useRouteMatch("/survey/major/:sid/:did")
     const history = useHistory();
 
@@ -27,12 +29,19 @@ function SelectCourses() {
 
     const clickHappy = (id) => {
         let tempRatings = {};
+        let tempDifRatings ={};
         for (const [key, value] of Object.entries(selected)) {
             tempRatings[key] = value;
+        }
+        for (const [key, value] of Object.entries(difRatings)) {
+            tempDifRatings[key] = value;
         }
 
         if(tempRatings[id] === 'up'){
             delete tempRatings[id];
+            if(tempDifRatings[id]){
+                delete tempDifRatings[id];
+            }
         } else if (tempRatings[id] === 'down'){
             tempRatings[id] = 'up';
         } else {
@@ -40,16 +49,24 @@ function SelectCourses() {
         }
 
         setSelected(tempRatings)
+        setDifRatings(tempDifRatings)
     }
 
     const clickSad = (id) => {
         let tempRatings = {};
+        let tempDifRatings ={};
         for (const [key, value] of Object.entries(selected)) {
             tempRatings[key] = value;
+        }
+        for (const [key, value] of Object.entries(difRatings)) {
+            tempDifRatings[key] = value;
         }
 
         if(tempRatings[id] === 'down'){
             delete tempRatings[id];
+            if(tempDifRatings[id]){
+                delete tempDifRatings[id];
+            }
         } else if (tempRatings[id] === 'up'){
             tempRatings[id] = 'down';
         } else {
@@ -57,6 +74,11 @@ function SelectCourses() {
         }
 
         setSelected(tempRatings)
+        setDifRatings(tempDifRatings)
+    }
+
+    const updateDifRatings = (newRatings) => {
+        setDifRatings(newRatings)
     }
 
     const handleClick = () => {
@@ -78,6 +100,7 @@ function SelectCourses() {
                             <p>{course.code}  -  {course.name}</p> 
                             <BiHappy onClick={() => clickHappy(course.id)} size={50} style={selected[course.id] === 'up' ? { color: 'green', cursor: 'pointer'} : { color: 'black', cursor: 'pointer'}}/>
                             <BiSad onClick={() => clickSad(course.id)} size={50} style={selected[course.id] === 'down' ? { color: 'red', cursor: 'pointer'} : { color: 'black', cursor: 'pointer'}}/>
+                            <DifficultyRater selected={selected} difRatings={difRatings} updateDifRatings={updateDifRatings} id={course.id} />
                         </div>
                     )
                 })

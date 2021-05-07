@@ -48,7 +48,7 @@ function SchoolTables(props) {
 
 
     useEffect(() => {
-        console.log(props.professors)
+        // console.log(props.professors)
         
         handleChangeToggle(cat.params.cat);
     }, []);
@@ -57,16 +57,16 @@ function SchoolTables(props) {
     useEffect(() => {
         getTitle();
 
-        if(props.isFinishedLoadingCourses){
-            let count = 0;
-            for (const course of props.courses){
-                if(!course.department?.name){
-                    count++;
-                    console.log("no dept", course);
-                }  
-            }
-            console.log(count)
-        }
+        // if(props.isFinishedLoadingCourses){
+        //     let count = 0;
+        //     for (const course of props.courses){
+        //         if(!course.department?.name){
+        //             count++;
+        //             console.log("no dept", course);
+        //         }  
+        //     }
+        //     console.log(count)
+        // }
     });
 
 

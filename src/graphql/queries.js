@@ -615,6 +615,11 @@ export const coursesByScore = /* GraphQL */ `
         type
         isGeneral
         generalReqID
+        difficultyOne
+        difficultyTwo
+        difficultyThree
+        difficultyFour
+        difficultyFive
         classes {
           items {
             id
@@ -681,6 +686,11 @@ export const coursesByDeptID = /* GraphQL */ `
         type
         isGeneral
         generalReqID
+        difficultyOne
+        difficultyTwo
+        difficultyThree
+        difficultyFour
+        difficultyFive
         classes {
           items {
             id
@@ -707,6 +717,7 @@ export const coursesByDeptID = /* GraphQL */ `
     }
   }
 `;
+
 export const professorsByScore = /* GraphQL */ `
   query ProfessorsByScore(
     $type: String

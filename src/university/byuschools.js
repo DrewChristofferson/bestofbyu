@@ -82,9 +82,7 @@ function BYUSchools() {
         await Promise.all(coursesFromAPI.map(async course => {
             return course;
         }))
-        console.log(apiData)
         tempCourses = [...tempCourses, ...apiData.data.coursesByScore.items]
-        console.log(tempCourses)
         setCourses(tempCourses);
 
         if(isLoadingCourses){
@@ -111,9 +109,7 @@ function BYUSchools() {
         await Promise.all(professorsFromAPI.map(async professor => {
             return professor;
         }))
-        console.log(apiData)
         tempProfessors = [...tempProfessors, ...apiData.data.professorsByScore.items]
-        console.log(tempProfessors)
         setProfessors(tempProfessors);
 
         if(isLoadingProfessors){
@@ -230,16 +226,16 @@ function BYUSchools() {
     }
 
 
-    let updateType = async() => {
+    let uploadDifficulty = async() => {
         console.log(courses)
-        courses.forEach(course => {
-            if(!course.type){
-                console.log(course.code)
+        courses.forEach((course,ind) => {
+            if(!course.generalReqID || !course.generalReqID[0]){
+                console.log(course.code, ind)
             }
         })
         console.log("all in")
-        // for (let i = 3999; i < 5800; i++){
-        //     if(!courses[i]?.type){
+        // for (let i = 2700; i < 3000; i++){
+        //     if(!courses[i]?.generalReqID || !courses[i]?.generalReqID[0] ){
         //         try{ 
         //             const apiData = await API.graphql({ 
         //                 query: updateCourseMutation, 
@@ -247,7 +243,7 @@ function BYUSchools() {
         //                     input: 
         //                         {
         //                             "id": courses[i].id, 
-        //                             "type": 'Course',
+        //                             "generalReqID": ["N/A"],
         //                         } 
         //                 } 
         //             });
@@ -256,7 +252,7 @@ function BYUSchools() {
         //                 return e;
         //             }
         //     } else{
-        //         console.log("already updated")
+        //         console.log(courses[i].code, "already updated")
         //     }
             
         // }
@@ -299,6 +295,7 @@ function BYUSchools() {
                     {/* <img alt="picture" src="https://brightspotcdn.byu.edu/31/bf/faa1cee3405387ff8d0d135ffab1/1810-23-0021-1200-4.jpg" /> */}
                     <h1 id="categoryTitle">BYU Academics</h1>
                 </div>
+                <button onClick={uploadDifficulty}>update difficulty</button>
                 
                 
                 {/* <bs.Container fluid className="min-vh-100 d-flex flex-column" style={{textAlign: "left"}}>

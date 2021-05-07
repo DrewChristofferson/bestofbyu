@@ -70,7 +70,6 @@ function Table (props) {
                         newRatings[item.id] = item.userRating;
                     }
                 })
-                console.log(newRatings);
                 setRatings(newRatings);
                 setProfs(values);
             })
@@ -205,7 +204,6 @@ function Table (props) {
 
     if(!isLoading){
         if (props.courses) { 
-            console.log(props.courses)
             return(
                 <div className="table">
                     <UpdateGEModal 
@@ -268,7 +266,7 @@ function Table (props) {
                                     {
                                         course.department?.name ?
                                             <div className="tableItemSubtitle">
-                                                {course.department?.name} in {course.department?.school?.name}
+                                                {course.department?.name} in {course.department?.school?.name} 
                                             </div>
                                             :
                                             <div className="tableItemSubtitle">
@@ -279,6 +277,33 @@ function Table (props) {
                                     <div className="tableItemDetails">
                                         {course.numCredits} Credits
                                     </div>
+                                    <div>
+                                        Difficulty: {
+                                        
+                                        !(
+                                            course.difficultyOne + 
+                                            course.difficultyTwo + 
+                                            course.difficultyThree + 
+                                            course.difficultyFour + 
+                                            course.difficultyFive
+                                        ) ? "N/A" :
+                                        ((
+                                            course.difficultyOne * 1 + 
+                                            course.difficultyTwo * 2 + 
+                                            course.difficultyThree * 3 + 
+                                            course.difficultyFour * 4 + 
+                                            course.difficultyFive * 5
+                                        ) /
+                                        (
+                                            course.difficultyOne + 
+                                            course.difficultyTwo + 
+                                            course.difficultyThree + 
+                                            course.difficultyFour + 
+                                            course.difficultyFive
+                                        )).toFixed(2)
+                                        }
+                                    </div>
+                                    
 
                                     {/* <div className="tableItemDetails">
                                         <p>{course.description}</p>

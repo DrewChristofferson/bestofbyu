@@ -48,6 +48,7 @@ type Course @model
   @key(name: "byDepartmentCourse", fields: ["departmentID", "name"]) 
   @key(name: "coursesByScore", fields: ["type", "score"], queryField: "coursesByScore")
   @key(name: "coursesByDeptID", fields: ["type", "departmentID"], queryField: "coursesByDeptID")
+  @key(name: "coursesByGE", fields: ["type", "generalReqID"], queryField: "coursesByGE")
 {
   id: ID!
   name: String!
@@ -61,6 +62,11 @@ type Course @model
   score: Int!
   isGeneral: Boolean!
   generalReqID: [String]
+  difficultyOne: Int @default(value: "0")
+  difficultyTwo: Int @default(value: "0")
+  difficultyThree: Int @default(value: "0")
+  difficultyFour: Int @default(value: "0")
+  difficultyFive: Int @default(value: "0")
   classes: [Class] @connection(keyName: "byCourse", fields: ["id"])
 }
 
